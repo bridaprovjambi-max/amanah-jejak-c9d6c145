@@ -86,11 +86,11 @@ function SignupPage() {
           <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/15 backdrop-blur font-bold">
             B
           </div>
-          <div className="font-display font-bold">MonitWeng BRIDA</div>
+          <div className="font-display font-bold">Delegasi & Pelaporan Internal BRIDA</div>
         </Link>
         <div>
           <h2 className="font-display text-3xl font-bold leading-tight">
-            Bergabung dengan sistem internal BRIDA.
+            Bergabung dengan Delegasi dan Pelaporan Internal BRIDA.
           </h2>
           <p className="mt-4 text-white/70 text-sm max-w-md">
             Pendaftaran ini untuk pejabat & anggota pokja. Pastikan jenjang yang Anda pilih
