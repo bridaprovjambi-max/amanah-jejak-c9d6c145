@@ -53,10 +53,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="leading-tight">
             <div className="font-display text-base font-bold text-sidebar-foreground">
-              MonitWeng
+              Delegasi & Pelaporan
             </div>
             <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">
-              BRIDA
+              Internal BRIDA
             </div>
           </div>
         </Link>
@@ -120,7 +120,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground text-sm font-bold">
             B
           </div>
-          <span className="font-display font-bold">MonitWeng</span>
+          <span className="font-display font-bold">Delegasi & Pelaporan</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>

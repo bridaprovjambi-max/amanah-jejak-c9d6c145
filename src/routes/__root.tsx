@@ -75,11 +75,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MonitWeng BRIDA — Monitoring Wewenang & Pelaporan" },
+      { title: "Delegasi dan Pelaporan Internal BRIDA" },
       {
         name: "description",
         content:
-          "Tool monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA.",
+          "Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA.",
       },
     ],
     links: [
