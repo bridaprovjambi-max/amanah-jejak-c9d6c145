@@ -2,6 +2,7 @@ import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import bridaLogo from "@/assets/brida-logo.svg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -17,8 +18,8 @@ function Landing() {
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary text-primary-foreground font-bold">
-              B
+            <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 ring-1 ring-border">
+              <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
             </div>
             <div>
               <div className="font-display text-base font-bold">Delegasi & Pelaporan Internal</div>
