@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { JENJANG_LABEL, ROLE_LABEL, type AppRole, type Jenjang } from "@/lib/auth";
+import bridaLogo from "@/assets/brida-logo.svg";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
 
@@ -83,8 +84,8 @@ function SignupPage() {
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="hidden lg:flex bg-gradient-hero text-primary-foreground p-12 flex-col justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/15 backdrop-blur font-bold">
-            B
+          <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 shadow-sm">
+            <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
           </div>
           <div className="font-display font-bold">Delegasi & Pelaporan Internal BRIDA</div>
         </Link>
