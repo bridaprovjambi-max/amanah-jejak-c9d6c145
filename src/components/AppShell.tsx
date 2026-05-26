@@ -11,6 +11,7 @@ import {
   X,
   Plus,
   Network,
+  FileText,
 } from "lucide-react";
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const NAV: NavItem[] = [
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
   { to: "/hierarki", label: "Bagan Hierarki", icon: Network },
   { to: "/pokja", label: "Pokja Riset", icon: Layers },
+  { to: "/documents", label: "Dokumen", icon: FileText },
   { to: "/users", label: "Pengguna", icon: Users, roles: ["leader", "admin"] },
   { to: "/activity", label: "Riwayat", icon: History, roles: ["leader", "admin"] },
 ];
