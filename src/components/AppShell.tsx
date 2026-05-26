@@ -56,10 +56,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="leading-tight">
             <div className="font-display text-base font-bold text-sidebar-foreground">
-              Delegasi & Pelaporan
+              D'LaPin
             </div>
             <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">
-              Internal BRIDA
+              Delegasi & Pelaporan
             </div>
           </div>
         </Link>
@@ -123,7 +123,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="grid h-9 w-9 place-items-center rounded-md bg-white p-0.5 shadow-sm">
             <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
           </div>
-          <span className="font-display font-bold">Delegasi & Pelaporan</span>
+          <span className="font-display font-bold">D'LaPin</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>
