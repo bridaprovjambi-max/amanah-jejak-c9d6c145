@@ -107,46 +107,10 @@ function SignupPage() {
                 onChange={(e) => update("jabatan", e.target.value)}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Jenjang</Label>
-              <Select
-                value={form.jenjang}
-                onValueChange={(v) => {
-                  const jj = v as Jenjang;
-                  update("jenjang", jj);
-                  update("role", ROLE_BY_JENJANG[jj]);
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(JENJANG_LABEL).map(([k, v]) => (
-                    <SelectItem key={k} value={k}>
-                      {v}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="rounded-md border border-border bg-muted/40 p-3 text-[12px] text-muted-foreground">
+              Jenjang & peran Anda akan ditetapkan oleh administrator setelah akun dibuat.
             </div>
-            <div className="space-y-1.5">
-              <Label>Peran</Label>
-              <Select value={form.role} onValueChange={(v) => update("role", v as AppRole)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(ROLE_LABEL).map(([k, v]) => (
-                    <SelectItem key={k} value={k}>
-                      {v}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-[11px] text-muted-foreground">
-                Peran dapat disesuaikan kembali oleh administrator.
-              </p>
-            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email</Label>
