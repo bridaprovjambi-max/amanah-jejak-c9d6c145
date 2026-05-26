@@ -22,9 +22,9 @@ function Landing() {
               <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
             </div>
             <div>
-              <div className="font-display text-base font-bold">Delegasi & Pelaporan Internal</div>
+              <div className="font-display text-base font-bold">D'LaPin</div>
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                BRIDA
+                BRIDA Provinsi Jambi
               </div>
             </div>
           </div>
@@ -47,7 +47,7 @@ function Landing() {
               Internal BRIDA · Akses Terkendali
             </div>
             <h1 className="text-balance font-display text-4xl font-extrabold leading-tight lg:text-6xl">
-              Delegasi dan Pelaporan Internal BRIDA
+              D'LaPin: Delegasi dan Pelaporan Internal BRIDA Provinsi Jambi
             </h1>
             <p className="mt-5 max-w-2xl text-base text-white/80 lg:text-lg">
               Satu tempat untuk Kepala BRIDA, Sekretaris, Kasubbag, dan Kelompok Kerja Riset
@@ -104,7 +104,7 @@ function Landing() {
       </section>
 
       <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} BRIDA · Delegasi dan Pelaporan Internal — Monitoring Wewenang & Pelaporan
+        © {new Date().getFullYear()} D'LaPin · Delegasi dan Pelaporan Internal BRIDA Provinsi Jambi
       </footer>
     </div>
   );
