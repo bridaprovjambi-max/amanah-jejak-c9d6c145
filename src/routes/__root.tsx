@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA.",
+          "D'LaPin — Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA Provinsi Jambi.",
       },
     ],
     links: [
