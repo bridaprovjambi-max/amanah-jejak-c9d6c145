@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf";
-export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member" | "staf_pelaksana";
+export type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf" | "jafung";
+export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member" | "staf_pelaksana" | "jafung_member";
 
 export interface Profile {
   id: string;
