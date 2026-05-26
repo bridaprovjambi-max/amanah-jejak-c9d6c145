@@ -226,8 +226,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member"
-      jenjang: "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja"
+      app_role:
+        | "admin"
+        | "kepala"
+        | "sekretaris"
+        | "kasubbag"
+        | "pokja_member"
+        | "staf_pelaksana"
+      jenjang: "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf"
       task_status: "pending" | "in_progress" | "completed" | "overdue"
     }
     CompositeTypes: {
@@ -356,8 +362,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "kepala", "sekretaris", "kasubbag", "pokja_member"],
-      jenjang: ["eselon_ii", "eselon_iii", "eselon_iv", "pokja"],
+      app_role: [
+        "admin",
+        "kepala",
+        "sekretaris",
+        "kasubbag",
+        "pokja_member",
+        "staf_pelaksana",
+      ],
+      jenjang: ["eselon_ii", "eselon_iii", "eselon_iv", "pokja", "staf"],
       task_status: ["pending", "in_progress", "completed", "overdue"],
     },
   },

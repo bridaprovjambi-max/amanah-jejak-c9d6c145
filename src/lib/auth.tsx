@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja";
-export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member";
+export type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf";
+export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member" | "staf_pelaksana";
 
 export interface Profile {
   id: string;
@@ -92,7 +92,8 @@ export const JENJANG_LABEL: Record<Jenjang, string> = {
   eselon_ii: "Kepala BRIDA Provinsi Jambi (Eselon II)",
   eselon_iii: "Sekretaris BRIDA Provinsi Jambi (Eselon III)",
   eselon_iv: "Kepala Sub Bagian Umum dan Kepegawaian (Eselon IV)",
-  pokja: "Kelompok Kerja Riset",
+  pokja: "Kelompok Kerja (Riset / Inovasi)",
+  staf: "Staf / Pelaksana",
 };
 
 export const ROLE_LABEL: Record<AppRole, string> = {
@@ -100,5 +101,6 @@ export const ROLE_LABEL: Record<AppRole, string> = {
   kepala: "Kepala BRIDA",
   sekretaris: "Sekretaris BRIDA",
   kasubbag: "Kasubbag Umum & Kepegawaian",
-  pokja_member: "Anggota Pokja Riset",
+  pokja_member: "Anggota Pokja",
+  staf_pelaksana: "Staf / Pelaksana (lapor ke Kasubbag & Sekretaris)",
 };
