@@ -233,7 +233,14 @@ export type Database = {
         | "kasubbag"
         | "pokja_member"
         | "staf_pelaksana"
-      jenjang: "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf"
+        | "jafung_member"
+      jenjang:
+        | "eselon_ii"
+        | "eselon_iii"
+        | "eselon_iv"
+        | "pokja"
+        | "staf"
+        | "jafung"
       task_status: "pending" | "in_progress" | "completed" | "overdue"
     }
     CompositeTypes: {
@@ -369,8 +376,16 @@ export const Constants = {
         "kasubbag",
         "pokja_member",
         "staf_pelaksana",
+        "jafung_member",
       ],
-      jenjang: ["eselon_ii", "eselon_iii", "eselon_iv", "pokja", "staf"],
+      jenjang: [
+        "eselon_ii",
+        "eselon_iii",
+        "eselon_iv",
+        "pokja",
+        "staf",
+        "jafung",
+      ],
       task_status: ["pending", "in_progress", "completed", "overdue"],
     },
   },
