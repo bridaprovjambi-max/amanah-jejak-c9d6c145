@@ -89,9 +89,9 @@ export function useAuth() {
 }
 
 export const JENJANG_LABEL: Record<Jenjang, string> = {
-  eselon_ii: "Eselon II — Kepala BRIDA",
-  eselon_iii: "Eselon III — Sekretaris BRIDA",
-  eselon_iv: "Eselon IV — Kepala Sub Bagian",
+  eselon_ii: "Kepala BRIDA Provinsi Jambi (Eselon II)",
+  eselon_iii: "Sekretaris BRIDA Provinsi Jambi (Eselon III)",
+  eselon_iv: "Kepala Sub Bagian Umum dan Kepegawaian (Eselon IV)",
   pokja: "Kelompok Kerja Riset",
 };
 
