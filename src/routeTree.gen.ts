@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticated/hierarki'
+import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks.index'
@@ -56,6 +57,11 @@ const AuthenticatedHierarkiRoute = AuthenticatedHierarkiRouteImport.update({
   path: '/hierarki',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/activity': typeof AuthenticatedActivityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/activity': typeof AuthenticatedActivityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/hierarki': typeof AuthenticatedHierarkiRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/activity'
     | '/dashboard'
+    | '/documents'
     | '/hierarki'
     | '/pokja'
     | '/users'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/activity'
     | '/dashboard'
+    | '/documents'
     | '/hierarki'
     | '/pokja'
     | '/users'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/activity'
     | '/_authenticated/dashboard'
+    | '/_authenticated/documents'
     | '/_authenticated/hierarki'
     | '/_authenticated/pokja'
     | '/_authenticated/users'
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHierarkiRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/documents': {
+      id: '/_authenticated/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof AuthenticatedDocumentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -266,6 +285,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedHierarkiRoute: typeof AuthenticatedHierarkiRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -277,6 +297,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedHierarkiRoute: AuthenticatedHierarkiRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
@@ -298,3 +319,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
