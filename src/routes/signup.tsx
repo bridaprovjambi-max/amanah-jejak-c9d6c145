@@ -6,14 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { JENJANG_LABEL, ROLE_LABEL, type AppRole, type Jenjang } from "@/lib/auth";
 import bridaLogo from "@/assets/brida-logo.svg";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
@@ -23,17 +15,7 @@ const schema = z.object({
   jabatan: z.string().trim().max(160).optional(),
   email: z.string().trim().email().max(255),
   password: z.string().min(8, "Minimal 8 karakter").max(72),
-  jenjang: z.enum(["eselon_ii", "eselon_iii", "eselon_iv", "pokja"]),
-  role: z.enum(["admin", "kepala", "sekretaris", "kasubbag", "pokja_member"]),
 });
-
-// Map a chosen jenjang to its natural role default
-const ROLE_BY_JENJANG: Record<Jenjang, AppRole> = {
-  eselon_ii: "kepala",
-  eselon_iii: "sekretaris",
-  eselon_iv: "kasubbag",
-  pokja: "pokja_member",
-};
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -42,8 +24,6 @@ function SignupPage() {
     jabatan: "",
     email: "",
     password: "",
-    jenjang: "pokja" as Jenjang,
-    role: "pokja_member" as AppRole,
   });
   const [busy, setBusy] = useState(false);
 
@@ -66,8 +46,6 @@ function SignupPage() {
         data: {
           full_name: parsed.data.full_name,
           jabatan: parsed.data.jabatan ?? "",
-          jenjang: parsed.data.jenjang,
-          role: parsed.data.role,
         },
       },
     });
@@ -76,7 +54,7 @@ function SignupPage() {
       toast.error(error.message);
       return;
     }
-    toast.success("Pendaftaran berhasil!");
+    toast.success("Pendaftaran berhasil! Administrator akan menetapkan peran & jenjang Anda.");
     navigate({ to: "/dashboard" });
   };
 
