@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowLeft, Paperclip, X, FileIcon } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,15 @@ import {
 export const Route = createFileRoute("/_authenticated/tasks/new")({
   component: NewTask,
 });
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_FILES = 5;
+
+function formatBytes(b: number) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / 1024 / 1024).toFixed(1)} MB`;
+}
 
 const schema = z.object({
   title: z.string().trim().min(3).max(200),
@@ -47,6 +56,60 @@ function NewTask() {
     deadline: "",
   });
   const [busy, setBusy] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const next = [...pendingFiles];
+    for (const f of Array.from(files)) {
+      if (next.length >= MAX_FILES) {
+        toast.error(`Maksimal ${MAX_FILES} berkas`);
+        break;
+      }
+      if (f.size > MAX_FILE_SIZE) {
+        toast.error(`${f.name} melebihi 20MB`);
+        continue;
+      }
+      next.push(f);
+    }
+    setPendingFiles(next);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadTaskAttachments = async (taskId: string) => {
+    const rows: Array<{
+      task_id: string;
+      uploaded_by: string;
+      file_path: string;
+      file_name: string;
+      file_size: number;
+      mime_type: string | null;
+    }> = [];
+    for (const f of pendingFiles) {
+      const safeName = f.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+      const path = `${user!.id}/tasks/${taskId}/${Date.now()}-${safeName}`;
+      const { error: upErr } = await supabase.storage
+        .from("documents")
+        .upload(path, f, { contentType: f.type || "application/octet-stream", upsert: false });
+      if (upErr) {
+        toast.error(`Gagal unggah ${f.name}: ${upErr.message}`);
+        continue;
+      }
+      rows.push({
+        task_id: taskId,
+        uploaded_by: user!.id,
+        file_path: path,
+        file_name: f.name,
+        file_size: f.size,
+        mime_type: f.type || null,
+      });
+    }
+    if (rows.length > 0) {
+      const { error: insErr } = await supabase.from("task_attachments").insert(rows);
+      if (insErr) toast.error(`Gagal simpan metadata: ${insErr.message}`);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -77,7 +140,10 @@ function NewTask() {
       deadline: parsed.data.deadline ? new Date(parsed.data.deadline).toISOString() : null,
     };
     const { data, error } = await supabase.from("tasks").insert(payload).select("id").single();
-    if (!error) {
+    if (!error && data) {
+      if (pendingFiles.length > 0) {
+        await uploadTaskAttachments(data.id);
+      }
       await supabase.from("activity_log").insert({
         user_id: user!.id,
         action: "create_task",
@@ -225,6 +291,53 @@ function NewTask() {
               onChange={(e) => setForm({ ...form, deadline: e.target.value })}
             />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Lampiran tugas (opsional, maks {MAX_FILES} berkas, 20MB/berkas)</Label>
+          <div className="flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={(e) => addFiles(e.target.files)}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={pendingFiles.length >= MAX_FILES}
+            >
+              <Paperclip className="mr-2 h-4 w-4" /> Pilih berkas
+            </Button>
+            <span className="text-xs text-muted-foreground">{pendingFiles.length} dipilih</span>
+          </div>
+          {pendingFiles.length > 0 && (
+            <ul className="space-y-1.5">
+              {pendingFiles.map((f, i) => (
+                <li
+                  key={`${f.name}-${i}`}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs"
+                >
+                  <span className="flex items-center gap-2 min-w-0">
+                    <FileIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="truncate">{f.name}</span>
+                    <span className="text-muted-foreground shrink-0">{formatBytes(f.size)}</span>
+                  </span>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-destructive"
+                    onClick={() => setPendingFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                    aria-label="Hapus berkas"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

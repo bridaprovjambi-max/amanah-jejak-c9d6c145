@@ -57,6 +57,17 @@ interface Attachment {
   created_at: string;
 }
 
+interface TaskAttachment {
+  id: string;
+  task_id: string;
+  uploaded_by: string;
+  file_path: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string | null;
+  created_at: string;
+}
+
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB per file
 const MAX_FILES = 5;
 
@@ -74,6 +85,7 @@ function TaskDetail() {
   const [task, setTask] = useState<Task | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [taskAttachments, setTaskAttachments] = useState<TaskAttachment[]>([]);
   const [users, setUsers] = useState<Record<string, { name: string; nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
@@ -112,6 +124,12 @@ function TaskDetail() {
     } else {
       setAttachments([]);
     }
+    const { data: tAtt } = await supabase
+      .from("task_attachments")
+      .select("*")
+      .eq("task_id", taskId)
+      .order("created_at", { ascending: true });
+    setTaskAttachments((tAtt as TaskAttachment[]) ?? []);
     setLoading(false);
   };
 
@@ -155,7 +173,7 @@ function TaskDetail() {
   const removePendingFile = (idx: number) =>
     setPendingFiles((prev) => prev.filter((_, i) => i !== idx));
 
-  const downloadAttachment = async (att: Attachment) => {
+  const downloadAttachment = async (att: { file_path: string }) => {
     const { data, error } = await supabase.storage.from("documents").createSignedUrl(att.file_path, 60);
     if (error || !data) {
       toast.error(error?.message ?? "Gagal membuat tautan unduh");
@@ -170,6 +188,15 @@ function TaskDetail() {
     if (dbErr) return toast.error(dbErr.message);
     await supabase.storage.from("documents").remove([att.file_path]);
     setAttachments((prev) => prev.filter((x) => x.id !== att.id));
+    toast.success("Lampiran dihapus");
+  };
+
+  const deleteTaskAttachment = async (att: TaskAttachment) => {
+    if (!confirm(`Hapus lampiran "${att.file_name}"?`)) return;
+    const { error: dbErr } = await supabase.from("task_attachments").delete().eq("id", att.id);
+    if (dbErr) return toast.error(dbErr.message);
+    await supabase.storage.from("documents").remove([att.file_path]);
+    setTaskAttachments((prev) => prev.filter((x) => x.id !== att.id));
     toast.success("Lampiran dihapus");
   };
 
@@ -331,7 +358,46 @@ function TaskDetail() {
             icon={<Calendar className="h-3.5 w-3.5" />}
           />
         </div>
+
+        {taskAttachments.length > 0 && (
+          <div className="mt-5 border-t border-border pt-5">
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">
+              Lampiran tugas
+            </div>
+            <ul className="space-y-1.5">
+              {taskAttachments.map((a) => (
+                <li
+                  key={a.id}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs"
+                >
+                  <button
+                    type="button"
+                    onClick={() => downloadAttachment(a)}
+                    className="flex items-center gap-2 min-w-0 text-left hover:text-primary"
+                  >
+                    <Download className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{a.file_name}</span>
+                    <span className="text-muted-foreground shrink-0">
+                      {formatBytes(a.file_size)}
+                    </span>
+                  </button>
+                  {(user?.id === a.uploaded_by || user?.id === task.assigned_by) && (
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-destructive"
+                      onClick={() => deleteTaskAttachment(a)}
+                      aria-label="Hapus lampiran"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+
 
       {/* Report form */}
       <form
