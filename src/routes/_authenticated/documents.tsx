@@ -404,7 +404,10 @@ function DocumentsPage() {
     return Object.entries(map).sort((a, b) => a[1].localeCompare(b[1]));
   }, [visibleRows, users]);
 
-  const visibleFolders = useMemo(() => FOLDERS.filter((f) => viewSet.has(f)), [viewSet]);
+  const visibleFolders = useMemo(
+    () => allSlugs.filter((f) => viewSet.has(f)),
+    [viewSet, allSlugs],
+  );
 
   return (
     <div className="space-y-6">
@@ -415,9 +418,13 @@ function DocumentsPage() {
         </p>
         <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
           <Lock className="h-3 w-3" />
-          Akses folder Anda: {permissions.view.length === FOLDERS.length ? "Semua folder" : permissions.view.join(", ")}
+          Akses folder Anda:{" "}
+          {permissions.view.length === allSlugs.length && allSlugs.length > 0
+            ? "Semua folder"
+            : permissions.view.map(folderName).join(", ")}
         </div>
       </div>
+
 
       {permissions.manage.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm text-muted-foreground">
