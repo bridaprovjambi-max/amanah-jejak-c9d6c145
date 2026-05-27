@@ -40,7 +40,7 @@ async function extractText(
   }
 
   throw new Error(
-    `Format file belum didukung untuk analisis AI (${mime ?? ext || "unknown"}). Saat ini mendukung PDF dan teks.`,
+    `Format file belum didukung untuk analisis AI (${mime ?? ext ?? "unknown"}). Saat ini mendukung PDF dan teks.`,
   );
 }
 
