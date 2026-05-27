@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -502,45 +509,47 @@ function DocumentsPage() {
         </form>
       )}
 
-      {/* Folder chips */}
+      {/* Folder dropdown */}
       <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <FolderOpen className="h-4 w-4 text-primary" />
           <h2 className="font-display text-sm font-semibold">Folder Dokumen</h2>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setActiveFolder("ALL")}
-            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-              activeFolder === "ALL"
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-background hover:border-primary/40"
-            }`}
-          >
-            Semua <span className="opacity-70">({visibleRows.length})</span>
-          </button>
-          {visibleFolders.map((f) => {
-            const active = activeFolder === f;
-            const canManage = manageSet.has(f);
-            return (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setActiveFolder(f)}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background hover:border-primary/40"
-                }`}
-                title={canManage ? "Anda dapat mengunggah ke folder ini" : "Hanya baca"}
-              >
-                {canManage ? <Folder className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
-                {folderName(f)} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={activeFolder}
+          onValueChange={(val) => setActiveFolder(val as FolderName | "ALL")}
+        >
+          <SelectTrigger className="w-full sm:w-72">
+            <SelectValue placeholder="Pilih folder" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">
+              Semua ({visibleRows.length})
+            </SelectItem>
+            {visibleFolders.map((f) => {
+              const canManage = manageSet.has(f);
+              return (
+                <SelectItem key={f} value={f}>
+                  <span className="flex items-center gap-2">
+                    {canManage ? (
+                      <Folder className="h-3.5 w-3.5 text-muted-foreground" />
+                    ) : (
+                      <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                    {folderName(f)} ({folderCounts[f] ?? 0})
+                  </span>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+        {activeFolder !== "ALL" && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {manageSet.has(activeFolder)
+              ? "Anda dapat mengunggah ke folder ini."
+              : "Hanya baca — Anda tidak memiliki izin mengunggah ke folder ini."}
+          </p>
+        )}
       </div>
 
       {/* Search & Filter Bar */}
