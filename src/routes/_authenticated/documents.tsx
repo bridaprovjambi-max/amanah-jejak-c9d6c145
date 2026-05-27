@@ -500,13 +500,19 @@ function DocumentsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="file">Berkas (maks. 25MB) *</Label>
+              <Label htmlFor="file">Berkas (maks. 25MB per berkas) *</Label>
               <Input
                 id="file"
                 ref={fileRef}
                 type="file"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
               />
+              {files.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {files.length} berkas dipilih: {files.map((f) => f.name).join(", ")}
+                </p>
+              )}
             </div>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
