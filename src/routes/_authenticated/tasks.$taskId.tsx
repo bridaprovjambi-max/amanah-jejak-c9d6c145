@@ -4,6 +4,8 @@ import { ArrowLeft, Calendar, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useServerFn } from "@tanstack/react-start";
+import { sendTelegramNotification } from "@/lib/telegram.functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -47,7 +49,8 @@ interface Report {
 function TaskDetail() {
   const { taskId } = Route.useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const notify = useServerFn(sendTelegramNotification);
   const [task, setTask] = useState<Task | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
