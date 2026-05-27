@@ -21,6 +21,8 @@ interface Row {
   jabatan: string | null;
   jenjang: Jenjang;
   pokja_id: string | null;
+  nip: string | null;
+  pangkat_golongan: string | null;
 }
 
 function UsersPage() {
@@ -98,6 +100,8 @@ function UsersPage() {
               <thead className="bg-muted/40 text-left text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Nama</th>
+                  <th className="px-4 py-3">NIP</th>
+                  <th className="px-4 py-3">Pangkat / Golongan</th>
                   <th className="px-4 py-3">Jenjang</th>
                   <th className="px-4 py-3">Peran</th>
                   <th className="px-4 py-3">Pokja</th>
@@ -112,6 +116,8 @@ function UsersPage() {
                         <div className="text-xs text-muted-foreground">{r.jabatan}</div>
                       )}
                     </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.nip ?? <span className="italic opacity-50">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.pangkat_golongan ?? <span className="italic opacity-50">—</span>}</td>
                     <td className="px-4 py-3 min-w-[200px]">
                       <Select value={r.jenjang} onValueChange={(v) => updateJenjang(r.id, v as Jenjang)}>
                         <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>

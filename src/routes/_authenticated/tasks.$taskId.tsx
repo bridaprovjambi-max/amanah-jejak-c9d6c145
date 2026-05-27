@@ -75,6 +75,8 @@ function TaskDetail() {
   const [reports, setReports] = useState<Report[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
+  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
+  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
   const [progress, setProgress] = useState(0);
@@ -88,15 +90,20 @@ function TaskDetail() {
     const [{ data: t }, { data: r }, { data: p }, { data: pk }] = await Promise.all([
       supabase.from("tasks").select("*").eq("id", taskId).maybeSingle(),
       supabase.from("reports").select("*").eq("task_id", taskId).order("created_at", { ascending: false }),
-      supabase.from("profiles").select("id, full_name"),
+      supabase.from("profiles").select("id, full_name, nip, pangkat_golongan"),
       supabase.from("pokja").select("id, name"),
     ]);
     setTask((t as Task) ?? null);
     const reportRows = (r as Report[]) ?? [];
     setReports(reportRows);
     const u: Record<string, string> = {};
-    (p ?? []).forEach((x: { id: string; full_name: string }) => (u[x.id] = x.full_name));
+    const ux: Record<string, { nip: string | null; pangkat: string | null }> = {};
+    (p ?? []).forEach((x: { id: string; full_name: string; nip: string | null; pangkat_golongan: string | null }) => {
+      u[x.id] = x.full_name;
+      ux[x.id] = { nip: x.nip, pangkat: x.pangkat_golongan };
+    });
     setUsers(u);
+    setUserExtras(ux);
     const m: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (m[x.id] = x.name));
     setPokjaMap(m);
@@ -301,15 +308,18 @@ function TaskDetail() {
         </div>
 
         <div className="mt-6 grid sm:grid-cols-3 gap-4 text-sm border-t border-border pt-5">
-          <Meta label="Pemberi tugas" value={users[task.assigned_by] ?? "—"} />
-          <Meta
+          <UserMeta
+            label="Pemberi tugas"
+            user={users[task.assigned_by]}
+          />
+          <UserMeta
             label="Penerima"
-            value={
+            user={
               task.assigned_to
-                ? users[task.assigned_to] ?? "—"
+                ? users[task.assigned_to]
                 : task.assigned_to_pokja
-                ? `Pokja ${pokjaMap[task.assigned_to_pokja] ?? "—"}`
-                : "—"
+                ? { name: `Pokja ${pokjaMap[task.assigned_to_pokja] ?? "—"}`, nip: null, pangkat: null }
+                : undefined
             }
           />
           <Meta
@@ -436,15 +446,21 @@ function TaskDetail() {
           </div>
         ) : (
           <ol className="space-y-3">
-            {reports.map((r) => (
+            {reports.map((r) => {
+              const reporter = users[r.reported_by];
+              return (
               <li key={r.id} className="rounded-xl border border-border bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <div className="grid h-8 w-8 place-items-center rounded-full bg-primary-soft text-primary text-xs font-semibold">
-                      {(users[r.reported_by] ?? "?").slice(0, 2).toUpperCase()}
+                      {(reporter?.name ?? "?").slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <div className="text-sm font-medium">{users[r.reported_by] ?? "Pengguna"}</div>
+                      <div className="text-sm font-medium">{reporter?.name ?? "Pengguna"}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {reporter?.nip && <span className="mr-2">NIP: {reporter.nip}</span>}
+                        {reporter?.pangkat && <span>{reporter.pangkat}</span>}
+                      </div>
                       <div className="text-[11px] text-muted-foreground">
                         {new Date(r.created_at).toLocaleString("id-ID")}
                       </div>
@@ -505,6 +521,25 @@ function TaskDetail() {
   );
 }
 
+function UserMeta({
+  label,
+  user,
+  extra,
+}: {
+  label: string;
+  user?: string;
+  extra?: { nip: string | null; pangkat: string | null };
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 font-medium">{user ?? "—"}</div>
+      {extra?.nip && <div className="text-[11px] text-muted-foreground">NIP: {extra.nip}</div>}
+      {extra?.pangkat && <div className="text-[11px] text-muted-foreground">{extra.pangkat}</div>}
+    </div>
+  );
+}
+
 function Meta({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
     <div>
@@ -513,6 +548,23 @@ function Meta({ label, value, icon }: { label: string; value: string; icon?: Rea
         {label}
       </div>
       <div className="mt-1 font-medium">{value}</div>
+    </div>
+  );
+}
+
+function UserMeta({
+  label,
+  user,
+}: {
+  label: string;
+  user?: { name: string; nip: string | null; pangkat: string | null };
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 font-medium">{user?.name ?? "—"}</div>
+      {user?.nip && <div className="text-[11px] text-muted-foreground">NIP: {user.nip}</div>}
+      {user?.pangkat && <div className="text-[11px] text-muted-foreground">{user.pangkat}</div>}
     </div>
   );
 }
