@@ -13,6 +13,8 @@ export const Route = createFileRoute("/signup")({ component: SignupPage });
 const schema = z.object({
   full_name: z.string().trim().min(2).max(120),
   jabatan: z.string().trim().max(160).optional(),
+  nip: z.string().trim().max(30).regex(/^[0-9]*$/, "NIP hanya boleh berisi angka").optional(),
+  pangkat_golongan: z.string().trim().max(80).optional(),
   email: z.string().trim().email().max(255),
   password: z.string().min(8, "Minimal 8 karakter").max(72),
 });
@@ -22,6 +24,8 @@ function SignupPage() {
   const [form, setForm] = useState({
     full_name: "",
     jabatan: "",
+    nip: "",
+    pangkat_golongan: "",
     email: "",
     password: "",
   });
