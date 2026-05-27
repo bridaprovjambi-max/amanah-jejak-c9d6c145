@@ -74,7 +74,8 @@ function TaskDetail() {
   const [task, setTask] = useState<Task | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [users, setUsers] = useState<Record<string, { name: string; nip: string | null; pangkat: string | null }>>({});
+  const [users, setUsers] = useState<Record<string, string>>({});
+  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
   const [progress, setProgress] = useState(0);
