@@ -46,6 +46,26 @@ interface Report {
   created_at: string;
 }
 
+interface Attachment {
+  id: string;
+  report_id: string;
+  uploaded_by: string;
+  file_path: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string | null;
+  created_at: string;
+}
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB per file
+const MAX_FILES = 5;
+
+function formatBytes(b: number) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / 1024 / 1024).toFixed(1)} MB`;
+}
+
 function TaskDetail() {
   const { taskId } = Route.useParams();
   const navigate = useNavigate();
