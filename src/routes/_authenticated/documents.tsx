@@ -46,6 +46,7 @@ interface DocRow {
   mime_type: string | null;
   uploaded_by: string;
   created_at: string;
+  folder: string;
 }
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
