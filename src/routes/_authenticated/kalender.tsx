@@ -240,7 +240,7 @@ function KalenderPage() {
               { s: "pending" as TaskStatus, l: "Pending" },
               { s: "in_progress" as TaskStatus, l: "On Progress" },
               { s: "completed" as TaskStatus, l: "Selesai" },
-              { s: "rejected" as TaskStatus, l: "Ditolak" },
+              { s: "overdue" as TaskStatus, l: "Overdue" },
             ].map((x) => (
               <div key={x.s} className="flex items-center gap-2">
                 <span className={cn("h-2 w-2 rounded-full", statusColor(x.s))} />
