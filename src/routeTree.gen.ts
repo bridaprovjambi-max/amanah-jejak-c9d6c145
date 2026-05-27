@@ -24,6 +24,8 @@ import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks.index'
 import { Route as AuthenticatedTasksNewRouteImport } from './routes/_authenticated/tasks.new'
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks.$taskId'
+import { Route as AuthenticatedReportsRekapRouteImport } from './routes/_authenticated/reports.rekap'
+import { Route as ApiPublicHooksTaskRemindersRouteImport } from './routes/api/public/hooks/task-reminders'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -100,6 +102,18 @@ const AuthenticatedTasksTaskIdRoute =
     path: '/tasks/$taskId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedReportsRekapRoute =
+  AuthenticatedReportsRekapRouteImport.update({
+    id: '/reports/rekap',
+    path: '/reports/rekap',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const ApiPublicHooksTaskRemindersRoute =
+  ApiPublicHooksTaskRemindersRouteImport.update({
+    id: '/api/public/hooks/task-reminders',
+    path: '/api/public/hooks/task-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -113,9 +127,11 @@ export interface FileRoutesByFullPath {
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,9 +145,11 @@ export interface FileRoutesByTo {
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -147,9 +165,11 @@ export interface FileRoutesById {
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/tasks/new': typeof AuthenticatedTasksNewRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -165,9 +185,11 @@ export interface FileRouteTypes {
     | '/pokja'
     | '/settings'
     | '/users'
+    | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
     | '/tasks/'
+    | '/api/public/hooks/task-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -181,9 +203,11 @@ export interface FileRouteTypes {
     | '/pokja'
     | '/settings'
     | '/users'
+    | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
     | '/tasks'
+    | '/api/public/hooks/task-reminders'
   id:
     | '__root__'
     | '/'
@@ -198,9 +222,11 @@ export interface FileRouteTypes {
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
     | '/_authenticated/users'
+    | '/_authenticated/reports/rekap'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/tasks/new'
     | '/_authenticated/tasks/'
+    | '/api/public/hooks/task-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -208,6 +234,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicHooksTaskRemindersRoute: typeof ApiPublicHooksTaskRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +344,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/reports/rekap': {
+      id: '/_authenticated/reports/rekap'
+      path: '/reports/rekap'
+      fullPath: '/reports/rekap'
+      preLoaderRoute: typeof AuthenticatedReportsRekapRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/hooks/task-reminders': {
+      id: '/api/public/hooks/task-reminders'
+      path: '/api/public/hooks/task-reminders'
+      fullPath: '/api/public/hooks/task-reminders'
+      preLoaderRoute: typeof ApiPublicHooksTaskRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -329,6 +370,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedReportsRekapRoute: typeof AuthenticatedReportsRekapRoute
   AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
   AuthenticatedTasksNewRoute: typeof AuthenticatedTasksNewRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
@@ -343,6 +385,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedReportsRekapRoute: AuthenticatedReportsRekapRoute,
   AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
   AuthenticatedTasksNewRoute: AuthenticatedTasksNewRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
@@ -357,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicHooksTaskRemindersRoute: ApiPublicHooksTaskRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
