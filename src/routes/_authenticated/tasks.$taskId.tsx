@@ -369,6 +369,58 @@ function TaskDetail() {
             </Select>
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label>Lampiran berkas (opsional, maks {MAX_FILES} berkas, 20MB/berkas)</Label>
+          <div className="flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={(e) => addFiles(e.target.files)}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={pendingFiles.length >= MAX_FILES}
+            >
+              <Paperclip className="mr-2 h-4 w-4" /> Pilih berkas
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              {pendingFiles.length} dipilih
+            </span>
+          </div>
+          {pendingFiles.length > 0 && (
+            <ul className="space-y-1.5">
+              {pendingFiles.map((f, i) => (
+                <li
+                  key={`${f.name}-${i}`}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs"
+                >
+                  <span className="flex items-center gap-2 min-w-0">
+                    <FileIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="truncate">{f.name}</span>
+                    <span className="text-muted-foreground shrink-0">
+                      {formatBytes(f.size)}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-destructive"
+                    onClick={() => removePendingFile(i)}
+                    aria-label="Hapus berkas"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="flex justify-end">
           <Button type="submit" disabled={busy}>
             <Send className="mr-2 h-4 w-4" /> {busy ? "Mengirim…" : "Kirim Laporan"}
