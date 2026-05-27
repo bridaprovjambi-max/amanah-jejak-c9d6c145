@@ -291,6 +291,9 @@ export type Database = {
           description: string | null
           id: string
           priority: string
+          reminder_sent_h1: boolean
+          reminder_sent_h3: boolean
+          reminder_sent_overdue: boolean
           status: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at: string
@@ -304,6 +307,9 @@ export type Database = {
           description?: string | null
           id?: string
           priority?: string
+          reminder_sent_h1?: boolean
+          reminder_sent_h3?: boolean
+          reminder_sent_overdue?: boolean
           status?: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at?: string
@@ -317,6 +323,9 @@ export type Database = {
           description?: string | null
           id?: string
           priority?: string
+          reminder_sent_h1?: boolean
+          reminder_sent_h3?: boolean
+          reminder_sent_overdue?: boolean
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
           updated_at?: string
