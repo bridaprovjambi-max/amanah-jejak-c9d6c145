@@ -57,6 +57,17 @@ interface Attachment {
   created_at: string;
 }
 
+interface TaskAttachment {
+  id: string;
+  task_id: string;
+  uploaded_by: string;
+  file_path: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string | null;
+  created_at: string;
+}
+
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB per file
 const MAX_FILES = 5;
 
