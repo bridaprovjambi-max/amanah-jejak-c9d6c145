@@ -536,7 +536,7 @@ function DocumentsPage() {
                 title={canManage ? "Anda dapat mengunggah ke folder ini" : "Hanya baca"}
               >
                 {canManage ? <Folder className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
-                {f} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
+                {folderName(f)} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
               </button>
             );
           })}
