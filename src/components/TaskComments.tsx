@@ -233,7 +233,7 @@ export function TaskComments({ taskId, taskTitle, profiles }: Props) {
                   key={`s-${h.id}`}
                   className="flex flex-wrap items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 text-xs"
                 >
-                  <span className="text-muted-foreground">{new Date(h.at).toLocaleString("id-ID")}</span>
+                  <span className="text-muted-foreground">{new Date(h.created_at).toLocaleString("id-ID")}</span>
                   <span className="text-muted-foreground">·</span>
                   <span className="font-medium">{who}</span>
                   <span className="text-muted-foreground">mengubah status</span>
