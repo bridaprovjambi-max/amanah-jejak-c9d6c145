@@ -34,6 +34,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
+  { to: "/kalender", label: "Kalender", icon: CalendarDays },
   { to: "/reports/rekap", label: "Rekap PDF", icon: FileDown, roles: ["leader", "admin"] },
   { to: "/kinerja", label: "Kinerja", icon: Trophy },
   { to: "/hierarki", label: "Bagan Hierarki", icon: Network },
