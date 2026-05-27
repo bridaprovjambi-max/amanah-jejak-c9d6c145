@@ -107,11 +107,76 @@ function SettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="font-display text-2xl lg:text-3xl font-bold">Pengaturan Notifikasi</h1>
+        <h1 className="font-display text-2xl lg:text-3xl font-bold">Pengaturan Akun</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Terima notifikasi penugasan & laporan melalui Telegram.
+          Kelola informasi kepegawaian dan notifikasi Anda.
         </p>
       </div>
+
+      {/* Profil Kepegawaian */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-5">
+        <div className="flex items-start gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
+            <UserCircle2 className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-display font-semibold">Informasi Kepegawaian</h2>
+            <p className="text-sm text-muted-foreground">
+              Data ini ditampilkan di profil dan daftar pengguna BRIDA.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="full_name">Nama Lengkap *</Label>
+            <Input
+              id="full_name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              maxLength={120}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="nip">NIP</Label>
+            <Input
+              id="nip"
+              inputMode="numeric"
+              placeholder="contoh: 198501012010012001"
+              value={nip}
+              onChange={(e) => setNip(e.target.value.replace(/\D/g, ""))}
+              maxLength={30}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="pangkat">Pangkat / Golongan</Label>
+            <Input
+              id="pangkat"
+              placeholder="contoh: Penata Tk. I / III-d"
+              value={pangkat}
+              onChange={(e) => setPangkat(e.target.value)}
+              maxLength={80}
+            />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="jabatan">Jabatan</Label>
+            <Input
+              id="jabatan"
+              placeholder="contoh: Kasubbag Umum & Kepegawaian"
+              value={jabatan}
+              onChange={(e) => setJabatan(e.target.value)}
+              maxLength={160}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-1">
+          <Button onClick={saveProfile} disabled={savingProfile}>
+            {savingProfile ? "Menyimpan…" : "Simpan Profil"}
+          </Button>
+        </div>
+      </div>
+
 
       <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-5">
         <div className="flex items-start gap-3">
