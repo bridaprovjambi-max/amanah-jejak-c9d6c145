@@ -5,6 +5,8 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useServerFn } from "@tanstack/react-start";
+import { sendTelegramNotification } from "@/lib/telegram.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +34,8 @@ const schema = z.object({
 
 function NewTask() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const notify = useServerFn(sendTelegramNotification);
   const [users, setUsers] = useState<Array<{ id: string; full_name: string; jabatan: string | null }>>([]);
   const [pokja, setPokja] = useState<Array<{ id: string; name: string }>>([]);
   const [form, setForm] = useState({
@@ -82,6 +85,23 @@ function NewTask() {
         entity_id: data!.id,
         details: { title: payload.title },
       });
+      // Fire-and-forget Telegram notification to recipients
+      const msg =
+        `<b>📋 Penugasan Baru</b>\n` +
+        `<b>${payload.title}</b>\n` +
+        (payload.description ? `${payload.description}\n` : "") +
+        `\nPemberi: ${profile?.full_name ?? "—"}` +
+        `\nPrioritas: ${payload.priority}` +
+        (payload.deadline
+          ? `\nTenggat: ${new Date(payload.deadline).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}`
+          : "");
+      notify({
+        data: {
+          userIds: payload.assigned_to ? [payload.assigned_to] : undefined,
+          pokjaId: payload.assigned_to_pokja ?? undefined,
+          message: msg,
+        },
+      }).catch((e) => console.error("notify error", e));
     }
     setBusy(false);
     if (error) {
