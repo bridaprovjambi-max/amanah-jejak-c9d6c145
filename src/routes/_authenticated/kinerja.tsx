@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Trophy, Medal, Target, Clock, TrendingUp } from "lucide-react";
+import { Trophy, Medal, Target, Clock, TrendingUp, X, ArrowUpRight, AlertTriangle, CheckCircle2, Circle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { JENJANG_LABEL } from "@/lib/auth";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { StatusBadge } from "@/components/StatusBadge";
 
 export const Route = createFileRoute("/_authenticated/kinerja")({
   component: KinerjaPage,
@@ -12,6 +14,7 @@ type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf" | "ja
 
 interface TaskRow {
   id: string;
+  title: string;
   status: "pending" | "in_progress" | "completed";
   deadline: string | null;
   assigned_to: string | null;
@@ -19,6 +22,7 @@ interface TaskRow {
   created_at: string;
   updated_at: string;
 }
+
 
 interface ProfileRow {
   id: string;
@@ -64,13 +68,14 @@ function KinerjaPage() {
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [pokja, setPokja] = useState<PokjaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const [{ data: t }, { data: p }, { data: pk }] = await Promise.all([
         supabase
           .from("tasks")
-          .select("id,status,deadline,assigned_to,assigned_to_pokja,created_at,updated_at"),
+          .select("id,title,status,deadline,assigned_to,assigned_to_pokja,created_at,updated_at"),
         supabase.from("profiles").select("id,full_name,jabatan,jenjang,pokja_id"),
         supabase.from("pokja").select("id,name"),
       ]);
@@ -236,46 +241,50 @@ function KinerjaPage() {
         ) : (
           <ol className="space-y-2">
             {userScores.slice(0, 20).map((u, i) => (
-              <li
-                key={u.id}
-                className="flex items-center gap-3 rounded-lg border border-border bg-background/50 p-3"
-              >
-                <RankBadge rank={i + 1} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline gap-x-2">
-                    <span className="font-medium truncate">{u.name}</span>
-                    <span className="text-[11px] text-muted-foreground">
-                      {JENJANG_LABEL[u.jenjang]}
-                    </span>
-                  </div>
-                  {u.jabatan && (
-                    <div className="text-[11px] text-muted-foreground truncate">{u.jabatan}</div>
-                  )}
-                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-primary transition-all"
-                      style={{ width: `${u.rate}%` }}
-                    />
-                  </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
-                    <span>
-                      <b className="text-foreground">{u.completed}</b>/{u.total} selesai
-                    </span>
-                    <span>{u.rate.toFixed(0)}%</span>
-                    {u.overdue > 0 && (
-                      <span className="text-destructive">{u.overdue} terlambat</span>
+              <li key={u.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUserId(u.id)}
+                  className="w-full text-left flex items-center gap-3 rounded-lg border border-border bg-background/50 p-3 transition hover:border-primary hover:bg-background"
+                >
+                  <RankBadge rank={i + 1} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="font-medium truncate group-hover:text-primary">{u.name}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {JENJANG_LABEL[u.jenjang]}
+                      </span>
+                    </div>
+                    {u.jabatan && (
+                      <div className="text-[11px] text-muted-foreground truncate">{u.jabatan}</div>
                     )}
-                    {u.avgDays !== null && (
-                      <span>Rata-rata {u.avgDays.toFixed(1)} hari</span>
-                    )}
+                    <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full bg-primary transition-all"
+                        style={{ width: `${u.rate}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
+                      <span>
+                        <b className="text-foreground">{u.completed}</b>/{u.total} selesai
+                      </span>
+                      <span>{u.rate.toFixed(0)}%</span>
+                      {u.overdue > 0 && (
+                        <span className="text-destructive">{u.overdue} terlambat</span>
+                      )}
+                      {u.avgDays !== null && (
+                        <span>Rata-rata {u.avgDays.toFixed(1)} hari</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-lg font-bold font-display">{u.score.toFixed(0)}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    skor
+                  <div className="text-right shrink-0">
+                    <div className="text-lg font-bold font-display">{u.score.toFixed(0)}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      skor
+                    </div>
                   </div>
-                </div>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                </button>
               </li>
             ))}
           </ol>
@@ -336,6 +345,195 @@ function KinerjaPage() {
       <p className="text-[11px] text-muted-foreground text-center">
         Skor dihitung dari tingkat penyelesaian dikurangi 10 poin per tugas terlambat (skala 0–100).
       </p>
+
+      <UserDetailDialog
+        userId={selectedUserId}
+        onClose={() => setSelectedUserId(null)}
+        userScores={userScores}
+        tasks={tasks}
+      />
+    </div>
+  );
+}
+
+function UserDetailDialog({
+  userId,
+  onClose,
+  userScores,
+  tasks,
+}: {
+  userId: string | null;
+  onClose: () => void;
+  userScores: UserScore[];
+  tasks: TaskRow[];
+}) {
+  const user = userId ? userScores.find((u) => u.id === userId) : null;
+  const userTasks = useMemo(() => {
+    if (!userId) return [];
+    const now = Date.now();
+    return tasks
+      .filter((t) => t.assigned_to === userId)
+      .map((t) => {
+        const completedAt = t.status === "completed" ? new Date(t.updated_at) : null;
+        const created = new Date(t.created_at);
+        const durationDays = completedAt
+          ? (completedAt.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+          : null;
+        const isOverdue =
+          t.status !== "completed" && t.deadline && new Date(t.deadline).getTime() < now;
+        const lateBy =
+          completedAt && t.deadline && completedAt.getTime() > new Date(t.deadline).getTime()
+            ? (completedAt.getTime() - new Date(t.deadline).getTime()) / (1000 * 60 * 60 * 24)
+            : null;
+        return { ...t, durationDays, isOverdue: !!isOverdue, lateBy };
+      })
+      .sort((a, b) => {
+        // overdue first, then in_progress/pending, then completed (newest)
+        const rank = (s: string, ov: boolean) => (ov ? 0 : s === "in_progress" ? 1 : s === "pending" ? 2 : 3);
+        const ra = rank(a.status, a.isOverdue);
+        const rb = rank(b.status, b.isOverdue);
+        if (ra !== rb) return ra - rb;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+  }, [userId, tasks]);
+
+  if (!user) return null;
+
+  const onTime = userTasks.filter(
+    (t) => t.status === "completed" && (!t.lateBy || t.lateBy <= 0),
+  ).length;
+  const late = userTasks.filter((t) => t.status === "completed" && t.lateBy && t.lateBy > 0).length;
+
+  return (
+    <Dialog open={!!userId} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 pr-6">
+            <span className="truncate">{user.name}</span>
+            <span className="text-xs font-normal text-muted-foreground">
+              {JENJANG_LABEL[user.jenjang]}
+            </span>
+          </DialogTitle>
+          {user.jabatan && (
+            <p className="text-xs text-muted-foreground">{user.jabatan}</p>
+          )}
+        </DialogHeader>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+          <MiniStat label="Total" value={user.total.toString()} />
+          <MiniStat label="Selesai" value={`${user.completed}`} sub={`${user.rate.toFixed(0)}%`} tone="primary" />
+          <MiniStat
+            label="Terlambat"
+            value={user.overdue.toString()}
+            tone={user.overdue > 0 ? "danger" : "default"}
+          />
+          <MiniStat
+            label="Rata-rata"
+            value={user.avgDays !== null ? `${user.avgDays.toFixed(1)} hr` : "—"}
+          />
+        </div>
+
+        {user.completed > 0 && (
+          <div className="text-[11px] text-muted-foreground -mt-1">
+            Dari {user.completed} tugas selesai: <b className="text-foreground">{onTime}</b> tepat waktu
+            {late > 0 && <>, <span className="text-destructive font-medium">{late} lewat tenggat</span></>}.
+          </div>
+        )}
+
+        <div className="space-y-2 mt-2">
+          <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            Daftar Tugas ({userTasks.length})
+          </h3>
+          {userTasks.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              Belum ada tugas individu untuk pengguna ini.
+            </p>
+          ) : (
+            <ul className="space-y-1.5">
+              {userTasks.map((t) => (
+                <li key={t.id}>
+                  <Link
+                    to="/tasks/$taskId"
+                    params={{ taskId: t.id }}
+                    onClick={onClose}
+                    className="block rounded-lg border border-border bg-background/60 p-3 hover:border-primary hover:bg-background transition"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          {t.status === "completed" ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                          ) : t.isOverdue ? (
+                            <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
+                          ) : (
+                            <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                          )}
+                          <span className="text-sm font-medium truncate">{t.title}</span>
+                        </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-muted-foreground">
+                          {t.deadline && (
+                            <span>
+                              Tenggat:{" "}
+                              {new Date(t.deadline).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </span>
+                          )}
+                          {t.durationDays !== null && (
+                            <span>Selesai dalam {t.durationDays.toFixed(1)} hari</span>
+                          )}
+                          {t.lateBy !== null && t.lateBy > 0 && (
+                            <span className="text-destructive">
+                              Terlambat {t.lateBy.toFixed(1)} hari
+                            </span>
+                          )}
+                          {t.isOverdue && (
+                            <span className="text-destructive font-medium">Belum selesai, melewati tenggat</span>
+                          )}
+                        </div>
+                      </div>
+                      <StatusBadge status={t.isOverdue ? "overdue" : t.status} />
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="sr-only"
+          aria-label="Tutup"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function MiniStat({
+  label,
+  value,
+  sub,
+  tone = "default",
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: "default" | "primary" | "danger";
+}) {
+  const toneClass =
+    tone === "primary" ? "text-primary" : tone === "danger" ? "text-destructive" : "text-foreground";
+  return (
+    <div className="rounded-lg border border-border bg-muted/30 p-2.5">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className={`mt-0.5 font-display text-lg font-bold ${toneClass}`}>{value}</div>
+      {sub && <div className="text-[10px] text-muted-foreground">{sub}</div>}
     </div>
   );
 }
