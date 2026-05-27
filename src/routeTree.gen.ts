@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
+import { Route as AuthenticatedKinerjaRouteImport } from './routes/_authenticated/kinerja'
 import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticated/hierarki'
 import { Route as AuthenticatedFoldersRouteImport } from './routes/_authenticated/folders'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
@@ -59,6 +60,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedPokjaRoute = AuthenticatedPokjaRouteImport.update({
   id: '/pokja',
   path: '/pokja',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedKinerjaRoute = AuthenticatedKinerjaRouteImport.update({
+  id: '/kinerja',
+  path: '/kinerja',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedHierarkiRoute = AuthenticatedHierarkiRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
+  '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
+  '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/folders': typeof AuthenticatedFoldersRoute
   '/_authenticated/hierarki': typeof AuthenticatedHierarkiRoute
+  '/_authenticated/kinerja': typeof AuthenticatedKinerjaRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/folders'
     | '/hierarki'
+    | '/kinerja'
     | '/pokja'
     | '/settings'
     | '/users'
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/folders'
     | '/hierarki'
+    | '/kinerja'
     | '/pokja'
     | '/settings'
     | '/users'
@@ -219,6 +230,7 @@ export interface FileRouteTypes {
     | '/_authenticated/documents'
     | '/_authenticated/folders'
     | '/_authenticated/hierarki'
+    | '/_authenticated/kinerja'
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
     | '/_authenticated/users'
@@ -286,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/pokja'
       fullPath: '/pokja'
       preLoaderRoute: typeof AuthenticatedPokjaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/kinerja': {
+      id: '/_authenticated/kinerja'
+      path: '/kinerja'
+      fullPath: '/kinerja'
+      preLoaderRoute: typeof AuthenticatedKinerjaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/hierarki': {
@@ -367,6 +386,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedFoldersRoute: typeof AuthenticatedFoldersRoute
   AuthenticatedHierarkiRoute: typeof AuthenticatedHierarkiRoute
+  AuthenticatedKinerjaRoute: typeof AuthenticatedKinerjaRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -382,6 +402,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedFoldersRoute: AuthenticatedFoldersRoute,
   AuthenticatedHierarkiRoute: AuthenticatedHierarkiRoute,
+  AuthenticatedKinerjaRoute: AuthenticatedKinerjaRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
