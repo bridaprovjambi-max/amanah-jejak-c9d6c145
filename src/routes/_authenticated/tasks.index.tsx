@@ -41,7 +41,7 @@ function TasksList() {
   useEffect(() => {
     (async () => {
       const [{ data: t }, { data: p }, { data: pk }] = await Promise.all([
-        supabase.from("tasks").select("*").order("created_at", { ascending: false }),
+        supabase.from("tasks").select("*").is("parent_task_id", null).order("created_at", { ascending: false }),
         supabase.from("profiles").select("id, full_name"),
         supabase.from("pokja").select("id, name"),
       ]);
