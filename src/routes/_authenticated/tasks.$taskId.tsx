@@ -513,7 +513,8 @@ function TaskDetail() {
                   </ul>
                 )}
               </li>
-            ))}
+              );
+            })}
           </ol>
         )}
       </div>
