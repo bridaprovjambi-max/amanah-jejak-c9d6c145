@@ -74,9 +74,7 @@ function TaskDetail() {
   const [task, setTask] = useState<Task | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [users, setUsers] = useState<Record<string, string>>({});
-  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
-  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
+  const [users, setUsers] = useState<Record<string, { name: string; nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
   const [progress, setProgress] = useState(0);
@@ -96,14 +94,11 @@ function TaskDetail() {
     setTask((t as Task) ?? null);
     const reportRows = (r as Report[]) ?? [];
     setReports(reportRows);
-    const u: Record<string, string> = {};
-    const ux: Record<string, { nip: string | null; pangkat: string | null }> = {};
+    const u: Record<string, { name: string; nip: string | null; pangkat: string | null }> = {};
     (p ?? []).forEach((x: { id: string; full_name: string; nip: string | null; pangkat_golongan: string | null }) => {
-      u[x.id] = x.full_name;
-      ux[x.id] = { nip: x.nip, pangkat: x.pangkat_golongan };
+      u[x.id] = { name: x.full_name, nip: x.nip, pangkat: x.pangkat_golongan };
     });
     setUsers(u);
-    setUserExtras(ux);
     const m: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (m[x.id] = x.name));
     setPokjaMap(m);
@@ -513,7 +508,8 @@ function TaskDetail() {
                   </ul>
                 )}
               </li>
-            ))}
+              );
+            })}
           </ol>
         )}
       </div>
@@ -521,24 +517,6 @@ function TaskDetail() {
   );
 }
 
-function UserMeta({
-  label,
-  user,
-  extra,
-}: {
-  label: string;
-  user?: string;
-  extra?: { nip: string | null; pangkat: string | null };
-}) {
-  return (
-    <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className="mt-1 font-medium">{user ?? "—"}</div>
-      {extra?.nip && <div className="text-[11px] text-muted-foreground">NIP: {extra.nip}</div>}
-      {extra?.pangkat && <div className="text-[11px] text-muted-foreground">{extra.pangkat}</div>}
-    </div>
-  );
-}
 
 function Meta({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
