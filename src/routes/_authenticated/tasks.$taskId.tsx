@@ -521,3 +521,20 @@ function Meta({ label, value, icon }: { label: string; value: string; icon?: Rea
     </div>
   );
 }
+
+function UserMeta({
+  label,
+  user,
+}: {
+  label: string;
+  user?: { name: string; nip: string | null; pangkat: string | null };
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 font-medium">{user?.name ?? "—"}</div>
+      {user?.nip && <div className="text-[11px] text-muted-foreground">NIP: {user.nip}</div>}
+      {user?.pangkat && <div className="text-[11px] text-muted-foreground">{user.pangkat}</div>}
+    </div>
+  );
+}
