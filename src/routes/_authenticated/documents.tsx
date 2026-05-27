@@ -805,7 +805,7 @@ function DocumentsPage() {
                         </div>
 
                         {hasAnalysis && isOpenAnalysis && (
-                          <AnalysisPanel row={r} onReanalyze={() => handleAnalyze(r)} busy={isAnalyzing} />
+                          <AnalysisPanel row={r} onReanalyze={() => handleAnalyze(r)} busy={isAnalyzing} allRows={rows} />
                         )}
                         {r.ai_status === "error" && r.ai_error && (
                           <div className="mt-3 ml-14 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive flex items-start justify-between gap-2">
