@@ -17,6 +17,7 @@ import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedKinerjaRouteImport } from './routes/_authenticated/kinerja'
+import { Route as AuthenticatedKalenderRouteImport } from './routes/_authenticated/kalender'
 import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticated/hierarki'
 import { Route as AuthenticatedFoldersRouteImport } from './routes/_authenticated/folders'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
@@ -65,6 +66,11 @@ const AuthenticatedPokjaRoute = AuthenticatedPokjaRouteImport.update({
 const AuthenticatedKinerjaRoute = AuthenticatedKinerjaRouteImport.update({
   id: '/kinerja',
   path: '/kinerja',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedKalenderRoute = AuthenticatedKalenderRouteImport.update({
+  id: '/kalender',
+  path: '/kalender',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedHierarkiRoute = AuthenticatedHierarkiRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
+  '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
+  '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/folders': typeof AuthenticatedFoldersRoute
   '/_authenticated/hierarki': typeof AuthenticatedHierarkiRoute
+  '/_authenticated/kalender': typeof AuthenticatedKalenderRoute
   '/_authenticated/kinerja': typeof AuthenticatedKinerjaRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/folders'
     | '/hierarki'
+    | '/kalender'
     | '/kinerja'
     | '/pokja'
     | '/settings'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/folders'
     | '/hierarki'
+    | '/kalender'
     | '/kinerja'
     | '/pokja'
     | '/settings'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/_authenticated/documents'
     | '/_authenticated/folders'
     | '/_authenticated/hierarki'
+    | '/_authenticated/kalender'
     | '/_authenticated/kinerja'
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
@@ -305,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/kinerja'
       fullPath: '/kinerja'
       preLoaderRoute: typeof AuthenticatedKinerjaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/kalender': {
+      id: '/_authenticated/kalender'
+      path: '/kalender'
+      fullPath: '/kalender'
+      preLoaderRoute: typeof AuthenticatedKalenderRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/hierarki': {
@@ -386,6 +405,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedFoldersRoute: typeof AuthenticatedFoldersRoute
   AuthenticatedHierarkiRoute: typeof AuthenticatedHierarkiRoute
+  AuthenticatedKalenderRoute: typeof AuthenticatedKalenderRoute
   AuthenticatedKinerjaRoute: typeof AuthenticatedKinerjaRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -402,6 +422,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedFoldersRoute: AuthenticatedFoldersRoute,
   AuthenticatedHierarkiRoute: AuthenticatedHierarkiRoute,
+  AuthenticatedKalenderRoute: AuthenticatedKalenderRoute,
   AuthenticatedKinerjaRoute: AuthenticatedKinerjaRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
@@ -426,13 +447,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
