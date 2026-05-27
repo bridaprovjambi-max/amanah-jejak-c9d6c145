@@ -125,6 +125,24 @@ function TaskDetail() {
         entity_id: task.id,
         details: { progress, status: reportStatus },
       });
+      // Notify task assigner (and assignee if completed by someone else)
+      const statusLabel =
+        reportStatus === "completed" ? "✅ Selesai" : reportStatus === "in_progress" ? "🔄 Berjalan" : "⏳ Menunggu";
+      const recipients = new Set<string>();
+      if (task.assigned_by && task.assigned_by !== user!.id) recipients.add(task.assigned_by);
+      if (reportStatus === "completed" && task.assigned_to && task.assigned_to !== user!.id)
+        recipients.add(task.assigned_to);
+      const msg =
+        `<b>📝 Laporan Baru</b>\n` +
+        `Tugas: <b>${task.title}</b>\n` +
+        `Pelapor: ${profile?.full_name ?? "—"}\n` +
+        `Status: ${statusLabel} (${progress}%)\n\n` +
+        content.trim().slice(0, 1500);
+      if (recipients.size > 0) {
+        notify({
+          data: { userIds: Array.from(recipients), message: msg },
+        }).catch((e) => console.error("notify error", e));
+      }
     }
     setBusy(false);
     if (error) {
