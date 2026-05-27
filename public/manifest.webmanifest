@@ -1,0 +1,26 @@
+{
+  "name": "DeLapan — Delegasi & Pelaporan BRIDA Jambi",
+  "short_name": "DeLapan",
+  "description": "Sistem monitoring delegasi dan pelaporan internal BRIDA Provinsi Jambi.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c2340",
+  "theme_color": "#0c2340",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
