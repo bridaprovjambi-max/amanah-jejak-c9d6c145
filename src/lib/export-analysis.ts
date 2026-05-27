@@ -58,15 +58,16 @@ function statusLabel(status: string) {
   }
 }
 
-export function exportAnalysisCSV(doc: DocLike) {
+export function exportAnalysisCSV(doc: DocLike, relatedDocs?: RelatedDocInfo[]) {
   const ent = doc.ai_entities ?? {};
   const rows: [string, string][] = [
     ["Judul", doc.title],
     ["Berkas", doc.file_name],
     ["Folder", doc.folder],
     ["Tanggal upload", new Date(doc.created_at).toLocaleString("id-ID")],
+    ["Status Analisis", statusLabel(doc.ai_status)],
     [
-      "Tanggal analisis",
+      "Waktu Analisis",
       doc.ai_analyzed_at ? new Date(doc.ai_analyzed_at).toLocaleString("id-ID") : "-",
     ],
     ["Ringkasan", doc.ai_summary ?? ""],
@@ -81,6 +82,12 @@ export function exportAnalysisCSV(doc: DocLike) {
     ["Lokasi", ent.location ?? ""],
     ["Metodologi", ent.methodology ?? ""],
   ];
+  if (relatedDocs && relatedDocs.length > 0) {
+    rows.push([
+      "Dokumen Terkait",
+      relatedDocs.map((d, i) => `${i + 1}. ${d.title} (${d.file_name})`).join(" | "),
+    ]);
+  }
   const csv =
     "Field,Value\n" +
     rows.map(([k, v]) => `${csvEscape(k)},${csvEscape(v)}`).join("\n");
