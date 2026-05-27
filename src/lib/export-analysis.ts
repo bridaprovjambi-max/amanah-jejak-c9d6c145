@@ -17,6 +17,12 @@ interface DocLike {
     location?: string;
   } | null;
   ai_analyzed_at: string | null;
+  ai_status: string;
+}
+
+interface RelatedDocInfo {
+  title: string;
+  file_name: string;
 }
 
 function safeFilename(s: string) {
