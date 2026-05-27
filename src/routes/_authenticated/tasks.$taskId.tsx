@@ -92,13 +92,24 @@ function TaskDetail() {
       supabase.from("pokja").select("id, name"),
     ]);
     setTask((t as Task) ?? null);
-    setReports((r as Report[]) ?? []);
+    const reportRows = (r as Report[]) ?? [];
+    setReports(reportRows);
     const u: Record<string, string> = {};
     (p ?? []).forEach((x: { id: string; full_name: string }) => (u[x.id] = x.full_name));
     setUsers(u);
     const m: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (m[x.id] = x.name));
     setPokjaMap(m);
+    if (reportRows.length > 0) {
+      const { data: att } = await supabase
+        .from("report_attachments")
+        .select("*")
+        .in("report_id", reportRows.map((x) => x.id))
+        .order("created_at", { ascending: true });
+      setAttachments((att as Attachment[]) ?? []);
+    } else {
+      setAttachments([]);
+    }
     setLoading(false);
   };
 
