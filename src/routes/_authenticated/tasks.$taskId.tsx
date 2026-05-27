@@ -96,6 +96,7 @@ function TaskDetail() {
   const [reports, setReports] = useState<Report[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [taskAttachments, setTaskAttachments] = useState<TaskAttachment[]>([]);
+  const [parent, setParent] = useState<ParentLite | null>(null);
   const [users, setUsers] = useState<Record<string, { name: string; nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
