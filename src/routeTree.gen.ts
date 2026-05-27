@@ -22,12 +22,14 @@ import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFoldersRouteImport } from './routes/_authenticated/folders'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks.index'
 import { Route as AuthenticatedTasksNewRouteImport } from './routes/_authenticated/tasks.new'
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks.$taskId'
 import { Route as AuthenticatedReportsRekapRouteImport } from './routes/_authenticated/reports.rekap'
 import { Route as ApiPublicHooksTaskRemindersRouteImport } from './routes/api/public/hooks/task-reminders'
+import { Route as ApiPublicExternalTasksRouteImport } from './routes/api/public/external/tasks'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -93,6 +95,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedApiKeysRoute = AuthenticatedApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
@@ -126,12 +133,18 @@ const ApiPublicHooksTaskRemindersRoute =
     path: '/api/public/hooks/task-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExternalTasksRoute = ApiPublicExternalTasksRouteImport.update({
+  id: '/api/public/external/tasks',
+  path: '/api/public/external/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/activity': typeof AuthenticatedActivityRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
@@ -145,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRoutesByTo {
@@ -152,6 +166,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/activity': typeof AuthenticatedActivityRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/folders': typeof AuthenticatedFoldersRoute
@@ -165,6 +180,7 @@ export interface FileRoutesByTo {
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRoutesById {
@@ -174,6 +190,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
+  '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/folders': typeof AuthenticatedFoldersRoute
@@ -187,6 +204,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/tasks/new': typeof AuthenticatedTasksNewRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
 }
 export interface FileRouteTypes {
@@ -196,6 +214,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/activity'
+    | '/api-keys'
     | '/dashboard'
     | '/documents'
     | '/folders'
@@ -209,6 +228,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/new'
     | '/tasks/'
+    | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -216,6 +236,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/activity'
+    | '/api-keys'
     | '/dashboard'
     | '/documents'
     | '/folders'
@@ -229,6 +250,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/new'
     | '/tasks'
+    | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
   id:
     | '__root__'
@@ -237,6 +259,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/activity'
+    | '/_authenticated/api-keys'
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
     | '/_authenticated/folders'
@@ -250,6 +273,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/tasks/new'
     | '/_authenticated/tasks/'
+    | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
   fileRoutesById: FileRoutesById
 }
@@ -258,6 +282,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicExternalTasksRoute: typeof ApiPublicExternalTasksRoute
   ApiPublicHooksTaskRemindersRoute: typeof ApiPublicHooksTaskRemindersRoute
 }
 
@@ -354,6 +379,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/api-keys': {
+      id: '/_authenticated/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof AuthenticatedApiKeysRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/activity': {
       id: '/_authenticated/activity'
       path: '/activity'
@@ -396,11 +428,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksTaskRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/external/tasks': {
+      id: '/api/public/external/tasks'
+      path: '/api/public/external/tasks'
+      fullPath: '/api/public/external/tasks'
+      preLoaderRoute: typeof ApiPublicExternalTasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
+  AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedFoldersRoute: typeof AuthenticatedFoldersRoute
@@ -418,6 +458,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
+  AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedFoldersRoute: AuthenticatedFoldersRoute,
@@ -442,8 +483,19 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicExternalTasksRoute: ApiPublicExternalTasksRoute,
   ApiPublicHooksTaskRemindersRoute: ApiPublicHooksTaskRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
