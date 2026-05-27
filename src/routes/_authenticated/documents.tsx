@@ -184,6 +184,9 @@ function DocumentsPage() {
   const [folder, setFolder] = useState<FolderName>("Umum");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const runAnalyze = useServerFn(analyzeDocument);
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  const [expandedAnalysis, setExpandedAnalysis] = useState<Record<string, boolean>>({});
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
