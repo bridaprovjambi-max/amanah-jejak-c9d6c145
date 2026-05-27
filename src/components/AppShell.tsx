@@ -19,7 +19,7 @@ import {
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import bridaLogo from "@/assets/brida-logo.svg";
+import delapanLogo from "@/assets/delapan-logo.svg";
 
 interface NavItem {
   to: string;
@@ -60,11 +60,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="px-6 py-6 border-b border-sidebar-border">
         <Link to="/dashboard" className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 shadow-sm">
-            <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
+            <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
           <div className="leading-tight">
             <div className="font-display text-base font-bold text-sidebar-foreground">
-              D'LaPin
+              DeLapan
             </div>
             <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">
               Delegasi & Pelaporan
@@ -129,9 +129,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-3">
         <Link to="/dashboard" className="flex items-center gap-2">
           <div className="grid h-9 w-9 place-items-center rounded-md bg-white p-0.5 shadow-sm">
-            <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
+            <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
-          <span className="font-display font-bold">D'LaPin</span>
+          <span className="font-display font-bold">DeLapan</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>

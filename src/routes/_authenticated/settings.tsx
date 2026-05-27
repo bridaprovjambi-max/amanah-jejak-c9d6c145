@@ -43,7 +43,7 @@ function SettingsPage() {
       const res = await sendNotif({
         data: {
           userIds: [user!.id],
-          message: `<b>D'LaPin</b>\nHalo ${profile?.full_name ?? "pengguna"}! Notifikasi Telegram Anda aktif.`,
+          message: `<b>DeLapan</b>\nHalo ${profile?.full_name ?? "pengguna"}! Notifikasi Telegram Anda aktif.`,
         },
       });
       if (res.sent > 0) toast.success("Pesan uji terkirim — cek Telegram Anda");
@@ -87,7 +87,7 @@ function SettingsPage() {
           <li className="flex gap-3">
             <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-xs font-semibold">1</span>
             <div>
-              Buka bot Telegram resmi BRIDA (tanya admin untuk nama bot, contoh: <code className="px-1.5 py-0.5 bg-muted rounded">@DLaPinBridaBot</code>).
+              Buka bot Telegram resmi BRIDA (tanya admin untuk nama bot, contoh: <code className="px-1.5 py-0.5 bg-muted rounded">@DeLapanBridaBot</code>).
             </div>
           </li>
           <li className="flex gap-3">

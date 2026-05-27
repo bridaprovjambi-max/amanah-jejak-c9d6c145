@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import bridaLogo from "@/assets/brida-logo.svg";
+import delapanLogo from "@/assets/delapan-logo.svg";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -44,9 +44,9 @@ function LoginPage() {
       <div className="hidden lg:flex bg-gradient-hero text-primary-foreground p-12 flex-col justify-between">
         <Link to="/" className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 shadow-sm">
-            <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
+            <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
-          <div className="font-display font-bold">D'LaPin</div>
+          <div className="font-display font-bold">DeLapan</div>
         </Link>
         <div>
           <h2 className="font-display text-3xl font-bold leading-tight">
@@ -62,7 +62,7 @@ function LoginPage() {
         <div className="w-full max-w-sm">
           <Link to="/" className="lg:hidden mb-8 inline-flex items-center gap-2">
             <div className="grid h-10 w-10 place-items-center rounded-md bg-white p-0.5 ring-1 ring-border">
-              <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
+              <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
             </div>
             <span className="font-display font-bold">Delegasi & Pelaporan</span>
           </Link>

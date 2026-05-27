@@ -2,7 +2,7 @@ import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3, Lock, Activity, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import bridaLogo from "@/assets/brida-logo.svg";
+import delapanLogo from "@/assets/delapan-logo.svg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -20,10 +20,10 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-md bg-primary p-1.5">
-              <img src={bridaLogo} alt="Logo BRIDA" className="h-full w-full object-contain" />
+              <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
             </div>
             <div className="leading-tight">
-              <div className="font-display text-base font-bold text-primary tracking-tight">D'LaPin</div>
+              <div className="font-display text-base font-bold text-primary tracking-tight">DeLapan</div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-medium">
                 BRIDA Jambi
               </div>
@@ -53,7 +53,7 @@ function Landing() {
             </div>
 
             <h1 className="text-balance font-display text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-6xl">
-              D'LaPin: Delegasi dan Pelaporan{" "}
+              DeLapan: Delegasi dan Pelaporan{" "}
               <span className="text-accent">Internal BRIDA</span> Provinsi Jambi
             </h1>
 
@@ -162,10 +162,10 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-8 w-8 place-items-center rounded-md bg-white/10 p-1">
-              <img src={bridaLogo} alt="" className="h-full w-full object-contain" />
+              <img src={delapanLogo} alt="" className="h-full w-full object-contain" />
             </div>
             <div className="text-xs">
-              <div className="font-display font-bold text-white">D'LaPin · BRIDA Provinsi Jambi</div>
+              <div className="font-display font-bold text-white">DeLapan · BRIDA Provinsi Jambi</div>
               <div className="text-white/50">Badan Riset dan Inovasi Daerah</div>
             </div>
           </div>

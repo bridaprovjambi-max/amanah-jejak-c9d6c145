@@ -75,11 +75,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "D'LaPin: Delegasi dan Pelaporan Internal BRIDA Provinsi Jambi" },
+      { title: "DeLapan: Delegasi dan Pelaporan Internal BRIDA Provinsi Jambi" },
       {
         name: "description",
         content:
-          "D'LaPin — Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA Provinsi Jambi.",
+          "DeLapan — Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA Provinsi Jambi.",
       },
     ],
     links: [
