@@ -441,15 +441,21 @@ function TaskDetail() {
           </div>
         ) : (
           <ol className="space-y-3">
-            {reports.map((r) => (
+            {reports.map((r) => {
+              const reporter = users[r.reported_by];
+              return (
               <li key={r.id} className="rounded-xl border border-border bg-card p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <div className="grid h-8 w-8 place-items-center rounded-full bg-primary-soft text-primary text-xs font-semibold">
-                      {(users[r.reported_by] ?? "?").slice(0, 2).toUpperCase()}
+                      {(reporter?.name ?? "?").slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <div className="text-sm font-medium">{users[r.reported_by] ?? "Pengguna"}</div>
+                      <div className="text-sm font-medium">{reporter?.name ?? "Pengguna"}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {reporter?.nip && <span className="mr-2">NIP: {reporter.nip}</span>}
+                        {reporter?.pangkat && <span>{reporter.pangkat}</span>}
+                      </div>
                       <div className="text-[11px] text-muted-foreground">
                         {new Date(r.created_at).toLocaleString("id-ID")}
                       </div>
