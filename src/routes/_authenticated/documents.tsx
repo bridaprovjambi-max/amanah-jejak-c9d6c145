@@ -261,16 +261,34 @@ function DocumentsPage() {
             />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="desc">Deskripsi</Label>
-          <Textarea
-            id="desc"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Keterangan singkat tentang dokumen…"
-            rows={2}
-            maxLength={500}
-          />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="folder">Folder / Tim *</Label>
+            <select
+              id="folder"
+              value={folder}
+              onChange={(e) => setFolder(e.target.value as FolderName)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              {FOLDERS.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </select>
+            <p className="text-[11px] text-muted-foreground">{FOLDER_HINT[folder]}</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="desc">Deskripsi</Label>
+            <Textarea
+              id="desc"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Keterangan singkat tentang dokumen…"
+              rows={2}
+              maxLength={500}
+            />
+          </div>
         </div>
         <div className="flex justify-end">
           <Button type="submit" disabled={uploading || !file}>
@@ -280,12 +298,51 @@ function DocumentsPage() {
               </>
             ) : (
               <>
-                <Upload className="mr-2 h-4 w-4" /> Unggah Dokumen
+                <Upload className="mr-2 h-4 w-4" /> Unggah ke {folder}
               </>
             )}
           </Button>
         </div>
       </form>
+
+      {/* Folder chips */}
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <FolderOpen className="h-4 w-4 text-primary" />
+          <h2 className="font-display text-sm font-semibold">Folder Dokumen</h2>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveFolder("ALL")}
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+              activeFolder === "ALL"
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-background hover:border-primary/40"
+            }`}
+          >
+            Semua <span className="opacity-70">({rows.length})</span>
+          </button>
+          {FOLDERS.map((f) => {
+            const active = activeFolder === f;
+            return (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setActiveFolder(f)}
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background hover:border-primary/40"
+                }`}
+              >
+                <Folder className="h-3.5 w-3.5" />
+                {f} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Search & Filter Bar */}
       <div className="rounded-2xl border border-border bg-card p-4 shadow-sm space-y-4">
