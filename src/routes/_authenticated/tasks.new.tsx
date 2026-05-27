@@ -56,6 +56,60 @@ function NewTask() {
     deadline: "",
   });
   const [busy, setBusy] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const next = [...pendingFiles];
+    for (const f of Array.from(files)) {
+      if (next.length >= MAX_FILES) {
+        toast.error(`Maksimal ${MAX_FILES} berkas`);
+        break;
+      }
+      if (f.size > MAX_FILE_SIZE) {
+        toast.error(`${f.name} melebihi 20MB`);
+        continue;
+      }
+      next.push(f);
+    }
+    setPendingFiles(next);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadTaskAttachments = async (taskId: string) => {
+    const rows: Array<{
+      task_id: string;
+      uploaded_by: string;
+      file_path: string;
+      file_name: string;
+      file_size: number;
+      mime_type: string | null;
+    }> = [];
+    for (const f of pendingFiles) {
+      const safeName = f.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+      const path = `${user!.id}/tasks/${taskId}/${Date.now()}-${safeName}`;
+      const { error: upErr } = await supabase.storage
+        .from("documents")
+        .upload(path, f, { contentType: f.type || "application/octet-stream", upsert: false });
+      if (upErr) {
+        toast.error(`Gagal unggah ${f.name}: ${upErr.message}`);
+        continue;
+      }
+      rows.push({
+        task_id: taskId,
+        uploaded_by: user!.id,
+        file_path: path,
+        file_name: f.name,
+        file_size: f.size,
+        mime_type: f.type || null,
+      });
+    }
+    if (rows.length > 0) {
+      const { error: insErr } = await supabase.from("task_attachments").insert(rows);
+      if (insErr) toast.error(`Gagal simpan metadata: ${insErr.message}`);
+    }
+  };
 
   useEffect(() => {
     (async () => {
