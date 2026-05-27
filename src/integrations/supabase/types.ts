@@ -380,6 +380,7 @@ export type Database = {
           deadline: string | null
           description: string | null
           id: string
+          parent_task_id: string | null
           priority: string
           reminder_sent_h1: boolean
           reminder_sent_h3: boolean
@@ -396,6 +397,7 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           id?: string
+          parent_task_id?: string | null
           priority?: string
           reminder_sent_h1?: boolean
           reminder_sent_h3?: boolean
@@ -412,6 +414,7 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           id?: string
+          parent_task_id?: string | null
           priority?: string
           reminder_sent_h1?: boolean
           reminder_sent_h3?: boolean
@@ -426,6 +429,13 @@ export type Database = {
             columns: ["assigned_to_pokja"]
             isOneToOne: false
             referencedRelation: "pokja"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_parent_task_id_fkey"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
             referencedColumns: ["id"]
           },
         ]
