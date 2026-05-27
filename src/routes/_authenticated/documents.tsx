@@ -176,6 +176,7 @@ function DocumentsPage() {
       file_size: file.size,
       mime_type: file.type || null,
       uploaded_by: profile.id,
+      folder,
     });
     if (insErr) {
       toast.error(`Gagal menyimpan: ${insErr.message}`);
@@ -183,7 +184,7 @@ function DocumentsPage() {
       setUploading(false);
       return;
     }
-    toast.success("Dokumen berhasil diunggah");
+    toast.success(`Dokumen tersimpan di folder "${folder}"`);
     setTitle("");
     setDescription("");
     setFile(null);
