@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col">
       <div className="px-6 py-6 border-b border-sidebar-border">
         <Link to="/dashboard" className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 shadow-sm">
+          <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 ring-brand">
             <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
           <div className="leading-tight">
