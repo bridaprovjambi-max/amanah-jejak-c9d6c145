@@ -152,6 +152,7 @@ function getDefaultFolder(args: {
 function DocumentsPage() {
   const { profile, hasRole } = useAuth();
   const [rows, setRows] = useState<DocRow[]>([]);
+  const [folders, setFolders] = useState<FolderMeta[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -164,9 +165,17 @@ function DocumentsPage() {
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(FOLDERS.map((f) => [f, true]))
-  );
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Derived folder lookups
+  const allSlugs = useMemo(() => folders.map((f) => f.slug), [folders]);
+  const folderMeta = useMemo(() => {
+    const m: Record<string, FolderMeta> = {};
+    folders.forEach((f) => (m[f.slug] = f));
+    return m;
+  }, [folders]);
+  const folderName = (slug: string) => folderMeta[slug]?.name ?? slug;
+  const folderHint = (slug: string) => folderMeta[slug]?.hint ?? "";
 
   // Search & filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -185,9 +194,11 @@ function DocumentsPage() {
         isKasubbag: hasRole("kasubbag"),
         isJafung: hasRole("jafung_member"),
         pokjaName: profile?.pokja_id ? pokjaMap[profile.pokja_id] : null,
+        allSlugs,
       }),
-    [profile, hasRole, pokjaMap],
+    [profile, hasRole, pokjaMap, allSlugs],
   );
+
 
   const defaultFolder = useMemo(
     () =>
