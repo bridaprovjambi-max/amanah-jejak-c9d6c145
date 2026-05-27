@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Trophy, Medal, Target, Clock, TrendingUp } from "lucide-react";
+import { Trophy, Medal, Target, Clock, TrendingUp, X, ArrowUpRight, AlertTriangle, CheckCircle2, Circle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { JENJANG_LABEL } from "@/lib/auth";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { StatusBadge } from "@/components/StatusBadge";
 
 export const Route = createFileRoute("/_authenticated/kinerja")({
   component: KinerjaPage,
@@ -12,6 +14,7 @@ type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf" | "ja
 
 interface TaskRow {
   id: string;
+  title: string;
   status: "pending" | "in_progress" | "completed";
   deadline: string | null;
   assigned_to: string | null;
@@ -19,6 +22,7 @@ interface TaskRow {
   created_at: string;
   updated_at: string;
 }
+
 
 interface ProfileRow {
   id: string;
