@@ -44,6 +44,8 @@ const NAV: NavItem[] = [
   { to: "/settings", label: "Notifikasi Telegram", icon: Bell },
   { to: "/users", label: "Pengguna", icon: Users, roles: ["leader", "admin"] },
   { to: "/activity", label: "Riwayat", icon: History, roles: ["leader", "admin"] },
+  { to: "/api-keys", label: "Kunci API", icon: KeyRound, roles: ["leader", "admin"] },
+
 
 ];
 
