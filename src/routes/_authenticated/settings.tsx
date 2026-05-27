@@ -195,7 +195,7 @@ function SettingsPage() {
           <li className="flex gap-3">
             <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-xs font-semibold">1</span>
             <div>
-              Buka bot Telegram resmi BRIDA (tanya admin untuk nama bot, contoh: <code className="px-1.5 py-0.5 bg-muted rounded">@DeLapanBridaBot</code>).
+              Buka Telegram, cari bot <a href="https://t.me/userinfobot" target="_blank" rel="noreferrer" className="font-mono px-1.5 py-0.5 bg-muted rounded hover:bg-muted/70">@userinfobot</a>.
             </div>
           </li>
           <li className="flex gap-3">
@@ -208,12 +208,18 @@ function SettingsPage() {
               >
                 /start {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
               </button>{" "}
-              ke bot. Bot akan membalas dengan <b>Chat ID</b> Anda.
+              ke bot. Bot akan membalas dengan <b>Id</b> berupa angka — itulah <b>Chat ID</b> Anda.
             </div>
           </li>
           <li className="flex gap-3">
             <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-xs font-semibold">3</span>
-            <div>Salin Chat ID tersebut dan tempel di kolom di bawah, lalu simpan.</div>
+            <div>
+              Buka bot DeLapan BRIDA (tanya admin untuk nama bot), kirim <code className="px-1.5 py-0.5 bg-muted rounded font-mono">/start</code> agar bot bisa mengirim pesan kepada Anda.
+            </div>
+          </li>
+          <li className="flex gap-3">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-xs font-semibold">4</span>
+            <div>Tempel Chat ID tersebut di kolom di bawah, simpan, lalu klik <b>Kirim Uji Coba</b>.</div>
           </li>
         </ol>
 
