@@ -27,8 +27,8 @@ const KNOWN_FOLDERS = [
   "Kepala",
   "Sekretaris",
   "Kasubbag",
-  "Pokja Riset",
-  "Pokja Inovasi",
+  "Kelompok Kerja",
+  "Kelompok Kerja Inovasi",
   "Jafung",
   "Staf",
   "Umum",
@@ -96,8 +96,8 @@ function getFolderPermissions(args: {
       manage: [
         "Sekretaris",
         "Kasubbag",
-        "Pokja Riset",
-        "Pokja Inovasi",
+        "Kelompok Kerja",
+        "Kelompok Kerja Inovasi",
         "Jafung",
         "Staf",
         "Umum",
@@ -113,9 +113,9 @@ function getFolderPermissions(args: {
   }
   if (jenjang === "pokja") {
     const name = (pokjaName ?? "").toLowerCase();
-    const own: FolderName = name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
+    const own: FolderName = name.includes("inovasi") ? "Kelompok Kerja Inovasi" : "Kelompok Kerja";
     return {
-      view: ["Pokja Riset", "Pokja Inovasi", "Umum", ...customSlugs],
+      view: ["Kelompok Kerja", "Kelompok Kerja Inovasi", "Umum", ...customSlugs],
       manage: [own, "Umum"],
     };
   }
@@ -149,7 +149,7 @@ function getDefaultFolder(args: {
   if (isKasubbag || jenjang === "eselon_iv") return "Kasubbag";
   if (jenjang === "pokja") {
     const name = (pokjaName ?? "").toLowerCase();
-    return name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
+    return name.includes("inovasi") ? "Kelompok Kerja Inovasi" : "Kelompok Kerja";
   }
   if (isJafung || jenjang === "jafung") return "Jafung";
   if (jenjang === "staf") return "Staf";
