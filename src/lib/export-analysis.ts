@@ -17,6 +17,12 @@ interface DocLike {
     location?: string;
   } | null;
   ai_analyzed_at: string | null;
+  ai_status: string;
+}
+
+interface RelatedDocInfo {
+  title: string;
+  file_name: string;
 }
 
 function safeFilename(s: string) {
@@ -39,15 +45,29 @@ function csvEscape(v: string) {
   return v;
 }
 
-export function exportAnalysisCSV(doc: DocLike) {
+function statusLabel(status: string) {
+  switch (status) {
+    case "done":
+      return "Selesai";
+    case "running":
+      return "Sedang Berjalan";
+    case "error":
+      return "Gagal";
+    default:
+      return "Belum Dianalisis";
+  }
+}
+
+export function exportAnalysisCSV(doc: DocLike, relatedDocs?: RelatedDocInfo[]) {
   const ent = doc.ai_entities ?? {};
   const rows: [string, string][] = [
     ["Judul", doc.title],
     ["Berkas", doc.file_name],
     ["Folder", doc.folder],
     ["Tanggal upload", new Date(doc.created_at).toLocaleString("id-ID")],
+    ["Status Analisis", statusLabel(doc.ai_status)],
     [
-      "Tanggal analisis",
+      "Waktu Analisis",
       doc.ai_analyzed_at ? new Date(doc.ai_analyzed_at).toLocaleString("id-ID") : "-",
     ],
     ["Ringkasan", doc.ai_summary ?? ""],
@@ -62,6 +82,12 @@ export function exportAnalysisCSV(doc: DocLike) {
     ["Lokasi", ent.location ?? ""],
     ["Metodologi", ent.methodology ?? ""],
   ];
+  if (relatedDocs && relatedDocs.length > 0) {
+    rows.push([
+      "Dokumen Terkait",
+      relatedDocs.map((d, i) => `${i + 1}. ${d.title} (${d.file_name})`).join(" | "),
+    ]);
+  }
   const csv =
     "Field,Value\n" +
     rows.map(([k, v]) => `${csvEscape(k)},${csvEscape(v)}`).join("\n");
@@ -69,7 +95,7 @@ export function exportAnalysisCSV(doc: DocLike) {
   triggerDownload(blob, `analisis-${safeFilename(doc.title)}.csv`);
 }
 
-export function exportAnalysisPDF(doc: DocLike) {
+export function exportAnalysisPDF(doc: DocLike, relatedDocs?: RelatedDocInfo[]) {
   const pdf = new jsPDF({ unit: "pt", format: "a4" });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
@@ -131,9 +157,10 @@ export function exportAnalysisPDF(doc: DocLike) {
     9,
     { color: [110, 120, 140] },
   );
+  writeWrapped(`Status Analisis: ${statusLabel(doc.ai_status)}`, 9, { color: [110, 120, 140] });
   if (doc.ai_analyzed_at) {
     writeWrapped(
-      `Analisis: ${new Date(doc.ai_analyzed_at).toLocaleString("id-ID")}`,
+      `Waktu Analisis: ${new Date(doc.ai_analyzed_at).toLocaleString("id-ID")}`,
       9,
       { color: [110, 120, 140] },
     );
@@ -178,6 +205,13 @@ export function exportAnalysisPDF(doc: DocLike) {
     if (ent.year) field("Tahun", ent.year);
     if (ent.location) field("Lokasi", ent.location);
     if (ent.methodology) field("Metodologi", ent.methodology);
+  }
+
+  if (relatedDocs && relatedDocs.length > 0) {
+    sectionLabel("Dokumen Terkait");
+    relatedDocs.forEach((d, i) => {
+      writeWrapped(`${i + 1}. ${d.title} — ${d.file_name}`, 10);
+    });
   }
 
   // Footer with page numbers
