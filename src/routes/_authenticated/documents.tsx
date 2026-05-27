@@ -664,15 +664,16 @@ function DocumentsPage() {
                       <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
                     )}
                     <FolderOpen className="h-4 w-4 text-primary shrink-0" />
-                    <span className="font-display font-semibold text-sm truncate">{f}</span>
+                    <span className="font-display font-semibold text-sm truncate">{folderName(f)}</span>
                     {!canManage && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
                         <Lock className="h-3 w-3" /> Hanya baca
                       </span>
                     )}
                     <span className="text-xs text-muted-foreground hidden sm:inline truncate">
-                      · {FOLDER_HINT[f]}
+                      · {folderHint(f)}
                     </span>
+
                   </div>
                   <span className="text-xs font-medium text-muted-foreground shrink-0">
                     {items.length} dokumen
