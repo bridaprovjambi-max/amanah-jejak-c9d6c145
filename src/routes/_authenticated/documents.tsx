@@ -445,44 +445,76 @@ function DocumentsPage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
-          <ul className="divide-y divide-border">
-            {filteredRows.map((r) => (
-              <li key={r.id} className="flex items-start gap-4 px-5 py-4">
-                <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
-                  <FileText className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium truncate">{r.title}</p>
-                  {r.description && (
-                    <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                      {r.description}
-                    </p>
-                  )}
-                  <p className="text-[11px] text-muted-foreground mt-1">
-                    {r.file_name} · {formatSize(r.file_size)} ·{" "}
-                    diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
-                    {new Date(r.created_at).toLocaleString("id-ID")}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  {canDelete(r) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(r)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className="space-y-4">
+          {(activeFolder === "ALL" ? FOLDERS : [activeFolder]).map((f) => {
+            const items = groupedByFolder[f] ?? [];
+            if (items.length === 0) return null;
+            const isOpen = expanded[f] ?? true;
+            return (
+              <div key={f} className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setExpanded((s) => ({ ...s, [f]: !isOpen }))}
+                  className="w-full flex items-center justify-between gap-3 px-5 py-3 bg-muted/40 hover:bg-muted/60 transition"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    {isOpen ? (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    )}
+                    <FolderOpen className="h-4 w-4 text-primary shrink-0" />
+                    <span className="font-display font-semibold text-sm truncate">{f}</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline truncate">
+                      · {FOLDER_HINT[f]}
+                    </span>
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground shrink-0">
+                    {items.length} dokumen
+                  </span>
+                </button>
+                {isOpen && (
+                  <ul className="divide-y divide-border">
+                    {items.map((r) => (
+                      <li key={r.id} className="flex items-start gap-4 px-5 py-4">
+                        <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium truncate">{r.title}</p>
+                          {r.description && (
+                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                              {r.description}
+                            </p>
+                          )}
+                          <p className="text-[11px] text-muted-foreground mt-1">
+                            {r.file_name} · {formatSize(r.file_size)} ·{" "}
+                            diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
+                            {new Date(r.created_at).toLocaleString("id-ID")}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          {canDelete(r) && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(r)}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
