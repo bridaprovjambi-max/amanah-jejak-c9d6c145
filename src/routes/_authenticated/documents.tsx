@@ -183,7 +183,7 @@ function DocumentsPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [folder, setFolder] = useState<FolderName>("Umum");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const runAnalyze = useServerFn(analyzeDocument);
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
