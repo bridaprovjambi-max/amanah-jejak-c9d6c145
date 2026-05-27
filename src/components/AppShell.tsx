@@ -59,20 +59,20 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col">
       <div className="px-6 py-6 border-b border-sidebar-border">
         <Link to="/dashboard" className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 ring-brand">
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-white p-1 shadow-gold">
             <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
           <div className="leading-tight">
-            <div className="font-display text-base font-bold text-sidebar-foreground">
+            <div className="font-display text-xl text-sidebar-foreground tracking-tight">
               DeLapan
             </div>
-            <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-sidebar-foreground/55">
               Delegasi & Pelaporan
             </div>
           </div>
         </Link>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-5 space-y-0.5">
         {NAV.filter((n) => !n.roles || canSeeAdmin).map((n) => {
           const active = loc.pathname.startsWith(n.to);
           const Icon = n.icon;
@@ -82,13 +82,16 @@ export function AppShell({ children }: { children: ReactNode }) {
               to={n.to}
               onClick={() => setOpen(false)}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium font-ui transition-all",
                 active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/75 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                  ? "bg-sidebar-accent/80 text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground",
               )}
             >
-              <Icon className="h-4 w-4" />
+              {active && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-0.5 rounded-r-full bg-[var(--brand-gold)]" />
+              )}
+              <Icon className="h-4 w-4 shrink-0" />
               {n.label}
             </Link>
           );
@@ -96,14 +99,14 @@ export function AppShell({ children }: { children: ReactNode }) {
       </nav>
       <div className="border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3 mb-3">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-xs font-semibold">
+          <div className="grid h-9 w-9 place-items-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-xs font-semibold font-ui">
             {initials ?? "U"}
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-sm font-medium text-sidebar-foreground">
               {profile?.full_name ?? "Pengguna"}
             </div>
-            <div className="truncate text-[11px] text-sidebar-foreground/60">
+            <div className="truncate text-[11px] text-sidebar-foreground/55">
               {profile?.jabatan ?? (profile ? JENJANG_LABEL[profile.jenjang] : "")}
             </div>
           </div>
@@ -123,15 +126,16 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 
+
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile topbar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-3">
+      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-4 py-3">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-white p-0.5 shadow-sm">
+          <div className="grid h-9 w-9 place-items-center rounded-lg bg-white p-0.5 shadow-sm">
             <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
-          <span className="font-display font-bold">DeLapan</span>
+          <span className="font-display text-lg tracking-tight">DeLapan</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>
@@ -144,7 +148,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-20 w-64 bg-sidebar text-sidebar-foreground">
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-20 w-64 bg-sidebar-gradient text-sidebar-foreground border-r border-sidebar-border">
         {SidebarContent}
       </aside>
 
@@ -152,10 +156,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       {open && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="relative w-72 bg-sidebar text-sidebar-foreground">
+          <aside className="relative w-72 bg-sidebar-gradient text-sidebar-foreground">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 text-sidebar-foreground/70"
@@ -168,10 +172,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <main className="lg:pl-64">
-        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
       </main>
     </div>
   );
 }
+
