@@ -96,7 +96,7 @@ function KalenderPage() {
         return "bg-blue-500";
       case "pending":
         return "bg-amber-500";
-      case "rejected":
+      case "overdue":
         return "bg-rose-500";
       default:
         return "bg-muted-foreground";
