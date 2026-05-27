@@ -417,6 +417,27 @@ function DocumentsPage() {
     load();
   };
 
+  const handleAnalyze = async (row: DocRow) => {
+    setAnalyzingId(row.id);
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === row.id ? { ...r, ai_status: "running", ai_error: null } : r,
+      ),
+    );
+    try {
+      await runAnalyze({ data: { documentId: row.id } });
+      toast.success("Analisis selesai");
+      setExpandedAnalysis((s) => ({ ...s, [row.id]: true }));
+      await load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Gagal menganalisis dokumen";
+      toast.error(msg);
+      await load();
+    } finally {
+      setAnalyzingId(null);
+    }
+  };
+
   const canDelete = (row: DocRow) =>
     (profile?.id === row.uploaded_by && manageSet.has((row.folder || "Umum") as FolderName)) ||
     hasRole(["admin", "kepala", "sekretaris"]);
