@@ -357,6 +357,60 @@ function DocumentsPage() {
     setDateTo("");
   };
 
+  const allVisibleSelected =
+    filteredRows.length > 0 && filteredRows.every((r) => selectedIds.has(r.id));
+  const toggleSelectAllVisible = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allVisibleSelected) {
+        filteredRows.forEach((r) => next.delete(r.id));
+      } else {
+        filteredRows.forEach((r) => next.add(r.id));
+      }
+      return next;
+    });
+  };
+
+  const selectedDocs = useMemo(
+    () => rows.filter((r) => selectedIds.has(r.id)),
+    [rows, selectedIds],
+  );
+
+  const handleBulkCSV = () => {
+    if (selectedDocs.length === 0) return;
+    exportBulkCSV(selectedDocs);
+    toast.success(`CSV berisi ${selectedDocs.length} dokumen diunduh`);
+  };
+
+  const handleBulkPDFs = async () => {
+    if (selectedDocs.length === 0) return;
+    setBulkBusy(true);
+    try {
+      await exportBulkPDFs(selectedDocs);
+      toast.success(`${selectedDocs.length} PDF diunduh`);
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  const handleBulkDownloadFiles = async () => {
+    if (selectedDocs.length === 0) return;
+    setBulkBusy(true);
+    try {
+      for (const r of selectedDocs) {
+        const { data } = await supabase.storage
+          .from("documents")
+          .createSignedUrl(r.file_path, 60, { download: r.file_name });
+        if (data?.signedUrl) {
+          window.open(data.signedUrl, "_blank");
+          await new Promise((res) => setTimeout(res, 300));
+        }
+      }
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (files.length === 0 || !profile) return;
