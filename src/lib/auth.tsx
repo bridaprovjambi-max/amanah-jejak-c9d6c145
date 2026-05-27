@@ -11,6 +11,7 @@ export interface Profile {
   jabatan: string | null;
   jenjang: Jenjang;
   pokja_id: string | null;
+  telegram_chat_id: string | null;
 }
 
 interface AuthCtx {

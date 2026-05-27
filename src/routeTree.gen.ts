@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticated/hierarki'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPokjaRoute = AuthenticatedPokjaRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/hierarki': typeof AuthenticatedHierarkiRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarki'
     | '/pokja'
+    | '/settings'
     | '/users'
     | '/tasks/$taskId'
     | '/tasks/new'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarki'
     | '/pokja'
+    | '/settings'
     | '/users'
     | '/tasks/$taskId'
     | '/tasks/new'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/_authenticated/documents'
     | '/_authenticated/hierarki'
     | '/_authenticated/pokja'
+    | '/_authenticated/settings'
     | '/_authenticated/users'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/tasks/new'
@@ -221,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pokja': {
@@ -288,6 +307,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedHierarkiRoute: typeof AuthenticatedHierarkiRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
   AuthenticatedTasksNewRoute: typeof AuthenticatedTasksNewRoute
@@ -300,6 +320,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedHierarkiRoute: AuthenticatedHierarkiRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
   AuthenticatedTasksNewRoute: AuthenticatedTasksNewRoute,

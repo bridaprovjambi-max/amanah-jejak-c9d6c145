@@ -109,6 +109,7 @@ export type Database = {
           jabatan: string | null
           jenjang: Database["public"]["Enums"]["jenjang"]
           pokja_id: string | null
+          telegram_chat_id: string | null
           updated_at: string
         }
         Insert: {
@@ -118,6 +119,7 @@ export type Database = {
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
           pokja_id?: string | null
+          telegram_chat_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -127,6 +129,7 @@ export type Database = {
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
           pokja_id?: string | null
+          telegram_chat_id?: string | null
           updated_at?: string
         }
         Relationships: [
