@@ -462,6 +462,42 @@ function TaskDetail() {
                     style={{ width: `${r.progress}%` }}
                   />
                 </div>
+                {(() => {
+                  const atts = attachments.filter((a) => a.report_id === r.id);
+                  if (atts.length === 0) return null;
+                  return (
+                    <ul className="mt-3 space-y-1.5">
+                      {atts.map((a) => (
+                        <li
+                          key={a.id}
+                          className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => downloadAttachment(a)}
+                            className="flex items-center gap-2 min-w-0 text-left hover:text-primary"
+                          >
+                            <Download className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{a.file_name}</span>
+                            <span className="text-muted-foreground shrink-0">
+                              {formatBytes(a.file_size)}
+                            </span>
+                          </button>
+                          {(user?.id === a.uploaded_by) && (
+                            <button
+                              type="button"
+                              className="text-muted-foreground hover:text-destructive"
+                              onClick={() => deleteAttachment(a)}
+                              aria-label="Hapus lampiran"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
               </li>
             ))}
           </ol>
