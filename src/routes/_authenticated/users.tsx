@@ -100,6 +100,8 @@ function UsersPage() {
               <thead className="bg-muted/40 text-left text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Nama</th>
+                  <th className="px-4 py-3">NIP</th>
+                  <th className="px-4 py-3">Pangkat / Golongan</th>
                   <th className="px-4 py-3">Jenjang</th>
                   <th className="px-4 py-3">Peran</th>
                   <th className="px-4 py-3">Pokja</th>
