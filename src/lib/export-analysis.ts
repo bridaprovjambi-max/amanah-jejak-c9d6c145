@@ -95,7 +95,7 @@ export function exportAnalysisCSV(doc: DocLike, relatedDocs?: RelatedDocInfo[]) 
   triggerDownload(blob, `analisis-${safeFilename(doc.title)}.csv`);
 }
 
-export function exportAnalysisPDF(doc: DocLike) {
+export function exportAnalysisPDF(doc: DocLike, relatedDocs?: RelatedDocInfo[]) {
   const pdf = new jsPDF({ unit: "pt", format: "a4" });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
@@ -157,9 +157,10 @@ export function exportAnalysisPDF(doc: DocLike) {
     9,
     { color: [110, 120, 140] },
   );
+  writeWrapped(`Status Analisis: ${statusLabel(doc.ai_status)}`, 9, { color: [110, 120, 140] });
   if (doc.ai_analyzed_at) {
     writeWrapped(
-      `Analisis: ${new Date(doc.ai_analyzed_at).toLocaleString("id-ID")}`,
+      `Waktu Analisis: ${new Date(doc.ai_analyzed_at).toLocaleString("id-ID")}`,
       9,
       { color: [110, 120, 140] },
     );
@@ -204,6 +205,13 @@ export function exportAnalysisPDF(doc: DocLike) {
     if (ent.year) field("Tahun", ent.year);
     if (ent.location) field("Lokasi", ent.location);
     if (ent.methodology) field("Metodologi", ent.methodology);
+  }
+
+  if (relatedDocs && relatedDocs.length > 0) {
+    sectionLabel("Dokumen Terkait");
+    relatedDocs.forEach((d, i) => {
+      writeWrapped(`${i + 1}. ${d.title} — ${d.file_name}`, 10);
+    });
   }
 
   // Footer with page numbers
