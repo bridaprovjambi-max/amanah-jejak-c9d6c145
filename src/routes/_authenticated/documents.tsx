@@ -173,15 +173,31 @@ function DocumentsPage() {
     [profile, hasRole, pokjaMap],
   );
 
+  const defaultFolder = useMemo(
+    () =>
+      getDefaultFolder({
+        jenjang: profile?.jenjang,
+        isAdmin: hasRole("admin"),
+        isKepala: hasRole("kepala"),
+        isSekretaris: hasRole("sekretaris"),
+        isKasubbag: hasRole("kasubbag"),
+        isJafung: hasRole("jafung_member"),
+        pokjaName: profile?.pokja_id ? pokjaMap[profile.pokja_id] : null,
+      }),
+    [profile, hasRole, pokjaMap],
+  );
+
   const viewSet = useMemo(() => new Set<string>(permissions.view), [permissions]);
   const manageSet = useMemo(() => new Set<string>(permissions.manage), [permissions]);
 
-  // Pastikan folder upload default selalu folder yang diizinkan
+  // Sinkronkan folder upload: prioritaskan defaultFolder kalau diizinkan,
+  // kalau tidak pakai folder pertama dari manage permissions
   useEffect(() => {
-    if (permissions.manage.length && !manageSet.has(folder)) {
-      setFolder(permissions.manage[0]);
+    if (permissions.manage.length) {
+      const target = manageSet.has(defaultFolder) ? defaultFolder : permissions.manage[0];
+      setFolder(target);
     }
-  }, [permissions, manageSet, folder]);
+  }, [permissions, manageSet, defaultFolder]);
 
   // Reset filter folder jika user tidak punya akses
   useEffect(() => {
