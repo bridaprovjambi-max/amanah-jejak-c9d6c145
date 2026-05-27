@@ -56,6 +56,19 @@ interface DocRow {
   uploaded_by: string;
   created_at: string;
   folder: string;
+  ai_summary: string | null;
+  ai_key_points: { text: string }[] | null;
+  ai_entities: {
+    authors?: string[];
+    institutions?: string[];
+    year?: string;
+    topics?: string[];
+    methodology?: string;
+    location?: string;
+  } | null;
+  ai_status: "idle" | "running" | "done" | "error";
+  ai_error: string | null;
+  ai_analyzed_at: string | null;
 }
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
