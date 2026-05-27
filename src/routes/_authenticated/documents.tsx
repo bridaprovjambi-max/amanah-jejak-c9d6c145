@@ -837,10 +837,12 @@ function AnalysisPanel({
   row,
   onReanalyze,
   busy,
+  allRows,
 }: {
   row: DocRow;
   onReanalyze: () => void;
   busy: boolean;
+  allRows?: DocRow[];
 }) {
   const ent = row.ai_entities ?? {};
   const chips: { label: string; values: string[] }[] = [
@@ -848,6 +850,9 @@ function AnalysisPanel({
     { label: "Lembaga", values: ent.institutions ?? [] },
     { label: "Topik", values: ent.topics ?? [] },
   ];
+  const relatedDocs = (allRows ?? [])
+    .filter((r) => r.folder === row.folder && r.id !== row.id)
+    .map((r) => ({ title: r.title, file_name: r.file_name }));
   return (
     <div className="mt-4 ml-0 sm:ml-14 rounded-xl border border-border bg-gradient-to-br from-primary-soft/40 to-background p-4 space-y-4">
       <div className="flex items-center justify-between gap-2">
@@ -864,7 +869,7 @@ function AnalysisPanel({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => exportAnalysisPDF(row)}
+            onClick={() => exportAnalysisPDF(row, relatedDocs)}
             title="Ekspor hasil analisis ke PDF"
           >
             <FileDown className="h-3.5 w-3.5" />
@@ -873,7 +878,7 @@ function AnalysisPanel({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => exportAnalysisCSV(row)}
+            onClick={() => exportAnalysisCSV(row, relatedDocs)}
             title="Ekspor hasil analisis ke CSV"
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
