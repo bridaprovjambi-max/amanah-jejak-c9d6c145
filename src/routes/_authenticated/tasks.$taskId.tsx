@@ -95,11 +95,14 @@ function TaskDetail() {
     setTask((t as Task) ?? null);
     const reportRows = (r as Report[]) ?? [];
     setReports(reportRows);
-    const u: Record<string, { name: string; nip: string | null; pangkat: string | null }> = {};
+    const u: Record<string, string> = {};
+    const ux: Record<string, { nip: string | null; pangkat: string | null }> = {};
     (p ?? []).forEach((x: { id: string; full_name: string; nip: string | null; pangkat_golongan: string | null }) => {
-      u[x.id] = { name: x.full_name, nip: x.nip, pangkat: x.pangkat_golongan };
+      u[x.id] = x.full_name;
+      ux[x.id] = { nip: x.nip, pangkat: x.pangkat_golongan };
     });
     setUsers(u);
+    setUserExtras(ux);
     const m: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (m[x.id] = x.name));
     setPokjaMap(m);
