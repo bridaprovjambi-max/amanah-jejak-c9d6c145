@@ -849,8 +849,15 @@ function DocumentsPage() {
                       const hasAnalysis = r.ai_status === "done" && !!r.ai_summary;
                       const isOpenAnalysis = expandedAnalysis[r.id] ?? false;
                       return (
-                      <li key={r.id} className="px-5 py-4">
+                      <li key={r.id} className={`px-5 py-4 transition ${selectedIds.has(r.id) ? "bg-primary-soft/30" : ""}`}>
                         <div className="flex items-start gap-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(r.id)}
+                            onChange={() => toggleSelect(r.id)}
+                            className="mt-3 h-4 w-4 rounded border-input accent-primary cursor-pointer"
+                            aria-label={`Pilih ${r.title}`}
+                          />
                           <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
                             <FileText className="h-5 w-5" />
                           </div>
