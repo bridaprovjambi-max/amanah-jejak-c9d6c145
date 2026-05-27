@@ -59,13 +59,13 @@ function PokjaPage() {
 
   const create = async (e: FormEvent) => {
     e.preventDefault();
-    if (name.trim().length < 2) return toast.error("Nama pokja terlalu pendek");
+    if (name.trim().length < 2) return toast.error("Nama kelompok kerja terlalu pendek");
     const { error } = await supabase.from("pokja").insert({
       name: name.trim(),
       description: desc.trim() || null,
     });
     if (error) return toast.error(error.message);
-    toast.success("Pokja dibuat");
+    toast.success("Kelompok Kerja dibuat");
     setOpen(false);
     setName("");
     setDesc("");
@@ -78,23 +78,23 @@ function PokjaPage() {
         <div>
           <h1 className="font-display text-2xl lg:text-3xl font-bold">Kelompok Kerja Riset</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Pokja bertanggung jawab kepada Kepala BRIDA & Sekretaris BRIDA.
+            Kelompok Kerja bertanggung jawab kepada Kepala BRIDA & Sekretaris BRIDA.
           </p>
         </div>
         {canManage && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="mr-2 h-4 w-4" /> Tambah Pokja
+                <Plus className="mr-2 h-4 w-4" /> Tambah Kelompok Kerja
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Pokja Baru</DialogTitle>
+                <DialogTitle>Kelompok Kerja Baru</DialogTitle>
               </DialogHeader>
               <form onSubmit={create} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="name">Nama pokja *</Label>
+                  <Label htmlFor="name">Nama Kelompok Kerja *</Label>
                   <Input
                     id="name"
                     value={name}
