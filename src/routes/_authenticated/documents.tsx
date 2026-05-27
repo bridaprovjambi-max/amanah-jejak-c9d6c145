@@ -67,6 +67,34 @@ function DocumentsPage() {
     load();
   }, []);
 
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      const q = searchQuery.trim().toLowerCase();
+      const matchTitle = q ? r.title.toLowerCase().includes(q) : true;
+      const matchUploader = selectedUploader ? r.uploaded_by === selectedUploader : true;
+      const rDate = new Date(r.created_at).toISOString().slice(0, 10);
+      const matchDateFrom = dateFrom ? rDate >= dateFrom : true;
+      const matchDateTo = dateTo ? rDate <= dateTo : true;
+      return matchTitle && matchUploader && matchDateFrom && matchDateTo;
+    });
+  }, [rows, searchQuery, selectedUploader, dateFrom, dateTo]);
+
+  const activeFilterCount = useMemo(() => {
+    let c = 0;
+    if (searchQuery.trim()) c++;
+    if (selectedUploader) c++;
+    if (dateFrom) c++;
+    if (dateTo) c++;
+    return c;
+  }, [searchQuery, selectedUploader, dateFrom, dateTo]);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedUploader("");
+    setDateFrom("");
+    setDateTo("");
+  };
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file || !profile) return;
@@ -137,6 +165,14 @@ function DocumentsPage() {
 
   const canDelete = (row: DocRow) =>
     profile?.id === row.uploaded_by || hasRole(["admin", "kepala", "sekretaris"]);
+
+  const uploaderOptions = useMemo(() => {
+    const map: Record<string, string> = {};
+    rows.forEach((r) => {
+      map[r.uploaded_by] = users[r.uploaded_by] ?? "Pengguna";
+    });
+    return Object.entries(map).sort((a, b) => a[1].localeCompare(b[1]));
+  }, [rows, users]);
 
   return (
     <div className="space-y-6">
