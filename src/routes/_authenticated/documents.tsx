@@ -65,8 +65,15 @@ function DocumentsPage() {
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [folder, setFolder] = useState<FolderName>("Umum");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Folder navigation
+  const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(FOLDERS.map((f) => [f, true]))
+  );
 
   // Search & filter state
   const [searchQuery, setSearchQuery] = useState("");
