@@ -116,7 +116,7 @@ function HierarkiPage() {
                 />
               </div>
 
-              {/* Column 2: Pokja Riset & Inovasi */}
+              {/* Column 2: Kelompok Kerja & Inovasi */}
               <div className="flex flex-col items-center">
                 <div className="h-6 w-px bg-border" />
                 <Node
@@ -126,10 +126,10 @@ function HierarkiPage() {
                 />
                 <div className="mt-3 grid grid-cols-2 gap-2 w-full">
                   <div className="rounded-md border border-border bg-muted/40 px-2 py-1.5 text-center text-[11px] font-medium">
-                    Pokja Riset
+                    Kelompok Kerja
                   </div>
                   <div className="rounded-md border border-border bg-muted/40 px-2 py-1.5 text-center text-[11px] font-medium">
-                    Pokja Inovasi
+                    Kelompok Kerja Inovasi
                   </div>
                 </div>
               </div>
