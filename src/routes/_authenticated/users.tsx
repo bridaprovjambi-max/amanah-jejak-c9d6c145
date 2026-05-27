@@ -116,6 +116,8 @@ function UsersPage() {
                         <div className="text-xs text-muted-foreground">{r.jabatan}</div>
                       )}
                     </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.nip ?? <span className="italic opacity-50">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.pangkat_golongan ?? <span className="italic opacity-50">—</span>}</td>
                     <td className="px-4 py-3 min-w-[200px]">
                       <Select value={r.jenjang} onValueChange={(v) => updateJenjang(r.id, v as Jenjang)}>
                         <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
