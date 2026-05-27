@@ -546,7 +546,7 @@ function DocumentsPage() {
             </div>
           </div>
           <div className="flex justify-end">
-            <Button type="submit" disabled={uploading || !file}>
+            <Button type="submit" disabled={uploading || files.length === 0}>
               {uploading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Mengunggah…
