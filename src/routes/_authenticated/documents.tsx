@@ -106,6 +106,33 @@ function getFolderPermissions(args: {
   return { view: ["Umum"], manage: ["Umum"] };
 }
 
+/**
+ * Tentukan folder default (home folder) pengguna berdasarkan jenjang/role.
+ * Dipakai sebagai initial value saat memilih folder upload.
+ */
+function getDefaultFolder(args: {
+  jenjang?: string;
+  isAdmin: boolean;
+  isKepala: boolean;
+  isSekretaris: boolean;
+  isKasubbag: boolean;
+  isJafung: boolean;
+  pokjaName?: string | null;
+}): FolderName {
+  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName } = args;
+
+  if (isAdmin || isKepala || jenjang === "eselon_ii") return "Kepala";
+  if (isSekretaris || jenjang === "eselon_iii") return "Sekretaris";
+  if (isKasubbag || jenjang === "eselon_iv") return "Kasubbag";
+  if (jenjang === "pokja") {
+    const name = (pokjaName ?? "").toLowerCase();
+    return name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
+  }
+  if (isJafung || jenjang === "jafung") return "Jafung";
+  if (jenjang === "staf") return "Staf";
+  return "Umum";
+}
+
 function DocumentsPage() {
   const { profile, hasRole } = useAuth();
   const [rows, setRows] = useState<DocRow[]>([]);
