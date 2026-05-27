@@ -124,6 +124,12 @@ function TaskDetail() {
     } else {
       setAttachments([]);
     }
+    const { data: tAtt } = await supabase
+      .from("task_attachments")
+      .select("*")
+      .eq("task_id", taskId)
+      .order("created_at", { ascending: true });
+    setTaskAttachments((tAtt as TaskAttachment[]) ?? []);
     setLoading(false);
   };
 
