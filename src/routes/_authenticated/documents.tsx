@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X } from "lucide-react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,29 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_authenticated/documents")({
   component: DocumentsPage,
 });
+
+const FOLDERS = [
+  "Kepala",
+  "Sekretaris",
+  "Kasubbag",
+  "Pokja Riset",
+  "Pokja Inovasi",
+  "Jafung",
+  "Staf",
+  "Umum",
+] as const;
+type FolderName = (typeof FOLDERS)[number];
+
+const FOLDER_HINT: Record<FolderName, string> = {
+  Kepala: "Dokumen pimpinan & kebijakan strategis",
+  Sekretaris: "Administrasi & koordinasi kesekretariatan",
+  Kasubbag: "Dokumen sub-bagian & operasional",
+  "Pokja Riset": "Materi & laporan kelompok kerja riset",
+  "Pokja Inovasi": "Materi & laporan kelompok kerja inovasi",
+  Jafung: "Dokumen jabatan fungsional",
+  Staf: "Dokumen staf pelaksana",
+  Umum: "Dokumen umum lintas tim",
+};
 
 interface DocRow {
   id: string;
