@@ -548,5 +548,3 @@ function UserMeta({
     </div>
   );
 }
-
-}
