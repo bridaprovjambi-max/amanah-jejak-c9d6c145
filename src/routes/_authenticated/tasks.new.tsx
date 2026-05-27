@@ -191,7 +191,7 @@ function NewTask() {
                     ))}
                 {form.assignee_kind === "pokja" && pokja.length === 0 && (
                   <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                    Belum ada pokja. Buat di menu Pokja Riset.
+                    Belum ada pokja. Buat di menu Kelompok Kerja.
                   </div>
                 )}
               </SelectContent>

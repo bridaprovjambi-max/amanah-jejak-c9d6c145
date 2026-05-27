@@ -32,7 +32,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
   { to: "/hierarki", label: "Bagan Hierarki", icon: Network },
-  { to: "/pokja", label: "Pokja Riset", icon: Layers },
+  { to: "/pokja", label: "Kelompok Kerja", icon: Layers },
   { to: "/documents", label: "Dokumen", icon: FileText },
   { to: "/folders", label: "Pengaturan Folder", icon: FolderCog, roles: ["leader", "admin"] },
   { to: "/settings", label: "Notifikasi Telegram", icon: Bell },

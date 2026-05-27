@@ -259,7 +259,7 @@ function Dashboard() {
       {isLeader && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricChip icon={Users} label="Pengguna" value={counts.users} />
-          <MetricChip icon={Layers} label="Pokja Riset" value={counts.pokja} />
+          <MetricChip icon={Layers} label="Kelompok Kerja" value={counts.pokja} />
           <MetricChip icon={FileText} label="Dokumen" value={counts.documents} />
           <MetricChip icon={Target} label="Laporan" value={counts.reports} />
         </div>

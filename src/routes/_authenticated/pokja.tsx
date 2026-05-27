@@ -99,7 +99,7 @@ function PokjaPage() {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Pokja Riset Inovasi Daerah"
+                    placeholder="Kelompok Kerja Inovasi Daerah"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -125,7 +125,7 @@ function PokjaPage() {
       ) : pokja.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
           <Layers className="mx-auto h-10 w-10 text-muted-foreground/50" />
-          <p className="mt-3 text-sm text-muted-foreground">Belum ada Pokja Riset.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Belum ada Kelompok Kerja.</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
