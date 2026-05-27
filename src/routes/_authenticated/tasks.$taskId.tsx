@@ -462,12 +462,11 @@ function TaskDetail() {
                     style={{ width: `${r.progress}%` }}
                   />
                 </div>
-                {(() => {
-                  const atts = attachments.filter((a) => a.report_id === r.id);
-                  if (atts.length === 0) return null;
-                  return (
-                    <ul className="mt-3 space-y-1.5">
-                      {atts.map((a) => (
+                {attachments.filter((a) => a.report_id === r.id).length > 0 && (
+                  <ul className="mt-3 space-y-1.5">
+                    {attachments
+                      .filter((a) => a.report_id === r.id)
+                      .map((a) => (
                         <li
                           key={a.id}
                           className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs"
@@ -483,7 +482,7 @@ function TaskDetail() {
                               {formatBytes(a.file_size)}
                             </span>
                           </button>
-                          {(user?.id === a.uploaded_by) && (
+                          {user?.id === a.uploaded_by && (
                             <button
                               type="button"
                               className="text-muted-foreground hover:text-destructive"
@@ -495,9 +494,8 @@ function TaskDetail() {
                           )}
                         </li>
                       ))}
-                    </ul>
-                  );
-                })()}
+                  </ul>
+                )}
               </li>
             ))}
           </ol>
