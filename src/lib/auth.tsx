@@ -61,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const hasRole = (r: AppRole | AppRole[]) => {
+    if (roles.includes("admin" as AppRole)) return true;
     const arr = Array.isArray(r) ? r : [r];
     return arr.some((x) => roles.includes(x));
   };
