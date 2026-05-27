@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3, Lock, Activ
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import delapanLogo from "@/assets/delapan-logo.png";
+import { PublicStatsSection } from "@/components/PublicStatsSection";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -117,6 +118,8 @@ function Landing() {
           </p>
         </div>
       </div>
+
+      <PublicStatsSection />
 
       {/* Features */}
       <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
