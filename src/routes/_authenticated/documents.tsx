@@ -748,12 +748,48 @@ function DocumentsPage() {
         )}
       </div>
 
-      {/* Results count */}
-      {!loading && visibleRows.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          Menampilkan {filteredRows.length} dari {visibleRows.length} dokumen yang dapat Anda akses
-        </p>
+      {/* Bulk selection toolbar */}
+      {!loading && filteredRows.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-3 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button type="button" variant="outline" size="sm" onClick={toggleSelectAllVisible}>
+              {allVisibleSelected ? (
+                <CheckSquare className="h-4 w-4 mr-2" />
+              ) : (
+                <Square className="h-4 w-4 mr-2" />
+              )}
+              {allVisibleSelected ? "Batalkan semua" : "Pilih semua tampilan"}
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              {selectedIds.size > 0
+                ? `${selectedIds.size} dokumen dipilih`
+                : `Menampilkan ${filteredRows.length} dari ${visibleRows.length} dokumen`}
+            </span>
+          </div>
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkCSV} disabled={bulkBusy}>
+                <FileSpreadsheet className="h-4 w-4 mr-2" /> Ekspor CSV
+              </Button>
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkPDFs} disabled={bulkBusy}>
+                {bulkBusy ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <FileDown className="h-4 w-4 mr-2" />
+                )}
+                Ekspor PDF ({selectedIds.size})
+              </Button>
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkDownloadFiles} disabled={bulkBusy}>
+                <Download className="h-4 w-4 mr-2" /> Unduh Berkas
+              </Button>
+              <Button type="button" size="sm" variant="ghost" onClick={clearSelection}>
+                <X className="h-4 w-4 mr-1" /> Bersihkan
+              </Button>
+            </div>
+          )}
+        </div>
       )}
+
 
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
