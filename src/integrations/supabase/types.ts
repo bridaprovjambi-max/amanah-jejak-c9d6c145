@@ -314,6 +314,63 @@ export type Database = {
         }
         Relationships: []
       }
+      task_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          mentioned_user_ids: string[]
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          mentioned_user_ids?: string[]
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          mentioned_user_ids?: string[]
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      task_status_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          from_status: Database["public"]["Enums"]["task_status"] | null
+          id: string
+          task_id: string
+          to_status: Database["public"]["Enums"]["task_status"]
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["task_status"] | null
+          id?: string
+          task_id: string
+          to_status: Database["public"]["Enums"]["task_status"]
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["task_status"] | null
+          id?: string
+          task_id?: string
+          to_status?: Database["public"]["Enums"]["task_status"]
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assigned_by: string
