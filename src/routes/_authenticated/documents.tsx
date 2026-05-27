@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown } from "lucide-react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -57,10 +57,60 @@ function formatSize(b: number) {
   return `${(b / 1024 / 1024).toFixed(2)} MB`;
 }
 
+/**
+ * Folder permission matrix per echelon/role.
+ * - `view`: folders the user can see
+ * - `manage`: folders the user can upload into (delete tetap berdasarkan uploader / leader)
+ */
+function getFolderPermissions(args: {
+  jenjang?: string;
+  isAdmin: boolean;
+  isKepala: boolean;
+  isSekretaris: boolean;
+  isKasubbag: boolean;
+  isJafung: boolean;
+  pokjaName?: string | null;
+}): { view: FolderName[]; manage: FolderName[] } {
+  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName } = args;
+
+  // Pimpinan & admin: akses penuh
+  if (isAdmin || isKepala || jenjang === "eselon_ii") {
+    return { view: [...FOLDERS], manage: [...FOLDERS] };
+  }
+  if (isSekretaris || jenjang === "eselon_iii") {
+    return {
+      view: [...FOLDERS],
+      manage: ["Sekretaris", "Kasubbag", "Pokja Riset", "Pokja Inovasi", "Jafung", "Staf", "Umum"],
+    };
+  }
+  if (isKasubbag || jenjang === "eselon_iv") {
+    return {
+      view: ["Sekretaris", "Kasubbag", "Staf", "Umum"],
+      manage: ["Kasubbag", "Staf", "Umum"],
+    };
+  }
+  if (jenjang === "pokja") {
+    const name = (pokjaName ?? "").toLowerCase();
+    const own: FolderName = name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
+    return {
+      view: ["Pokja Riset", "Pokja Inovasi", "Umum"],
+      manage: [own, "Umum"],
+    };
+  }
+  if (isJafung || jenjang === "jafung") {
+    return { view: ["Jafung", "Umum"], manage: ["Jafung", "Umum"] };
+  }
+  if (jenjang === "staf") {
+    return { view: ["Staf", "Umum"], manage: ["Staf", "Umum"] };
+  }
+  return { view: ["Umum"], manage: ["Umum"] };
+}
+
 function DocumentsPage() {
   const { profile, hasRole } = useAuth();
   const [rows, setRows] = useState<DocRow[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
+  const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
@@ -82,15 +132,50 @@ function DocumentsPage() {
   const [dateTo, setDateTo] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
 
+  const permissions = useMemo(
+    () =>
+      getFolderPermissions({
+        jenjang: profile?.jenjang,
+        isAdmin: hasRole("admin"),
+        isKepala: hasRole("kepala"),
+        isSekretaris: hasRole("sekretaris"),
+        isKasubbag: hasRole("kasubbag"),
+        isJafung: hasRole("jafung_member"),
+        pokjaName: profile?.pokja_id ? pokjaMap[profile.pokja_id] : null,
+      }),
+    [profile, hasRole, pokjaMap],
+  );
+
+  const viewSet = useMemo(() => new Set<string>(permissions.view), [permissions]);
+  const manageSet = useMemo(() => new Set<string>(permissions.manage), [permissions]);
+
+  // Pastikan folder upload default selalu folder yang diizinkan
+  useEffect(() => {
+    if (permissions.manage.length && !manageSet.has(folder)) {
+      setFolder(permissions.manage[0]);
+    }
+  }, [permissions, manageSet, folder]);
+
+  // Reset filter folder jika user tidak punya akses
+  useEffect(() => {
+    if (activeFolder !== "ALL" && !viewSet.has(activeFolder)) {
+      setActiveFolder("ALL");
+    }
+  }, [activeFolder, viewSet]);
+
   const load = async () => {
-    const [{ data: d }, { data: p }] = await Promise.all([
+    const [{ data: d }, { data: p }, { data: pk }] = await Promise.all([
       supabase.from("documents").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("id, full_name"),
+      supabase.from("pokja").select("id, name"),
     ]);
     setRows((d as DocRow[]) ?? []);
     const u: Record<string, string> = {};
     (p ?? []).forEach((x: { id: string; full_name: string }) => (u[x.id] = x.full_name));
     setUsers(u);
+    const pm: Record<string, string> = {};
+    (pk ?? []).forEach((x: { id: string; name: string }) => (pm[x.id] = x.name));
+    setPokjaMap(pm);
     setLoading(false);
   };
 
@@ -98,8 +183,14 @@ function DocumentsPage() {
     load();
   }, []);
 
+  // Hanya tampilkan dokumen dari folder yang boleh dilihat user
+  const visibleRows = useMemo(
+    () => rows.filter((r) => viewSet.has((r.folder || "Umum") as FolderName)),
+    [rows, viewSet],
+  );
+
   const filteredRows = useMemo(() => {
-    return rows.filter((r) => {
+    return visibleRows.filter((r) => {
       const q = searchQuery.trim().toLowerCase();
       const matchTitle = q ? r.title.toLowerCase().includes(q) : true;
       const matchUploader = selectedUploader ? r.uploaded_by === selectedUploader : true;
@@ -109,17 +200,17 @@ function DocumentsPage() {
       const matchFolder = activeFolder === "ALL" ? true : (r.folder || "Umum") === activeFolder;
       return matchTitle && matchUploader && matchDateFrom && matchDateTo && matchFolder;
     });
-  }, [rows, searchQuery, selectedUploader, dateFrom, dateTo, activeFolder]);
+  }, [visibleRows, searchQuery, selectedUploader, dateFrom, dateTo, activeFolder]);
 
   const folderCounts = useMemo(() => {
     const c: Record<string, number> = {};
     FOLDERS.forEach((f) => (c[f] = 0));
-    rows.forEach((r) => {
+    visibleRows.forEach((r) => {
       const k = (r.folder || "Umum") as FolderName;
       c[k] = (c[k] ?? 0) + 1;
     });
     return c;
-  }, [rows]);
+  }, [visibleRows]);
 
   const groupedByFolder = useMemo(() => {
     const g: Record<string, DocRow[]> = {};
@@ -152,6 +243,10 @@ function DocumentsPage() {
     if (!file || !profile) return;
     if (!title.trim()) {
       toast.error("Judul wajib diisi");
+      return;
+    }
+    if (!manageSet.has(folder)) {
+      toast.error(`Anda tidak memiliki izin mengunggah ke folder "${folder}"`);
       return;
     }
     if (file.size > MAX_SIZE) {
@@ -217,93 +312,106 @@ function DocumentsPage() {
   };
 
   const canDelete = (row: DocRow) =>
-    profile?.id === row.uploaded_by || hasRole(["admin", "kepala", "sekretaris"]);
+    (profile?.id === row.uploaded_by && manageSet.has((row.folder || "Umum") as FolderName)) ||
+    hasRole(["admin", "kepala", "sekretaris"]);
 
   const uploaderOptions = useMemo(() => {
     const map: Record<string, string> = {};
-    rows.forEach((r) => {
+    visibleRows.forEach((r) => {
       map[r.uploaded_by] = users[r.uploaded_by] ?? "Pengguna";
     });
     return Object.entries(map).sort((a, b) => a[1].localeCompare(b[1]));
-  }, [rows, users]);
+  }, [visibleRows, users]);
+
+  const visibleFolders = useMemo(() => FOLDERS.filter((f) => viewSet.has(f)), [viewSet]);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl lg:text-3xl font-bold">Dokumen</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Unggah dan bagikan dokumen ke seluruh pengguna BRIDA.
+          Akses dokumen disesuaikan dengan jenjang & peran Anda di BRIDA.
         </p>
+        <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
+          <Lock className="h-3 w-3" />
+          Akses folder Anda: {permissions.view.length === FOLDERS.length ? "Semua folder" : permissions.view.join(", ")}
+        </div>
       </div>
 
-      <form
-        onSubmit={handleUpload}
-        className="rounded-2xl border border-border bg-card p-5 shadow-sm space-y-4"
-      >
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="title">Judul Dokumen *</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Contoh: Laporan Kegiatan Triwulan I"
-              maxLength={200}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="file">Berkas (maks. 25MB) *</Label>
-            <Input
-              id="file"
-              ref={fileRef}
-              type="file"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </div>
+      {permissions.manage.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm text-muted-foreground">
+          Anda tidak memiliki izin untuk mengunggah dokumen. Hubungi pimpinan untuk akses lebih lanjut.
         </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="folder">Folder / Tim *</Label>
-            <select
-              id="folder"
-              value={folder}
-              onChange={(e) => setFolder(e.target.value as FolderName)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              {FOLDERS.map((f) => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
-            <p className="text-[11px] text-muted-foreground">{FOLDER_HINT[folder]}</p>
+      ) : (
+        <form
+          onSubmit={handleUpload}
+          className="rounded-2xl border border-border bg-card p-5 shadow-sm space-y-4"
+        >
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="title">Judul Dokumen *</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Contoh: Laporan Kegiatan Triwulan I"
+                maxLength={200}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="file">Berkas (maks. 25MB) *</Label>
+              <Input
+                id="file"
+                ref={fileRef}
+                type="file"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="desc">Deskripsi</Label>
-            <Textarea
-              id="desc"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Keterangan singkat tentang dokumen…"
-              rows={2}
-              maxLength={500}
-            />
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="folder">Folder / Tim *</Label>
+              <select
+                id="folder"
+                value={folder}
+                onChange={(e) => setFolder(e.target.value as FolderName)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                {permissions.manage.map((f) => (
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-muted-foreground">{FOLDER_HINT[folder]}</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="desc">Deskripsi</Label>
+              <Textarea
+                id="desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Keterangan singkat tentang dokumen…"
+                rows={2}
+                maxLength={500}
+              />
+            </div>
           </div>
-        </div>
-        <div className="flex justify-end">
-          <Button type="submit" disabled={uploading || !file}>
-            {uploading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Mengunggah…
-              </>
-            ) : (
-              <>
-                <Upload className="mr-2 h-4 w-4" /> Unggah ke {folder}
-              </>
-            )}
-          </Button>
-        </div>
-      </form>
+          <div className="flex justify-end">
+            <Button type="submit" disabled={uploading || !file}>
+              {uploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Mengunggah…
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" /> Unggah ke {folder}
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      )}
 
       {/* Folder chips */}
       <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
@@ -321,10 +429,11 @@ function DocumentsPage() {
                 : "border-border bg-background hover:border-primary/40"
             }`}
           >
-            Semua <span className="opacity-70">({rows.length})</span>
+            Semua <span className="opacity-70">({visibleRows.length})</span>
           </button>
-          {FOLDERS.map((f) => {
+          {visibleFolders.map((f) => {
             const active = activeFolder === f;
+            const canManage = manageSet.has(f);
             return (
               <button
                 key={f}
@@ -335,8 +444,9 @@ function DocumentsPage() {
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background hover:border-primary/40"
                 }`}
+                title={canManage ? "Anda dapat mengunggah ke folder ini" : "Hanya baca"}
               >
-                <Folder className="h-3.5 w-3.5" />
+                {canManage ? <Folder className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
                 {f} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
               </button>
             );
@@ -423,18 +533,18 @@ function DocumentsPage() {
       </div>
 
       {/* Results count */}
-      {!loading && rows.length > 0 && (
+      {!loading && visibleRows.length > 0 && (
         <p className="text-xs text-muted-foreground">
-          Menampilkan {filteredRows.length} dari {rows.length} dokumen
+          Menampilkan {filteredRows.length} dari {visibleRows.length} dokumen yang dapat Anda akses
         </p>
       )}
 
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
-      ) : rows.length === 0 ? (
+      ) : visibleRows.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
           <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
-          <p className="mt-3 text-sm text-muted-foreground">Belum ada dokumen yang diunggah.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Belum ada dokumen pada folder yang dapat Anda akses.</p>
         </div>
       ) : filteredRows.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
@@ -446,10 +556,11 @@ function DocumentsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {(activeFolder === "ALL" ? FOLDERS : [activeFolder]).map((f) => {
+          {(activeFolder === "ALL" ? visibleFolders : [activeFolder]).map((f) => {
             const items = groupedByFolder[f] ?? [];
             if (items.length === 0) return null;
             const isOpen = expanded[f] ?? true;
+            const canManage = manageSet.has(f);
             return (
               <div key={f} className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
                 <button
@@ -465,6 +576,11 @@ function DocumentsPage() {
                     )}
                     <FolderOpen className="h-4 w-4 text-primary shrink-0" />
                     <span className="font-display font-semibold text-sm truncate">{f}</span>
+                    {!canManage && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <Lock className="h-3 w-3" /> Hanya baca
+                      </span>
+                    )}
                     <span className="text-xs text-muted-foreground hidden sm:inline truncate">
                       · {FOLDER_HINT[f]}
                     </span>
