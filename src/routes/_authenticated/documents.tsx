@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, useRef } from "react";
-import { FileText, Upload, Download, Trash2, Loader2 } from "lucide-react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,13 @@ function DocumentsPage() {
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Search & filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUploader, setSelectedUploader] = useState<string>("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
+
   const load = async () => {
     const [{ data: d }, { data: p }] = await Promise.all([
       supabase.from("documents").select("*").order("created_at", { ascending: false }),
@@ -59,6 +66,34 @@ function DocumentsPage() {
   useEffect(() => {
     load();
   }, []);
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      const q = searchQuery.trim().toLowerCase();
+      const matchTitle = q ? r.title.toLowerCase().includes(q) : true;
+      const matchUploader = selectedUploader ? r.uploaded_by === selectedUploader : true;
+      const rDate = new Date(r.created_at).toISOString().slice(0, 10);
+      const matchDateFrom = dateFrom ? rDate >= dateFrom : true;
+      const matchDateTo = dateTo ? rDate <= dateTo : true;
+      return matchTitle && matchUploader && matchDateFrom && matchDateTo;
+    });
+  }, [rows, searchQuery, selectedUploader, dateFrom, dateTo]);
+
+  const activeFilterCount = useMemo(() => {
+    let c = 0;
+    if (searchQuery.trim()) c++;
+    if (selectedUploader) c++;
+    if (dateFrom) c++;
+    if (dateTo) c++;
+    return c;
+  }, [searchQuery, selectedUploader, dateFrom, dateTo]);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedUploader("");
+    setDateFrom("");
+    setDateTo("");
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,6 +166,14 @@ function DocumentsPage() {
   const canDelete = (row: DocRow) =>
     profile?.id === row.uploaded_by || hasRole(["admin", "kepala", "sekretaris"]);
 
+  const uploaderOptions = useMemo(() => {
+    const map: Record<string, string> = {};
+    rows.forEach((r) => {
+      map[r.uploaded_by] = users[r.uploaded_by] ?? "Pengguna";
+    });
+    return Object.entries(map).sort((a, b) => a[1].localeCompare(b[1]));
+  }, [rows, users]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -191,6 +234,91 @@ function DocumentsPage() {
         </div>
       </form>
 
+      {/* Search & Filter Bar */}
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm space-y-4">
+        <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari judul dokumen…"
+              className="pl-9 w-full"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters((s) => !s)}
+              className="shrink-0"
+            >
+              <CalendarDays className="mr-2 h-4 w-4" />
+              Filter {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </Button>
+            {activeFilterCount > 0 && (
+              <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
+                Hapus Filter
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {showFilters && (
+          <div className="grid gap-4 sm:grid-cols-3 pt-2 border-t border-border">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Uploader</Label>
+              <select
+                value={selectedUploader}
+                onChange={(e) => setSelectedUploader(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">Semua Uploader</option>
+                {uploaderOptions.map(([uid, name]) => (
+                  <option key={uid} value={uid}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Tanggal Dari</Label>
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Tanggal Sampai</Label>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Results count */}
+      {!loading && rows.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          Menampilkan {filteredRows.length} dari {rows.length} dokumen
+        </p>
+      )}
+
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
       ) : rows.length === 0 ? (
@@ -198,10 +326,18 @@ function DocumentsPage() {
           <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
           <p className="mt-3 text-sm text-muted-foreground">Belum ada dokumen yang diunggah.</p>
         </div>
+      ) : filteredRows.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
+          <Search className="mx-auto h-10 w-10 text-muted-foreground/50" />
+          <p className="mt-3 text-sm text-muted-foreground">Tidak ada dokumen yang cocok dengan filter Anda.</p>
+          <Button variant="outline" size="sm" className="mt-3" onClick={clearFilters}>
+            Hapus Filter
+          </Button>
+        </div>
       ) : (
         <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           <ul className="divide-y divide-border">
-            {rows.map((r) => (
+            {filteredRows.map((r) => (
               <li key={r.id} className="flex items-start gap-4 px-5 py-4">
                 <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
                   <FileText className="h-5 w-5" />
