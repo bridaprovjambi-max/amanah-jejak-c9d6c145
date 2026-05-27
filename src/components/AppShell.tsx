@@ -19,7 +19,7 @@ import {
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import delapanLogo from "@/assets/delapan-logo.svg";
+import delapanLogo from "@/assets/delapan-logo.png";
 
 interface NavItem {
   to: string;

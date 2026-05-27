@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import delapanLogo from "@/assets/delapan-logo.svg";
+import delapanLogo from "@/assets/delapan-logo.png";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
 
