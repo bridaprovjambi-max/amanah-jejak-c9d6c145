@@ -467,11 +467,12 @@ function DocumentsPage() {
               >
                 {permissions.manage.map((f) => (
                   <option key={f} value={f}>
-                    {f}
+                    {folderName(f)}
                   </option>
                 ))}
               </select>
-              <p className="text-[11px] text-muted-foreground">{FOLDER_HINT[folder]}</p>
+              <p className="text-[11px] text-muted-foreground">{folderHint(folder)}</p>
+
             </div>
             <div className="space-y-2">
               <Label htmlFor="desc">Deskripsi</Label>
