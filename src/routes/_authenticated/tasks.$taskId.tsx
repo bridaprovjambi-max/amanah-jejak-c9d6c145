@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge, PriorityBadge, type TaskStatus } from "@/components/StatusBadge";
+import { TaskComments } from "@/components/TaskComments";
 
 export const Route = createFileRoute("/_authenticated/tasks/$taskId")({
   component: TaskDetail,
