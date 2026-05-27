@@ -106,9 +106,30 @@ function DocumentsPage() {
       const rDate = new Date(r.created_at).toISOString().slice(0, 10);
       const matchDateFrom = dateFrom ? rDate >= dateFrom : true;
       const matchDateTo = dateTo ? rDate <= dateTo : true;
-      return matchTitle && matchUploader && matchDateFrom && matchDateTo;
+      const matchFolder = activeFolder === "ALL" ? true : (r.folder || "Umum") === activeFolder;
+      return matchTitle && matchUploader && matchDateFrom && matchDateTo && matchFolder;
     });
-  }, [rows, searchQuery, selectedUploader, dateFrom, dateTo]);
+  }, [rows, searchQuery, selectedUploader, dateFrom, dateTo, activeFolder]);
+
+  const folderCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    FOLDERS.forEach((f) => (c[f] = 0));
+    rows.forEach((r) => {
+      const k = (r.folder || "Umum") as FolderName;
+      c[k] = (c[k] ?? 0) + 1;
+    });
+    return c;
+  }, [rows]);
+
+  const groupedByFolder = useMemo(() => {
+    const g: Record<string, DocRow[]> = {};
+    FOLDERS.forEach((f) => (g[f] = []));
+    filteredRows.forEach((r) => {
+      const k = (r.folder || "Umum") as FolderName;
+      (g[k] ??= []).push(r);
+    });
+    return g;
+  }, [filteredRows]);
 
   const activeFilterCount = useMemo(() => {
     let c = 0;
