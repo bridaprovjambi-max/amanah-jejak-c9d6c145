@@ -73,11 +73,14 @@ function TaskDetail() {
   const notify = useServerFn(sendTelegramNotification);
   const [task, setTask] = useState<Task | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
   const [progress, setProgress] = useState(0);
   const [reportStatus, setReportStatus] = useState<TaskStatus>("in_progress");
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
