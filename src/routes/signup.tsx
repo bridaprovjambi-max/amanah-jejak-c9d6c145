@@ -50,6 +50,8 @@ function SignupPage() {
         data: {
           full_name: parsed.data.full_name,
           jabatan: parsed.data.jabatan ?? "",
+          nip: parsed.data.nip ?? "",
+          pangkat_golongan: parsed.data.pangkat_golongan ?? "",
         },
       },
     });
