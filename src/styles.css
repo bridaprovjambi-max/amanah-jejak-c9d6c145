@@ -49,52 +49,60 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
-  /* Ocean Deep palette
-     #0c2340 navy  · #1a4a6e mid · #2d8a9e teal · #5cbdb9 aqua */
+  /* Navy Trust + subtle warm cream — elegant institutional palette */
 
-  /* Surfaces — crisp neutral with cool tint */
-  --background: oklch(0.985 0.004 230);
-  --foreground: oklch(0.21 0.06 255);
+  /* Surfaces — warm off-white with paper feel */
+  --background: oklch(0.985 0.005 90);
+  --foreground: oklch(0.22 0.05 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.06 255);
+  --card-foreground: oklch(0.22 0.05 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.06 255);
+  --popover-foreground: oklch(0.22 0.05 255);
 
-  /* Brand — deep navy primary, warm orange accent (from logo) */
-  --primary: oklch(0.21 0.06 255);            /* #0c2340 */
-  --primary-foreground: oklch(0.985 0.004 230);
-  --primary-soft: oklch(0.93 0.025 215);
+  /* Brand — deep navy primary, refined gold accent */
+  --primary: oklch(0.22 0.06 255);
+  --primary-foreground: oklch(0.985 0.005 90);
+  --primary-soft: oklch(0.94 0.02 235);
 
-  --secondary: oklch(0.96 0.012 230);
-  --secondary-foreground: oklch(0.21 0.06 255);
-  --muted: oklch(0.96 0.008 230);
-  --muted-foreground: oklch(0.5 0.025 240);
-  --accent: oklch(0.72 0.18 50);               /* warm orange */
-  --accent-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.97 0.008 90);
+  --secondary-foreground: oklch(0.22 0.05 255);
+  --muted: oklch(0.965 0.008 90);
+  --muted-foreground: oklch(0.5 0.02 240);
+  --accent: oklch(0.72 0.12 80);
+  --accent-foreground: oklch(0.15 0.04 80);
 
-  --brand-blue: oklch(0.62 0.18 250);
+  --brand-blue: oklch(0.45 0.12 250);
+  --brand-gold: oklch(0.72 0.12 80);
   --brand-orange: oklch(0.72 0.18 50);
 
   --destructive: oklch(0.58 0.21 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --success: oklch(0.62 0.14 160);
+  --success: oklch(0.55 0.12 160);
   --success-foreground: oklch(0.99 0 0);
   --warning: oklch(0.74 0.15 75);
   --warning-foreground: oklch(0.2 0.04 75);
 
-  --border: oklch(0.9 0.012 230);
-  --input: oklch(0.92 0.012 230);
-  --ring: oklch(0.55 0.08 215);
+  --border: oklch(0.91 0.008 240);
+  --input: oklch(0.93 0.008 240);
+  --ring: oklch(0.55 0.08 250);
 
-  /* Sidebar — institutional deep navy */
-  --sidebar: oklch(0.21 0.06 255);              /* #0c2340 */
-  --sidebar-foreground: oklch(0.93 0.015 220);
-  --sidebar-accent: oklch(0.36 0.08 245);       /* #1a4a6e */
+  /* Sidebar — institutional deep navy with subtle gradient */
+  --sidebar: oklch(0.2 0.055 255);
+  --sidebar-foreground: oklch(0.94 0.012 220);
+  --sidebar-accent: oklch(0.32 0.07 250);
   --sidebar-accent-foreground: oklch(0.985 0.005 220);
-  --sidebar-border: oklch(0.3 0.05 245);
+  --sidebar-border: oklch(0.28 0.05 250);
+
+  /* Elegant shadows & gradients */
+  --shadow-elegant: 0 1px 2px oklch(0.22 0.06 255 / 0.04), 0 8px 24px -8px oklch(0.22 0.06 255 / 0.08);
+  --shadow-card: 0 1px 0 oklch(0.22 0.06 255 / 0.03), 0 1px 3px oklch(0.22 0.06 255 / 0.05);
+  --shadow-gold: 0 4px 16px -4px oklch(0.72 0.12 80 / 0.35);
+  --gradient-sidebar: linear-gradient(180deg, oklch(0.2 0.055 255) 0%, oklch(0.16 0.05 255) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.13 85), oklch(0.65 0.13 70));
 }
+
 
 .dark {
   --background: oklch(0.18 0.04 250);
