@@ -533,6 +533,14 @@ function TaskDetail() {
         </div>
       </form>
 
+      {!task.parent_task_id && (
+        <SubTasks
+          parentTaskId={task.id}
+          parentAssignedBy={task.assigned_by}
+          profiles={Object.entries(users).map(([id, u]) => ({ id, full_name: u.name }))}
+        />
+      )}
+
       <TaskComments
         taskId={task.id}
         taskTitle={task.title}
