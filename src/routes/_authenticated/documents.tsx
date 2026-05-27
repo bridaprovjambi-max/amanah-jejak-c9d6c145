@@ -188,6 +188,18 @@ function DocumentsPage() {
   const runAnalyze = useServerFn(analyzeDocument);
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
   const [expandedAnalysis, setExpandedAnalysis] = useState<Record<string, boolean>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const clearSelection = () => setSelectedIds(new Set());
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
