@@ -729,41 +729,98 @@ function DocumentsPage() {
                 </button>
                 {isOpen && (
                   <ul className="divide-y divide-border">
-                    {items.map((r) => (
-                      <li key={r.id} className="flex items-start gap-4 px-5 py-4">
-                        <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium truncate">{r.title}</p>
-                          {r.description && (
-                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                              {r.description}
+                    {items.map((r) => {
+                      const isAnalyzing = analyzingId === r.id || r.ai_status === "running";
+                      const hasAnalysis = r.ai_status === "done" && !!r.ai_summary;
+                      const isOpenAnalysis = expandedAnalysis[r.id] ?? false;
+                      return (
+                      <li key={r.id} className="px-5 py-4">
+                        <div className="flex items-start gap-4">
+                          <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
+                            <FileText className="h-5 w-5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="font-medium truncate">{r.title}</p>
+                              {hasAnalysis && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-brand-gradient text-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                                  <Sparkles className="h-3 w-3" /> AI
+                                </span>
+                              )}
+                              {r.ai_status === "error" && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 text-destructive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                                  <AlertCircle className="h-3 w-3" /> AI gagal
+                                </span>
+                              )}
+                            </div>
+                            {r.description && (
+                              <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                                {r.description}
+                              </p>
+                            )}
+                            <p className="text-[11px] text-muted-foreground mt-1">
+                              {r.file_name} · {formatSize(r.file_size)} ·{" "}
+                              diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
+                              {new Date(r.created_at).toLocaleString("id-ID")}
                             </p>
-                          )}
-                          <p className="text-[11px] text-muted-foreground mt-1">
-                            {r.file_name} · {formatSize(r.file_size)} ·{" "}
-                            diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
-                            {new Date(r.created_at).toLocaleString("id-ID")}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
-                            <Download className="h-4 w-4" />
-                          </Button>
-                          {canDelete(r) && (
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
                             <Button
-                              variant="ghost"
+                              variant={hasAnalysis ? "outline" : "default"}
                               size="sm"
-                              onClick={() => handleDelete(r)}
-                              className="text-destructive hover:text-destructive"
+                              onClick={() =>
+                                hasAnalysis
+                                  ? setExpandedAnalysis((s) => ({ ...s, [r.id]: !isOpenAnalysis }))
+                                  : handleAnalyze(r)
+                              }
+                              disabled={isAnalyzing}
+                              title={hasAnalysis ? "Lihat hasil analisis" : "Analisis dengan AI"}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              {isAnalyzing ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : hasAnalysis ? (
+                                isOpenAnalysis ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <Sparkles className="h-4 w-4" />
+                              )}
+                              <span className="ml-1 hidden sm:inline">
+                                {isAnalyzing ? "Menganalisis…" : hasAnalysis ? "Analisis" : "Analisis AI"}
+                              </span>
                             </Button>
-                          )}
+                            <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            {canDelete(r) && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(r)}
+                                className="text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
+
+                        {hasAnalysis && isOpenAnalysis && (
+                          <AnalysisPanel row={r} onReanalyze={() => handleAnalyze(r)} busy={isAnalyzing} />
+                        )}
+                        {r.ai_status === "error" && r.ai_error && (
+                          <div className="mt-3 ml-14 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive flex items-start justify-between gap-2">
+                            <span>{r.ai_error}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleAnalyze(r)}
+                              className="font-semibold underline shrink-0"
+                            >
+                              Coba lagi
+                            </button>
+                          </div>
+                        )}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 )}
               </div>
