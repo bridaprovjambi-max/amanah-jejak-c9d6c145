@@ -234,10 +234,11 @@ function DocumentsPage() {
   }, [activeFolder, viewSet]);
 
   const load = async () => {
-    const [{ data: d }, { data: p }, { data: pk }] = await Promise.all([
+    const [{ data: d }, { data: p }, { data: pk }, { data: fl }] = await Promise.all([
       supabase.from("documents").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("id, full_name"),
       supabase.from("pokja").select("id, name"),
+      supabase.from("document_folders").select("slug, name, hint, sort_order").order("sort_order"),
     ]);
     setRows((d as DocRow[]) ?? []);
     const u: Record<string, string> = {};
@@ -246,6 +247,15 @@ function DocumentsPage() {
     const pm: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (pm[x.id] = x.name));
     setPokjaMap(pm);
+    const folderRows = (fl as FolderMeta[]) ?? [];
+    setFolders(folderRows);
+    setExpanded((prev) => {
+      const next = { ...prev };
+      folderRows.forEach((f) => {
+        if (next[f.slug] === undefined) next[f.slug] = true;
+      });
+      return next;
+    });
     setLoading(false);
   };
 
@@ -274,23 +284,24 @@ function DocumentsPage() {
 
   const folderCounts = useMemo(() => {
     const c: Record<string, number> = {};
-    FOLDERS.forEach((f) => (c[f] = 0));
+    allSlugs.forEach((f) => (c[f] = 0));
     visibleRows.forEach((r) => {
       const k = (r.folder || "Umum") as FolderName;
       c[k] = (c[k] ?? 0) + 1;
     });
     return c;
-  }, [visibleRows]);
+  }, [visibleRows, allSlugs]);
 
   const groupedByFolder = useMemo(() => {
     const g: Record<string, DocRow[]> = {};
-    FOLDERS.forEach((f) => (g[f] = []));
+    allSlugs.forEach((f) => (g[f] = []));
     filteredRows.forEach((r) => {
       const k = (r.folder || "Umum") as FolderName;
       (g[k] ??= []).push(r);
     });
     return g;
-  }, [filteredRows]);
+  }, [filteredRows, allSlugs]);
+
 
   const activeFilterCount = useMemo(() => {
     let c = 0;
