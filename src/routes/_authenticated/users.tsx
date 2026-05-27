@@ -21,6 +21,8 @@ interface Row {
   jabatan: string | null;
   jenjang: Jenjang;
   pokja_id: string | null;
+  nip: string | null;
+  pangkat_golongan: string | null;
 }
 
 function UsersPage() {
