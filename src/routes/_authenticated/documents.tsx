@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, useRef } from "react";
-import { FileText, Upload, Download, Trash2, Loader2 } from "lucide-react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,13 @@ function DocumentsPage() {
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Search & filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUploader, setSelectedUploader] = useState<string>("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const load = async () => {
     const [{ data: d }, { data: p }] = await Promise.all([
