@@ -20,6 +20,8 @@ import {
 import { StatusBadge, PriorityBadge, type TaskStatus } from "@/components/StatusBadge";
 import { TaskComments } from "@/components/TaskComments";
 
+import { SubTasks } from "@/components/SubTasks";
+
 export const Route = createFileRoute("/_authenticated/tasks/$taskId")({
   component: TaskDetail,
 });
@@ -34,8 +36,15 @@ interface Task {
   assigned_by: string;
   assigned_to: string | null;
   assigned_to_pokja: string | null;
+  parent_task_id: string | null;
   created_at: string;
 }
+
+interface ParentLite {
+  id: string;
+  title: string;
+}
+
 
 interface Report {
   id: string;
