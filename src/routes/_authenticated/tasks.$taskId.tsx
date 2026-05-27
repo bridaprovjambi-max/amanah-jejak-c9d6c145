@@ -173,7 +173,7 @@ function TaskDetail() {
   const removePendingFile = (idx: number) =>
     setPendingFiles((prev) => prev.filter((_, i) => i !== idx));
 
-  const downloadAttachment = async (att: Attachment) => {
+  const downloadAttachment = async (att: { file_path: string }) => {
     const { data, error } = await supabase.storage.from("documents").createSignedUrl(att.file_path, 60);
     if (error || !data) {
       toast.error(error?.message ?? "Gagal membuat tautan unduh");
@@ -188,6 +188,15 @@ function TaskDetail() {
     if (dbErr) return toast.error(dbErr.message);
     await supabase.storage.from("documents").remove([att.file_path]);
     setAttachments((prev) => prev.filter((x) => x.id !== att.id));
+    toast.success("Lampiran dihapus");
+  };
+
+  const deleteTaskAttachment = async (att: TaskAttachment) => {
+    if (!confirm(`Hapus lampiran "${att.file_name}"?`)) return;
+    const { error: dbErr } = await supabase.from("task_attachments").delete().eq("id", att.id);
+    if (dbErr) return toast.error(dbErr.message);
+    await supabase.storage.from("documents").remove([att.file_path]);
+    setTaskAttachments((prev) => prev.filter((x) => x.id !== att.id));
     toast.success("Lampiran dihapus");
   };
 
