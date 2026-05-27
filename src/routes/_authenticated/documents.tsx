@@ -831,3 +831,113 @@ function DocumentsPage() {
     </div>
   );
 }
+
+function AnalysisPanel({
+  row,
+  onReanalyze,
+  busy,
+}: {
+  row: DocRow;
+  onReanalyze: () => void;
+  busy: boolean;
+}) {
+  const ent = row.ai_entities ?? {};
+  const chips: { label: string; values: string[] }[] = [
+    { label: "Penulis", values: ent.authors ?? [] },
+    { label: "Lembaga", values: ent.institutions ?? [] },
+    { label: "Topik", values: ent.topics ?? [] },
+  ];
+  return (
+    <div className="mt-4 ml-0 sm:ml-14 rounded-xl border border-border bg-gradient-to-br from-primary-soft/40 to-background p-4 space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-brand-gradient" />
+          <h4 className="font-display text-sm font-bold text-primary">Analisis AI</h4>
+          {row.ai_analyzed_at && (
+            <span className="text-[10px] text-muted-foreground">
+              · {new Date(row.ai_analyzed_at).toLocaleString("id-ID")}
+            </span>
+          )}
+        </div>
+        <Button variant="ghost" size="sm" onClick={onReanalyze} disabled={busy}>
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+          <span className="ml-1 text-xs">Analisis ulang</span>
+        </Button>
+      </div>
+
+      {row.ai_summary && (
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+            Ringkasan
+          </p>
+          <p className="text-sm leading-relaxed text-foreground/90">{row.ai_summary}</p>
+        </div>
+      )}
+
+      {row.ai_key_points && row.ai_key_points.length > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1.5">
+            Poin Kunci
+          </p>
+          <ul className="space-y-1.5">
+            {row.ai_key_points.map((kp, i) => (
+              <li key={i} className="flex gap-2 text-sm">
+                <span className="text-primary font-bold shrink-0">{i + 1}.</span>
+                <span className="text-foreground/90">{kp.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(chips.some((c) => c.values.length > 0) || ent.year || ent.methodology || ent.location) && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {chips.map(
+            (c) =>
+              c.values.length > 0 && (
+                <div key={c.label}>
+                  <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                    {c.label}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {c.values.map((v, i) => (
+                      <span
+                        key={i}
+                        className="rounded-md bg-card border border-border px-2 py-0.5 text-xs"
+                      >
+                        {v}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ),
+          )}
+          {ent.year && (
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Tahun
+              </p>
+              <p className="text-sm">{ent.year}</p>
+            </div>
+          )}
+          {ent.location && (
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Lokasi
+              </p>
+              <p className="text-sm">{ent.location}</p>
+            </div>
+          )}
+          {ent.methodology && (
+            <div className="sm:col-span-2">
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Metodologi
+              </p>
+              <p className="text-sm text-foreground/90">{ent.methodology}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
