@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/kinerja")({
   component: KinerjaPage,
 });
 
-type Jenjang = "kepala" | "sekretaris" | "kepala_bidang" | "ketua_pokja" | "anggota_pokja" | "pokja";
+type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf" | "jafung";
 
 interface TaskRow {
   id: string;
