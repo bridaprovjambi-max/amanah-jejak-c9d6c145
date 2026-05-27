@@ -330,6 +330,18 @@ function TaskDetail() {
         <ArrowLeft className="mr-1.5 h-4 w-4" /> Kembali ke daftar
       </Link>
 
+      {parent && (
+        <Link
+          to="/tasks/$taskId"
+          params={{ taskId: parent.id }}
+          className="flex items-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-2 text-xs hover:border-primary hover:text-primary"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span className="text-muted-foreground">Sub-tugas dari:</span>
+          <span className="font-medium truncate">{parent.title}</span>
+        </Link>
+      )}
+
       <div className="rounded-2xl border border-border bg-card p-6 lg:p-8 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
