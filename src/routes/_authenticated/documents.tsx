@@ -494,7 +494,7 @@ function DocumentsPage() {
                 </>
               ) : (
                 <>
-                  <Upload className="mr-2 h-4 w-4" /> Unggah ke {folder}
+                  <Upload className="mr-2 h-4 w-4" /> Unggah ke {folderName(folder)}
                 </>
               )}
             </Button>
