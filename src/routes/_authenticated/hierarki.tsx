@@ -126,7 +126,7 @@ function HierarkiPage() {
                 />
                 <div className="mt-3 grid grid-cols-2 gap-2 w-full">
                   <div className="rounded-md border border-border bg-muted/40 px-2 py-1.5 text-center text-[11px] font-medium">
-                    Kelompok Kerja
+                    Kelompok Kerja Riset
                   </div>
                   <div className="rounded-md border border-border bg-muted/40 px-2 py-1.5 text-center text-[11px] font-medium">
                     Kelompok Kerja Inovasi
