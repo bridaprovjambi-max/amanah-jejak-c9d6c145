@@ -13,7 +13,10 @@ export const Route = createFileRoute("/_authenticated/documents")({
   component: DocumentsPage,
 });
 
-const FOLDERS = [
+// Folder slugs known to the permission matrix. Any folder NOT in this list
+// is treated as a custom folder: visible to everyone, manageable by leaders
+// + the uploader's own role-default folder.
+const KNOWN_FOLDERS = [
   "Kepala",
   "Sekretaris",
   "Kasubbag",
@@ -23,18 +26,15 @@ const FOLDERS = [
   "Staf",
   "Umum",
 ] as const;
-type FolderName = (typeof FOLDERS)[number];
+type FolderName = string;
 
-const FOLDER_HINT: Record<FolderName, string> = {
-  Kepala: "Dokumen pimpinan & kebijakan strategis",
-  Sekretaris: "Administrasi & koordinasi kesekretariatan",
-  Kasubbag: "Dokumen sub-bagian & operasional",
-  "Pokja Riset": "Materi & laporan kelompok kerja riset",
-  "Pokja Inovasi": "Materi & laporan kelompok kerja inovasi",
-  Jafung: "Dokumen jabatan fungsional",
-  Staf: "Dokumen staf pelaksana",
-  Umum: "Dokumen umum lintas tim",
-};
+interface FolderMeta {
+  slug: string;
+  name: string;
+  hint: string | null;
+  sort_order: number;
+}
+
 
 interface DocRow {
   id: string;
