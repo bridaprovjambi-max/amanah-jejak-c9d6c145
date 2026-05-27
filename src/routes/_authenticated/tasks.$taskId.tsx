@@ -132,12 +132,6 @@ function TaskDetail() {
     task.status !== "completed" && task.deadline && new Date(task.deadline) < new Date();
   const canDelete = user?.id === task.assigned_by;
 
-  const submitReport = async (e: FormEvent) => {
-    e.preventDefault();
-    if (content.trim().length < 3) {
-      toast.error("Isi laporan minimal 3 karakter");
-      return;
-    }
   const addFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const next = [...pendingFiles];
