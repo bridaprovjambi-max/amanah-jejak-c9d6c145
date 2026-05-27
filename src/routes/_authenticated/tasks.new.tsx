@@ -140,7 +140,10 @@ function NewTask() {
       deadline: parsed.data.deadline ? new Date(parsed.data.deadline).toISOString() : null,
     };
     const { data, error } = await supabase.from("tasks").insert(payload).select("id").single();
-    if (!error) {
+    if (!error && data) {
+      if (pendingFiles.length > 0) {
+        await uploadTaskAttachments(data.id);
+      }
       await supabase.from("activity_log").insert({
         user_id: user!.id,
         action: "create_task",
