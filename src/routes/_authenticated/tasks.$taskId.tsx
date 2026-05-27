@@ -517,24 +517,6 @@ function TaskDetail() {
   );
 }
 
-function UserMeta({
-  label,
-  user,
-  extra,
-}: {
-  label: string;
-  user?: string;
-  extra?: { nip: string | null; pangkat: string | null };
-}) {
-  return (
-    <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className="mt-1 font-medium">{user ?? "—"}</div>
-      {extra?.nip && <div className="text-[11px] text-muted-foreground">NIP: {extra.nip}</div>}
-      {extra?.pangkat && <div className="text-[11px] text-muted-foreground">{extra.pangkat}</div>}
-    </div>
-  );
-}
 
 function Meta({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
