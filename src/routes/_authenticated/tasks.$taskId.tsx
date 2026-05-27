@@ -76,6 +76,7 @@ function TaskDetail() {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
   const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
+  const [userExtras, setUserExtras] = useState<Record<string, { nip: string | null; pangkat: string | null }>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [content, setContent] = useState("");
   const [progress, setProgress] = useState(0);
@@ -516,6 +517,25 @@ function TaskDetail() {
           </ol>
         )}
       </div>
+    </div>
+  );
+}
+
+function UserMeta({
+  label,
+  user,
+  extra,
+}: {
+  label: string;
+  user?: string;
+  extra?: { nip: string | null; pangkat: string | null };
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 font-medium">{user ?? "—"}</div>
+      {extra?.nip && <div className="text-[11px] text-muted-foreground">NIP: {extra.nip}</div>}
+      {extra?.pangkat && <div className="text-[11px] text-muted-foreground">{extra.pangkat}</div>}
     </div>
   );
 }
