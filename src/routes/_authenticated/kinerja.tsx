@@ -241,46 +241,50 @@ function KinerjaPage() {
         ) : (
           <ol className="space-y-2">
             {userScores.slice(0, 20).map((u, i) => (
-              <li
-                key={u.id}
-                className="flex items-center gap-3 rounded-lg border border-border bg-background/50 p-3"
-              >
-                <RankBadge rank={i + 1} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline gap-x-2">
-                    <span className="font-medium truncate">{u.name}</span>
-                    <span className="text-[11px] text-muted-foreground">
-                      {JENJANG_LABEL[u.jenjang]}
-                    </span>
-                  </div>
-                  {u.jabatan && (
-                    <div className="text-[11px] text-muted-foreground truncate">{u.jabatan}</div>
-                  )}
-                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-primary transition-all"
-                      style={{ width: `${u.rate}%` }}
-                    />
-                  </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
-                    <span>
-                      <b className="text-foreground">{u.completed}</b>/{u.total} selesai
-                    </span>
-                    <span>{u.rate.toFixed(0)}%</span>
-                    {u.overdue > 0 && (
-                      <span className="text-destructive">{u.overdue} terlambat</span>
+              <li key={u.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUserId(u.id)}
+                  className="w-full text-left flex items-center gap-3 rounded-lg border border-border bg-background/50 p-3 transition hover:border-primary hover:bg-background"
+                >
+                  <RankBadge rank={i + 1} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="font-medium truncate group-hover:text-primary">{u.name}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {JENJANG_LABEL[u.jenjang]}
+                      </span>
+                    </div>
+                    {u.jabatan && (
+                      <div className="text-[11px] text-muted-foreground truncate">{u.jabatan}</div>
                     )}
-                    {u.avgDays !== null && (
-                      <span>Rata-rata {u.avgDays.toFixed(1)} hari</span>
-                    )}
+                    <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full bg-primary transition-all"
+                        style={{ width: `${u.rate}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
+                      <span>
+                        <b className="text-foreground">{u.completed}</b>/{u.total} selesai
+                      </span>
+                      <span>{u.rate.toFixed(0)}%</span>
+                      {u.overdue > 0 && (
+                        <span className="text-destructive">{u.overdue} terlambat</span>
+                      )}
+                      {u.avgDays !== null && (
+                        <span>Rata-rata {u.avgDays.toFixed(1)} hari</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-lg font-bold font-display">{u.score.toFixed(0)}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    skor
+                  <div className="text-right shrink-0">
+                    <div className="text-lg font-bold font-display">{u.score.toFixed(0)}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      skor
+                    </div>
                   </div>
-                </div>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                </button>
               </li>
             ))}
           </ol>
