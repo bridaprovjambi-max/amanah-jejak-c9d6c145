@@ -70,22 +70,37 @@ function getFolderPermissions(args: {
   isKasubbag: boolean;
   isJafung: boolean;
   pokjaName?: string | null;
+  allSlugs: string[];
 }): { view: FolderName[]; manage: FolderName[] } {
-  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName } = args;
+  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName, allSlugs } =
+    args;
 
-  // Pimpinan & admin: akses penuh
+  // Custom folders (not in KNOWN_FOLDERS): visible to everyone, manageable
+  // only by leaders. Keeps the role matrix predictable.
+  const knownSet = new Set<string>(KNOWN_FOLDERS);
+  const customSlugs = allSlugs.filter((s) => !knownSet.has(s));
+
   if (isAdmin || isKepala || jenjang === "eselon_ii") {
-    return { view: [...FOLDERS], manage: [...FOLDERS] };
+    return { view: [...allSlugs], manage: [...allSlugs] };
   }
   if (isSekretaris || jenjang === "eselon_iii") {
     return {
-      view: [...FOLDERS],
-      manage: ["Sekretaris", "Kasubbag", "Pokja Riset", "Pokja Inovasi", "Jafung", "Staf", "Umum"],
+      view: [...allSlugs],
+      manage: [
+        "Sekretaris",
+        "Kasubbag",
+        "Pokja Riset",
+        "Pokja Inovasi",
+        "Jafung",
+        "Staf",
+        "Umum",
+        ...customSlugs,
+      ],
     };
   }
   if (isKasubbag || jenjang === "eselon_iv") {
     return {
-      view: ["Sekretaris", "Kasubbag", "Staf", "Umum"],
+      view: ["Sekretaris", "Kasubbag", "Staf", "Umum", ...customSlugs],
       manage: ["Kasubbag", "Staf", "Umum"],
     };
   }
@@ -93,18 +108,19 @@ function getFolderPermissions(args: {
     const name = (pokjaName ?? "").toLowerCase();
     const own: FolderName = name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
     return {
-      view: ["Pokja Riset", "Pokja Inovasi", "Umum"],
+      view: ["Pokja Riset", "Pokja Inovasi", "Umum", ...customSlugs],
       manage: [own, "Umum"],
     };
   }
   if (isJafung || jenjang === "jafung") {
-    return { view: ["Jafung", "Umum"], manage: ["Jafung", "Umum"] };
+    return { view: ["Jafung", "Umum", ...customSlugs], manage: ["Jafung", "Umum"] };
   }
   if (jenjang === "staf") {
-    return { view: ["Staf", "Umum"], manage: ["Staf", "Umum"] };
+    return { view: ["Staf", "Umum", ...customSlugs], manage: ["Staf", "Umum"] };
   }
-  return { view: ["Umum"], manage: ["Umum"] };
+  return { view: ["Umum", ...customSlugs], manage: ["Umum"] };
 }
+
 
 /**
  * Tentukan folder default (home folder) pengguna berdasarkan jenjang/role.
