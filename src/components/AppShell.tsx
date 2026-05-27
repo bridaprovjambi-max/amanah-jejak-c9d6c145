@@ -34,6 +34,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
   { to: "/reports/rekap", label: "Rekap PDF", icon: FileDown, roles: ["leader", "admin"] },
+  { to: "/kinerja", label: "Kinerja", icon: Trophy },
   { to: "/hierarki", label: "Bagan Hierarki", icon: Network },
   { to: "/pokja", label: "Kelompok Kerja", icon: Layers },
   { to: "/documents", label: "Dokumen", icon: FileText },
