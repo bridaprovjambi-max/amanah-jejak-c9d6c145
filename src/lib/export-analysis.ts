@@ -45,6 +45,19 @@ function csvEscape(v: string) {
   return v;
 }
 
+function statusLabel(status: string) {
+  switch (status) {
+    case "done":
+      return "Selesai";
+    case "running":
+      return "Sedang Berjalan";
+    case "error":
+      return "Gagal";
+    default:
+      return "Belum Dianalisis";
+  }
+}
+
 export function exportAnalysisCSV(doc: DocLike) {
   const ent = doc.ai_entities ?? {};
   const rows: [string, string][] = [
