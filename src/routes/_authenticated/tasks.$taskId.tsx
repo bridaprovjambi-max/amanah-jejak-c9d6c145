@@ -500,6 +500,14 @@ function TaskDetail() {
         </div>
       </form>
 
+      <TaskComments
+        taskId={task.id}
+        taskTitle={task.title}
+        profiles={Object.entries(users).map(([id, u]) => ({ id, full_name: u.name }))}
+      />
+
+
+
       <div>
         <h2 className="font-display font-semibold mb-3">Riwayat Pelaporan</h2>
         {reports.length === 0 ? (
