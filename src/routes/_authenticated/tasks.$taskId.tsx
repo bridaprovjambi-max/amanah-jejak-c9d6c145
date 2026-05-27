@@ -303,15 +303,18 @@ function TaskDetail() {
         </div>
 
         <div className="mt-6 grid sm:grid-cols-3 gap-4 text-sm border-t border-border pt-5">
-          <Meta label="Pemberi tugas" value={users[task.assigned_by] ?? "—"} />
-          <Meta
+          <UserMeta
+            label="Pemberi tugas"
+            user={users[task.assigned_by]}
+          />
+          <UserMeta
             label="Penerima"
-            value={
+            user={
               task.assigned_to
-                ? users[task.assigned_to] ?? "—"
+                ? users[task.assigned_to]
                 : task.assigned_to_pokja
-                ? `Pokja ${pokjaMap[task.assigned_to_pokja] ?? "—"}`
-                : "—"
+                ? { name: `Pokja ${pokjaMap[task.assigned_to_pokja] ?? "—"}`, nip: null, pangkat: null }
+                : undefined
             }
           />
           <Meta
