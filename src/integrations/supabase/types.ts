@@ -162,6 +162,8 @@ export type Database = {
           id: string
           jabatan: string | null
           jenjang: Database["public"]["Enums"]["jenjang"]
+          nip: string | null
+          pangkat_golongan: string | null
           pokja_id: string | null
           telegram_chat_id: string | null
           updated_at: string
@@ -172,6 +174,8 @@ export type Database = {
           id: string
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
+          nip?: string | null
+          pangkat_golongan?: string | null
           pokja_id?: string | null
           telegram_chat_id?: string | null
           updated_at?: string
@@ -182,6 +186,8 @@ export type Database = {
           id?: string
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
+          nip?: string | null
+          pangkat_golongan?: string | null
           pokja_id?: string | null
           telegram_chat_id?: string | null
           updated_at?: string
