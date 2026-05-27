@@ -159,7 +159,7 @@ export const Route = createFileRoute("/api/public/hooks/task-reminders")({
             if (await sendTg(chatId, text)) sent++;
           }
 
-          const patch: Partial<TaskRow> = {};
+          const patch: { reminder_sent_h3?: boolean; reminder_sent_h1?: boolean; reminder_sent_overdue?: boolean } = {};
           if (label === "overdue") patch.reminder_sent_overdue = true;
           if (label === "h1") patch.reminder_sent_h1 = true;
           if (label === "h3") patch.reminder_sent_h3 = true;
