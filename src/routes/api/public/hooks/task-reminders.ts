@@ -108,7 +108,7 @@ export const Route = createFileRoute("/api/public/hooks/task-reminders")({
         );
 
         let sent = 0;
-        const updates: Array<{ id: string; patch: Partial<TaskRow> }> = [];
+        const updates: Array<{ id: string; patch: { reminder_sent_h3?: boolean; reminder_sent_h1?: boolean; reminder_sent_overdue?: boolean } }> = [];
 
         for (const t of rows) {
           if (!t.deadline) continue;
