@@ -347,7 +347,7 @@ function DocumentsPage() {
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !profile) return;
+    if (files.length === 0 || !profile) return;
     if (!title.trim()) {
       toast.error("Judul wajib diisi");
       return;
@@ -356,40 +356,46 @@ function DocumentsPage() {
       toast.error(`Anda tidak memiliki izin mengunggah ke folder "${folder}"`);
       return;
     }
-    if (file.size > MAX_SIZE) {
-      toast.error("Ukuran file maksimal 25MB");
+    const oversized = files.find((f) => f.size > MAX_SIZE);
+    if (oversized) {
+      toast.error(`"${oversized.name}" melebihi 25MB`);
       return;
     }
     setUploading(true);
-    const ext = file.name.split(".").pop() ?? "bin";
-    const path = `${profile.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-    const { error: upErr } = await supabase.storage.from("documents").upload(path, file);
-    if (upErr) {
-      toast.error(`Gagal mengunggah: ${upErr.message}`);
-      setUploading(false);
-      return;
+    let successCount = 0;
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const ext = f.name.split(".").pop() ?? "bin";
+      const path = `${profile.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("documents").upload(path, f);
+      if (upErr) {
+        toast.error(`Gagal mengunggah "${f.name}": ${upErr.message}`);
+        continue;
+      }
+      const docTitle = files.length > 1 ? `${title.trim()} (${i + 1}/${files.length})` : title.trim();
+      const { error: insErr } = await supabase.from("documents").insert({
+        title: docTitle,
+        description: description.trim() || null,
+        file_path: path,
+        file_name: f.name,
+        file_size: f.size,
+        mime_type: f.type || null,
+        uploaded_by: profile.id,
+        folder,
+      });
+      if (insErr) {
+        toast.error(`Gagal menyimpan "${f.name}": ${insErr.message}`);
+        await supabase.storage.from("documents").remove([path]);
+        continue;
+      }
+      successCount++;
     }
-    const { error: insErr } = await supabase.from("documents").insert({
-      title: title.trim(),
-      description: description.trim() || null,
-      file_path: path,
-      file_name: file.name,
-      file_size: file.size,
-      mime_type: file.type || null,
-      uploaded_by: profile.id,
-      folder,
-    });
-    if (insErr) {
-      toast.error(`Gagal menyimpan: ${insErr.message}`);
-      await supabase.storage.from("documents").remove([path]);
-      setUploading(false);
-      return;
+    if (successCount > 0) {
+      toast.success(`${successCount} dokumen tersimpan di folder "${folderName(folder)}"`);
     }
-    toast.success(`Dokumen tersimpan di folder "${folder}"`);
     setTitle("");
     setDescription("");
-    setFile(null);
+    setFiles([]);
     if (fileRef.current) fileRef.current.value = "";
     setUploading(false);
     load();
