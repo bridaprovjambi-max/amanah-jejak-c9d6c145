@@ -13,7 +13,10 @@ export const Route = createFileRoute("/_authenticated/documents")({
   component: DocumentsPage,
 });
 
-const FOLDERS = [
+// Folder slugs known to the permission matrix. Any folder NOT in this list
+// is treated as a custom folder: visible to everyone, manageable by leaders
+// + the uploader's own role-default folder.
+const KNOWN_FOLDERS = [
   "Kepala",
   "Sekretaris",
   "Kasubbag",
@@ -23,18 +26,15 @@ const FOLDERS = [
   "Staf",
   "Umum",
 ] as const;
-type FolderName = (typeof FOLDERS)[number];
+type FolderName = string;
 
-const FOLDER_HINT: Record<FolderName, string> = {
-  Kepala: "Dokumen pimpinan & kebijakan strategis",
-  Sekretaris: "Administrasi & koordinasi kesekretariatan",
-  Kasubbag: "Dokumen sub-bagian & operasional",
-  "Pokja Riset": "Materi & laporan kelompok kerja riset",
-  "Pokja Inovasi": "Materi & laporan kelompok kerja inovasi",
-  Jafung: "Dokumen jabatan fungsional",
-  Staf: "Dokumen staf pelaksana",
-  Umum: "Dokumen umum lintas tim",
-};
+interface FolderMeta {
+  slug: string;
+  name: string;
+  hint: string | null;
+  sort_order: number;
+}
+
 
 interface DocRow {
   id: string;
@@ -70,22 +70,37 @@ function getFolderPermissions(args: {
   isKasubbag: boolean;
   isJafung: boolean;
   pokjaName?: string | null;
+  allSlugs: string[];
 }): { view: FolderName[]; manage: FolderName[] } {
-  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName } = args;
+  const { jenjang, isAdmin, isKepala, isSekretaris, isKasubbag, isJafung, pokjaName, allSlugs } =
+    args;
 
-  // Pimpinan & admin: akses penuh
+  // Custom folders (not in KNOWN_FOLDERS): visible to everyone, manageable
+  // only by leaders. Keeps the role matrix predictable.
+  const knownSet = new Set<string>(KNOWN_FOLDERS);
+  const customSlugs = allSlugs.filter((s) => !knownSet.has(s));
+
   if (isAdmin || isKepala || jenjang === "eselon_ii") {
-    return { view: [...FOLDERS], manage: [...FOLDERS] };
+    return { view: [...allSlugs], manage: [...allSlugs] };
   }
   if (isSekretaris || jenjang === "eselon_iii") {
     return {
-      view: [...FOLDERS],
-      manage: ["Sekretaris", "Kasubbag", "Pokja Riset", "Pokja Inovasi", "Jafung", "Staf", "Umum"],
+      view: [...allSlugs],
+      manage: [
+        "Sekretaris",
+        "Kasubbag",
+        "Pokja Riset",
+        "Pokja Inovasi",
+        "Jafung",
+        "Staf",
+        "Umum",
+        ...customSlugs,
+      ],
     };
   }
   if (isKasubbag || jenjang === "eselon_iv") {
     return {
-      view: ["Sekretaris", "Kasubbag", "Staf", "Umum"],
+      view: ["Sekretaris", "Kasubbag", "Staf", "Umum", ...customSlugs],
       manage: ["Kasubbag", "Staf", "Umum"],
     };
   }
@@ -93,18 +108,19 @@ function getFolderPermissions(args: {
     const name = (pokjaName ?? "").toLowerCase();
     const own: FolderName = name.includes("inovasi") ? "Pokja Inovasi" : "Pokja Riset";
     return {
-      view: ["Pokja Riset", "Pokja Inovasi", "Umum"],
+      view: ["Pokja Riset", "Pokja Inovasi", "Umum", ...customSlugs],
       manage: [own, "Umum"],
     };
   }
   if (isJafung || jenjang === "jafung") {
-    return { view: ["Jafung", "Umum"], manage: ["Jafung", "Umum"] };
+    return { view: ["Jafung", "Umum", ...customSlugs], manage: ["Jafung", "Umum"] };
   }
   if (jenjang === "staf") {
-    return { view: ["Staf", "Umum"], manage: ["Staf", "Umum"] };
+    return { view: ["Staf", "Umum", ...customSlugs], manage: ["Staf", "Umum"] };
   }
-  return { view: ["Umum"], manage: ["Umum"] };
+  return { view: ["Umum", ...customSlugs], manage: ["Umum"] };
 }
+
 
 /**
  * Tentukan folder default (home folder) pengguna berdasarkan jenjang/role.
@@ -136,6 +152,7 @@ function getDefaultFolder(args: {
 function DocumentsPage() {
   const { profile, hasRole } = useAuth();
   const [rows, setRows] = useState<DocRow[]>([]);
+  const [folders, setFolders] = useState<FolderMeta[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
   const [pokjaMap, setPokjaMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -148,9 +165,17 @@ function DocumentsPage() {
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(FOLDERS.map((f) => [f, true]))
-  );
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Derived folder lookups
+  const allSlugs = useMemo(() => folders.map((f) => f.slug), [folders]);
+  const folderMeta = useMemo(() => {
+    const m: Record<string, FolderMeta> = {};
+    folders.forEach((f) => (m[f.slug] = f));
+    return m;
+  }, [folders]);
+  const folderName = (slug: string) => folderMeta[slug]?.name ?? slug;
+  const folderHint = (slug: string) => folderMeta[slug]?.hint ?? "";
 
   // Search & filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -169,9 +194,11 @@ function DocumentsPage() {
         isKasubbag: hasRole("kasubbag"),
         isJafung: hasRole("jafung_member"),
         pokjaName: profile?.pokja_id ? pokjaMap[profile.pokja_id] : null,
+        allSlugs,
       }),
-    [profile, hasRole, pokjaMap],
+    [profile, hasRole, pokjaMap, allSlugs],
   );
+
 
   const defaultFolder = useMemo(
     () =>
@@ -207,10 +234,11 @@ function DocumentsPage() {
   }, [activeFolder, viewSet]);
 
   const load = async () => {
-    const [{ data: d }, { data: p }, { data: pk }] = await Promise.all([
+    const [{ data: d }, { data: p }, { data: pk }, { data: fl }] = await Promise.all([
       supabase.from("documents").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("id, full_name"),
       supabase.from("pokja").select("id, name"),
+      supabase.from("document_folders").select("slug, name, hint, sort_order").order("sort_order"),
     ]);
     setRows((d as DocRow[]) ?? []);
     const u: Record<string, string> = {};
@@ -219,6 +247,15 @@ function DocumentsPage() {
     const pm: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (pm[x.id] = x.name));
     setPokjaMap(pm);
+    const folderRows = (fl as FolderMeta[]) ?? [];
+    setFolders(folderRows);
+    setExpanded((prev) => {
+      const next = { ...prev };
+      folderRows.forEach((f) => {
+        if (next[f.slug] === undefined) next[f.slug] = true;
+      });
+      return next;
+    });
     setLoading(false);
   };
 
@@ -247,23 +284,24 @@ function DocumentsPage() {
 
   const folderCounts = useMemo(() => {
     const c: Record<string, number> = {};
-    FOLDERS.forEach((f) => (c[f] = 0));
+    allSlugs.forEach((f) => (c[f] = 0));
     visibleRows.forEach((r) => {
       const k = (r.folder || "Umum") as FolderName;
       c[k] = (c[k] ?? 0) + 1;
     });
     return c;
-  }, [visibleRows]);
+  }, [visibleRows, allSlugs]);
 
   const groupedByFolder = useMemo(() => {
     const g: Record<string, DocRow[]> = {};
-    FOLDERS.forEach((f) => (g[f] = []));
+    allSlugs.forEach((f) => (g[f] = []));
     filteredRows.forEach((r) => {
       const k = (r.folder || "Umum") as FolderName;
       (g[k] ??= []).push(r);
     });
     return g;
-  }, [filteredRows]);
+  }, [filteredRows, allSlugs]);
+
 
   const activeFilterCount = useMemo(() => {
     let c = 0;
@@ -366,7 +404,10 @@ function DocumentsPage() {
     return Object.entries(map).sort((a, b) => a[1].localeCompare(b[1]));
   }, [visibleRows, users]);
 
-  const visibleFolders = useMemo(() => FOLDERS.filter((f) => viewSet.has(f)), [viewSet]);
+  const visibleFolders = useMemo(
+    () => allSlugs.filter((f) => viewSet.has(f)),
+    [viewSet, allSlugs],
+  );
 
   return (
     <div className="space-y-6">
@@ -377,9 +418,13 @@ function DocumentsPage() {
         </p>
         <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
           <Lock className="h-3 w-3" />
-          Akses folder Anda: {permissions.view.length === FOLDERS.length ? "Semua folder" : permissions.view.join(", ")}
+          Akses folder Anda:{" "}
+          {permissions.view.length === allSlugs.length && allSlugs.length > 0
+            ? "Semua folder"
+            : permissions.view.map(folderName).join(", ")}
         </div>
       </div>
+
 
       {permissions.manage.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm text-muted-foreground">
@@ -422,11 +467,12 @@ function DocumentsPage() {
               >
                 {permissions.manage.map((f) => (
                   <option key={f} value={f}>
-                    {f}
+                    {folderName(f)}
                   </option>
                 ))}
               </select>
-              <p className="text-[11px] text-muted-foreground">{FOLDER_HINT[folder]}</p>
+              <p className="text-[11px] text-muted-foreground">{folderHint(folder)}</p>
+
             </div>
             <div className="space-y-2">
               <Label htmlFor="desc">Deskripsi</Label>
@@ -448,7 +494,7 @@ function DocumentsPage() {
                 </>
               ) : (
                 <>
-                  <Upload className="mr-2 h-4 w-4" /> Unggah ke {folder}
+                  <Upload className="mr-2 h-4 w-4" /> Unggah ke {folderName(folder)}
                 </>
               )}
             </Button>
@@ -490,7 +536,7 @@ function DocumentsPage() {
                 title={canManage ? "Anda dapat mengunggah ke folder ini" : "Hanya baca"}
               >
                 {canManage ? <Folder className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
-                {f} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
+                {folderName(f)} <span className="opacity-70">({folderCounts[f] ?? 0})</span>
               </button>
             );
           })}
@@ -618,15 +664,16 @@ function DocumentsPage() {
                       <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
                     )}
                     <FolderOpen className="h-4 w-4 text-primary shrink-0" />
-                    <span className="font-display font-semibold text-sm truncate">{f}</span>
+                    <span className="font-display font-semibold text-sm truncate">{folderName(f)}</span>
                     {!canManage && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
                         <Lock className="h-3 w-3" /> Hanya baca
                       </span>
                     )}
                     <span className="text-xs text-muted-foreground hidden sm:inline truncate">
-                      · {FOLDER_HINT[f]}
+                      · {folderHint(f)}
                     </span>
+
                   </div>
                   <span className="text-xs font-medium text-muted-foreground shrink-0">
                     {items.length} dokumen

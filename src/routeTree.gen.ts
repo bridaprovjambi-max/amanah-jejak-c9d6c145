@@ -17,6 +17,7 @@ import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedHierarkiRouteImport } from './routes/_authenticated/hierarki'
+import { Route as AuthenticatedFoldersRouteImport } from './routes/_authenticated/folders'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
@@ -63,6 +64,11 @@ const AuthenticatedHierarkiRoute = AuthenticatedHierarkiRouteImport.update({
   path: '/hierarki',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFoldersRoute = AuthenticatedFoldersRouteImport.update({
+  id: '/folders',
+  path: '/folders',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AuthenticatedActivityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
+  '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/activity': typeof AuthenticatedActivityRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
+  '/folders': typeof AuthenticatedFoldersRoute
   '/hierarki': typeof AuthenticatedHierarkiRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
+  '/_authenticated/folders': typeof AuthenticatedFoldersRoute
   '/_authenticated/hierarki': typeof AuthenticatedHierarkiRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/dashboard'
     | '/documents'
+    | '/folders'
     | '/hierarki'
     | '/pokja'
     | '/settings'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/dashboard'
     | '/documents'
+    | '/folders'
     | '/hierarki'
     | '/pokja'
     | '/settings'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/_authenticated/activity'
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
+    | '/_authenticated/folders'
     | '/_authenticated/hierarki'
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHierarkiRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/folders': {
+      id: '/_authenticated/folders'
+      path: '/folders'
+      fullPath: '/folders'
+      preLoaderRoute: typeof AuthenticatedFoldersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/documents': {
       id: '/_authenticated/documents'
       path: '/documents'
@@ -305,6 +324,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
+  AuthenticatedFoldersRoute: typeof AuthenticatedFoldersRoute
   AuthenticatedHierarkiRoute: typeof AuthenticatedHierarkiRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -318,6 +338,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
+  AuthenticatedFoldersRoute: AuthenticatedFoldersRoute,
   AuthenticatedHierarkiRoute: AuthenticatedHierarkiRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
