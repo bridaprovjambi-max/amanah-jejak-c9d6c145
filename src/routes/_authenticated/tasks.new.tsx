@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowLeft, Paperclip, X, FileIcon } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,15 @@ import {
 export const Route = createFileRoute("/_authenticated/tasks/new")({
   component: NewTask,
 });
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_FILES = 5;
+
+function formatBytes(b: number) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / 1024 / 1024).toFixed(1)} MB`;
+}
 
 const schema = z.object({
   title: z.string().trim().min(3).max(200),
