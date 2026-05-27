@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock } from "lucide-react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { analyzeDocument } from "@/lib/document-analysis.functions";
 
 export const Route = createFileRoute("/_authenticated/documents")({
   component: DocumentsPage,
@@ -54,6 +56,19 @@ interface DocRow {
   uploaded_by: string;
   created_at: string;
   folder: string;
+  ai_summary: string | null;
+  ai_key_points: { text: string }[] | null;
+  ai_entities: {
+    authors?: string[];
+    institutions?: string[];
+    year?: string;
+    topics?: string[];
+    methodology?: string;
+    location?: string;
+  } | null;
+  ai_status: "idle" | "running" | "done" | "error";
+  ai_error: string | null;
+  ai_analyzed_at: string | null;
 }
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
@@ -169,6 +184,9 @@ function DocumentsPage() {
   const [folder, setFolder] = useState<FolderName>("Umum");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const runAnalyze = useServerFn(analyzeDocument);
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  const [expandedAnalysis, setExpandedAnalysis] = useState<Record<string, boolean>>({});
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
@@ -397,6 +415,27 @@ function DocumentsPage() {
     await supabase.storage.from("documents").remove([row.file_path]);
     toast.success("Dokumen dihapus");
     load();
+  };
+
+  const handleAnalyze = async (row: DocRow) => {
+    setAnalyzingId(row.id);
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === row.id ? { ...r, ai_status: "running", ai_error: null } : r,
+      ),
+    );
+    try {
+      await runAnalyze({ data: { documentId: row.id } });
+      toast.success("Analisis selesai");
+      setExpandedAnalysis((s) => ({ ...s, [row.id]: true }));
+      await load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Gagal menganalisis dokumen";
+      toast.error(msg);
+      await load();
+    } finally {
+      setAnalyzingId(null);
+    }
   };
 
   const canDelete = (row: DocRow) =>
@@ -690,46 +729,213 @@ function DocumentsPage() {
                 </button>
                 {isOpen && (
                   <ul className="divide-y divide-border">
-                    {items.map((r) => (
-                      <li key={r.id} className="flex items-start gap-4 px-5 py-4">
-                        <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium truncate">{r.title}</p>
-                          {r.description && (
-                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                              {r.description}
+                    {items.map((r) => {
+                      const isAnalyzing = analyzingId === r.id || r.ai_status === "running";
+                      const hasAnalysis = r.ai_status === "done" && !!r.ai_summary;
+                      const isOpenAnalysis = expandedAnalysis[r.id] ?? false;
+                      return (
+                      <li key={r.id} className="px-5 py-4">
+                        <div className="flex items-start gap-4">
+                          <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
+                            <FileText className="h-5 w-5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="font-medium truncate">{r.title}</p>
+                              {hasAnalysis && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-brand-gradient text-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                                  <Sparkles className="h-3 w-3" /> AI
+                                </span>
+                              )}
+                              {r.ai_status === "error" && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 text-destructive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                                  <AlertCircle className="h-3 w-3" /> AI gagal
+                                </span>
+                              )}
+                            </div>
+                            {r.description && (
+                              <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                                {r.description}
+                              </p>
+                            )}
+                            <p className="text-[11px] text-muted-foreground mt-1">
+                              {r.file_name} · {formatSize(r.file_size)} ·{" "}
+                              diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
+                              {new Date(r.created_at).toLocaleString("id-ID")}
                             </p>
-                          )}
-                          <p className="text-[11px] text-muted-foreground mt-1">
-                            {r.file_name} · {formatSize(r.file_size)} ·{" "}
-                            diunggah oleh {users[r.uploaded_by] ?? "Pengguna"} ·{" "}
-                            {new Date(r.created_at).toLocaleString("id-ID")}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
-                            <Download className="h-4 w-4" />
-                          </Button>
-                          {canDelete(r) && (
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
                             <Button
-                              variant="ghost"
+                              variant={hasAnalysis ? "outline" : "default"}
                               size="sm"
-                              onClick={() => handleDelete(r)}
-                              className="text-destructive hover:text-destructive"
+                              onClick={() =>
+                                hasAnalysis
+                                  ? setExpandedAnalysis((s) => ({ ...s, [r.id]: !isOpenAnalysis }))
+                                  : handleAnalyze(r)
+                              }
+                              disabled={isAnalyzing}
+                              title={hasAnalysis ? "Lihat hasil analisis" : "Analisis dengan AI"}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              {isAnalyzing ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : hasAnalysis ? (
+                                isOpenAnalysis ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <Sparkles className="h-4 w-4" />
+                              )}
+                              <span className="ml-1 hidden sm:inline">
+                                {isAnalyzing ? "Menganalisis…" : hasAnalysis ? "Analisis" : "Analisis AI"}
+                              </span>
                             </Button>
-                          )}
+                            <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}>
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            {canDelete(r) && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(r)}
+                                className="text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
+
+                        {hasAnalysis && isOpenAnalysis && (
+                          <AnalysisPanel row={r} onReanalyze={() => handleAnalyze(r)} busy={isAnalyzing} />
+                        )}
+                        {r.ai_status === "error" && r.ai_error && (
+                          <div className="mt-3 ml-14 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive flex items-start justify-between gap-2">
+                            <span>{r.ai_error}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleAnalyze(r)}
+                              className="font-semibold underline shrink-0"
+                            >
+                              Coba lagi
+                            </button>
+                          </div>
+                        )}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 )}
               </div>
             );
           })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AnalysisPanel({
+  row,
+  onReanalyze,
+  busy,
+}: {
+  row: DocRow;
+  onReanalyze: () => void;
+  busy: boolean;
+}) {
+  const ent = row.ai_entities ?? {};
+  const chips: { label: string; values: string[] }[] = [
+    { label: "Penulis", values: ent.authors ?? [] },
+    { label: "Lembaga", values: ent.institutions ?? [] },
+    { label: "Topik", values: ent.topics ?? [] },
+  ];
+  return (
+    <div className="mt-4 ml-0 sm:ml-14 rounded-xl border border-border bg-gradient-to-br from-primary-soft/40 to-background p-4 space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-brand-gradient" />
+          <h4 className="font-display text-sm font-bold text-primary">Analisis AI</h4>
+          {row.ai_analyzed_at && (
+            <span className="text-[10px] text-muted-foreground">
+              · {new Date(row.ai_analyzed_at).toLocaleString("id-ID")}
+            </span>
+          )}
+        </div>
+        <Button variant="ghost" size="sm" onClick={onReanalyze} disabled={busy}>
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+          <span className="ml-1 text-xs">Analisis ulang</span>
+        </Button>
+      </div>
+
+      {row.ai_summary && (
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+            Ringkasan
+          </p>
+          <p className="text-sm leading-relaxed text-foreground/90">{row.ai_summary}</p>
+        </div>
+      )}
+
+      {row.ai_key_points && row.ai_key_points.length > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1.5">
+            Poin Kunci
+          </p>
+          <ul className="space-y-1.5">
+            {row.ai_key_points.map((kp, i) => (
+              <li key={i} className="flex gap-2 text-sm">
+                <span className="text-primary font-bold shrink-0">{i + 1}.</span>
+                <span className="text-foreground/90">{kp.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(chips.some((c) => c.values.length > 0) || ent.year || ent.methodology || ent.location) && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {chips.map(
+            (c) =>
+              c.values.length > 0 && (
+                <div key={c.label}>
+                  <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                    {c.label}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {c.values.map((v, i) => (
+                      <span
+                        key={i}
+                        className="rounded-md bg-card border border-border px-2 py-0.5 text-xs"
+                      >
+                        {v}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ),
+          )}
+          {ent.year && (
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Tahun
+              </p>
+              <p className="text-sm">{ent.year}</p>
+            </div>
+          )}
+          {ent.location && (
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Lokasi
+              </p>
+              <p className="text-sm">{ent.location}</p>
+            </div>
+          )}
+          {ent.methodology && (
+            <div className="sm:col-span-2">
+              <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-1">
+                Metodologi
+              </p>
+              <p className="text-sm text-foreground/90">{ent.methodology}</p>
+            </div>
+          )}
         </div>
       )}
     </div>

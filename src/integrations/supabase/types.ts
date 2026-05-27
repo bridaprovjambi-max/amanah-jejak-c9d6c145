@@ -79,6 +79,12 @@ export type Database = {
       }
       documents: {
         Row: {
+          ai_analyzed_at: string | null
+          ai_entities: Json | null
+          ai_error: string | null
+          ai_key_points: Json | null
+          ai_status: string
+          ai_summary: string | null
           created_at: string
           description: string | null
           file_name: string
@@ -91,6 +97,12 @@ export type Database = {
           uploaded_by: string
         }
         Insert: {
+          ai_analyzed_at?: string | null
+          ai_entities?: Json | null
+          ai_error?: string | null
+          ai_key_points?: Json | null
+          ai_status?: string
+          ai_summary?: string | null
           created_at?: string
           description?: string | null
           file_name: string
@@ -103,6 +115,12 @@ export type Database = {
           uploaded_by: string
         }
         Update: {
+          ai_analyzed_at?: string | null
+          ai_entities?: Json | null
+          ai_error?: string | null
+          ai_key_points?: Json | null
+          ai_status?: string
+          ai_summary?: string | null
           created_at?: string
           description?: string | null
           file_name?: string
