@@ -144,6 +144,7 @@ function RootComponent() {
       <AuthProvider>
         <AuthSync />
         <Outlet />
+        <PWAManager />
         <Toaster richColors position="top-right" />
       </AuthProvider>
     </QueryClientProvider>
