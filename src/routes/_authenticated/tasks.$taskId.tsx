@@ -88,14 +88,16 @@ function TaskDetail() {
     const [{ data: t }, { data: r }, { data: p }, { data: pk }] = await Promise.all([
       supabase.from("tasks").select("*").eq("id", taskId).maybeSingle(),
       supabase.from("reports").select("*").eq("task_id", taskId).order("created_at", { ascending: false }),
-      supabase.from("profiles").select("id, full_name"),
+      supabase.from("profiles").select("id, full_name, nip, pangkat_golongan"),
       supabase.from("pokja").select("id, name"),
     ]);
     setTask((t as Task) ?? null);
     const reportRows = (r as Report[]) ?? [];
     setReports(reportRows);
-    const u: Record<string, string> = {};
-    (p ?? []).forEach((x: { id: string; full_name: string }) => (u[x.id] = x.full_name));
+    const u: Record<string, { name: string; nip: string | null; pangkat: string | null }> = {};
+    (p ?? []).forEach((x: { id: string; full_name: string; nip: string | null; pangkat_golongan: string | null }) => {
+      u[x.id] = { name: x.full_name, nip: x.nip, pangkat: x.pangkat_golongan };
+    });
     setUsers(u);
     const m: Record<string, string> = {};
     (pk ?? []).forEach((x: { id: string; name: string }) => (m[x.id] = x.name));
