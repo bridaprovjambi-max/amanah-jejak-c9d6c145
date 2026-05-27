@@ -114,7 +114,18 @@ function TaskDetail() {
       supabase.from("profiles").select("id, full_name, nip, pangkat_golongan"),
       supabase.from("pokja").select("id, name"),
     ]);
-    setTask((t as Task) ?? null);
+    const taskRow = (t as Task) ?? null;
+    setTask(taskRow);
+    if (taskRow?.parent_task_id) {
+      const { data: par } = await supabase
+        .from("tasks")
+        .select("id, title")
+        .eq("id", taskRow.parent_task_id)
+        .maybeSingle();
+      setParent((par as ParentLite) ?? null);
+    } else {
+      setParent(null);
+    }
     const reportRows = (r as Report[]) ?? [];
     setReports(reportRows);
     const u: Record<string, { name: string; nip: string | null; pangkat: string | null }> = {};
