@@ -130,12 +130,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile topbar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-3">
+      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-4 py-3">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-white p-0.5 shadow-sm">
+          <div className="grid h-9 w-9 place-items-center rounded-lg bg-white p-0.5 shadow-sm">
             <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
           </div>
-          <span className="font-display font-bold">DeLapan</span>
+          <span className="font-display text-lg tracking-tight">DeLapan</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>
@@ -148,7 +148,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-20 w-64 bg-sidebar text-sidebar-foreground">
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-20 w-64 bg-sidebar-gradient text-sidebar-foreground border-r border-sidebar-border">
         {SidebarContent}
       </aside>
 
@@ -156,10 +156,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       {open && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="relative w-72 bg-sidebar text-sidebar-foreground">
+          <aside className="relative w-72 bg-sidebar-gradient text-sidebar-foreground">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 text-sidebar-foreground/70"
@@ -172,10 +172,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <main className="lg:pl-64">
-        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
       </main>
     </div>
   );
 }
+
