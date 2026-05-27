@@ -234,6 +234,91 @@ function DocumentsPage() {
         </div>
       </form>
 
+      {/* Search & Filter Bar */}
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm space-y-4">
+        <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari judul dokumen…"
+              className="pl-9 w-full"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters((s) => !s)}
+              className="shrink-0"
+            >
+              <CalendarDays className="mr-2 h-4 w-4" />
+              Filter {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </Button>
+            {activeFilterCount > 0 && (
+              <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
+                Hapus Filter
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {showFilters && (
+          <div className="grid gap-4 sm:grid-cols-3 pt-2 border-t border-border">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Uploader</Label>
+              <select
+                value={selectedUploader}
+                onChange={(e) => setSelectedUploader(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">Semua Uploader</option>
+                {uploaderOptions.map(([uid, name]) => (
+                  <option key={uid} value={uid}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Tanggal Dari</Label>
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Tanggal Sampai</Label>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Results count */}
+      {!loading && rows.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          Menampilkan {filteredRows.length} dari {rows.length} dokumen
+        </p>
+      )}
+
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
       ) : rows.length === 0 ? (
@@ -241,10 +326,18 @@ function DocumentsPage() {
           <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
           <p className="mt-3 text-sm text-muted-foreground">Belum ada dokumen yang diunggah.</p>
         </div>
+      ) : filteredRows.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 py-16 text-center">
+          <Search className="mx-auto h-10 w-10 text-muted-foreground/50" />
+          <p className="mt-3 text-sm text-muted-foreground">Tidak ada dokumen yang cocok dengan filter Anda.</p>
+          <Button variant="outline" size="sm" className="mt-3" onClick={clearFilters}>
+            Hapus Filter
+          </Button>
+        </div>
       ) : (
         <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           <ul className="divide-y divide-border">
-            {rows.map((r) => (
+            {filteredRows.map((r) => (
               <li key={r.id} className="flex items-start gap-4 px-5 py-4">
                 <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
                   <FileText className="h-5 w-5" />
