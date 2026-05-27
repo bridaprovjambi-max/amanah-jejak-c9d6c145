@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp, FileSpreadsheet, FileDown } from "lucide-react";
-import { exportAnalysisCSV, exportAnalysisPDF } from "@/lib/export-analysis";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp, FileSpreadsheet, FileDown, CheckSquare, Square } from "lucide-react";
+import { exportAnalysisCSV, exportAnalysisPDF, exportBulkCSV, exportBulkPDFs } from "@/lib/export-analysis";
 import {
   Select,
   SelectContent,
