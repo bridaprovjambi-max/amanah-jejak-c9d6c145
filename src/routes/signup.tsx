@@ -113,6 +113,29 @@ function SignupPage() {
                 onChange={(e) => update("jabatan", e.target.value)}
               />
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="nip">NIP</Label>
+                <Input
+                  id="nip"
+                  inputMode="numeric"
+                  placeholder="contoh: 198501012010012001"
+                  value={form.nip}
+                  onChange={(e) => update("nip", e.target.value.replace(/\D/g, ""))}
+                  maxLength={30}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pangkat_golongan">Pangkat / Golongan</Label>
+                <Input
+                  id="pangkat_golongan"
+                  placeholder="contoh: Penata Tk. I / III-d"
+                  value={form.pangkat_golongan}
+                  onChange={(e) => update("pangkat_golongan", e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+            </div>
             <div className="rounded-md border border-border bg-muted/40 p-3 text-[12px] text-muted-foreground">
               Jenjang & peran Anda akan ditetapkan oleh administrator setelah akun dibuat.
             </div>
