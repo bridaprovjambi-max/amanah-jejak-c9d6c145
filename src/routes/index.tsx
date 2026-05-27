@@ -19,7 +19,7 @@ function Landing() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-md bg-primary p-1.5">
+            <div className="grid h-10 w-10 place-items-center rounded-lg bg-white p-1 ring-brand">
               <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
             </div>
             <div className="leading-tight">
@@ -54,7 +54,7 @@ function Landing() {
 
             <h1 className="text-balance font-display text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-6xl">
               DeLapan: Delegasi dan Pelaporan{" "}
-              <span className="text-accent">Internal BRIDA</span> Provinsi Jambi
+              <span className="text-brand-gradient">Internal BRIDA</span> Provinsi Jambi
             </h1>
 
             <p className="mt-6 max-w-2xl font-sans text-base leading-relaxed text-white/75 lg:text-lg">
