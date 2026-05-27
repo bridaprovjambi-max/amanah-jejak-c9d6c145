@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp } from "lucide-react";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp, FileSpreadsheet, FileDown } from "lucide-react";
+import { exportAnalysisCSV, exportAnalysisPDF } from "@/lib/export-analysis";
 import {
   Select,
   SelectContent,
@@ -859,10 +860,30 @@ function AnalysisPanel({
             </span>
           )}
         </div>
-        <Button variant="ghost" size="sm" onClick={onReanalyze} disabled={busy}>
-          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-          <span className="ml-1 text-xs">Analisis ulang</span>
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportAnalysisPDF(row)}
+            title="Ekspor hasil analisis ke PDF"
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            <span className="ml-1 text-xs hidden sm:inline">PDF</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportAnalysisCSV(row)}
+            title="Ekspor hasil analisis ke CSV"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            <span className="ml-1 text-xs hidden sm:inline">CSV</span>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onReanalyze} disabled={busy}>
+            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            <span className="ml-1 text-xs hidden sm:inline">Analisis ulang</span>
+          </Button>
+        </div>
       </div>
 
       {row.ai_summary && (
