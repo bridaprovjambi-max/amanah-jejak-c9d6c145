@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3, Lock, Activ
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import delapanLogo from "@/assets/delapan-logo.png";
+import { PublicStatsSection } from "@/components/PublicStatsSection";
 
 export const Route = createFileRoute("/")({
   component: Landing,
