@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Send, MessageCircle, Copy, Check } from "lucide-react";
+import { Send, MessageCircle, Copy, Check, UserCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -14,6 +14,13 @@ export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
 });
 
+type ProfileExtra = {
+  telegram_chat_id?: string | null;
+  nip?: string | null;
+  pangkat_golongan?: string | null;
+  jabatan?: string | null;
+};
+
 function SettingsPage() {
   const { user, profile, refresh } = useAuth();
   const [chatId, setChatId] = useState("");
@@ -21,9 +28,45 @@ function SettingsPage() {
   const [copied, setCopied] = useState(false);
   const sendNotif = useServerFn(sendTelegramNotification);
 
+  // Profil kepegawaian
+  const [fullName, setFullName] = useState("");
+  const [jabatan, setJabatan] = useState("");
+  const [nip, setNip] = useState("");
+  const [pangkat, setPangkat] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
+
   useEffect(() => {
-    setChatId(((profile as unknown as { telegram_chat_id?: string | null })?.telegram_chat_id) ?? "");
+    const p = profile as unknown as ProfileExtra | null;
+    setChatId(p?.telegram_chat_id ?? "");
+    setFullName(profile?.full_name ?? "");
+    setJabatan(p?.jabatan ?? "");
+    setNip(p?.nip ?? "");
+    setPangkat(p?.pangkat_golongan ?? "");
   }, [profile]);
+
+  const saveProfile = async () => {
+    if (!fullName.trim() || fullName.trim().length < 2) {
+      return toast.error("Nama lengkap minimal 2 karakter");
+    }
+    if (nip && !/^[0-9]+$/.test(nip.trim())) {
+      return toast.error("NIP hanya boleh berisi angka");
+    }
+    setSavingProfile(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: fullName.trim(),
+        jabatan: jabatan.trim() || null,
+        nip: nip.trim() || null,
+        pangkat_golongan: pangkat.trim() || null,
+      })
+      .eq("id", user!.id);
+    setSavingProfile(false);
+    if (error) return toast.error(error.message);
+    toast.success("Profil disimpan");
+    refresh();
+  };
+
 
   const save = async () => {
     setBusy(true);
