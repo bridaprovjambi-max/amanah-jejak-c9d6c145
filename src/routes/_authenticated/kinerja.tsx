@@ -68,13 +68,14 @@ function KinerjaPage() {
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [pokja, setPokja] = useState<PokjaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const [{ data: t }, { data: p }, { data: pk }] = await Promise.all([
         supabase
           .from("tasks")
-          .select("id,status,deadline,assigned_to,assigned_to_pokja,created_at,updated_at"),
+          .select("id,title,status,deadline,assigned_to,assigned_to_pokja,created_at,updated_at"),
         supabase.from("profiles").select("id,full_name,jabatan,jenjang,pokja_id"),
         supabase.from("pokja").select("id,name"),
       ]);
