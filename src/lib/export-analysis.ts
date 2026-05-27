@@ -230,3 +230,43 @@ export function exportAnalysisPDF(doc: DocLike, relatedDocs?: RelatedDocInfo[]) 
 
   pdf.save(`analisis-${safeFilename(doc.title)}.pdf`);
 }
+
+export function exportBulkCSV(docs: DocLike[]) {
+  const header = [
+    "Judul","Berkas","Folder","Tanggal Upload","Status Analisis","Waktu Analisis",
+    "Ringkasan","Poin Kunci","Penulis","Lembaga","Topik","Tahun","Lokasi","Metodologi",
+  ];
+  const lines = [header.map(csvEscape).join(",")];
+  docs.forEach((doc) => {
+    const ent = doc.ai_entities ?? {};
+    const row = [
+      doc.title,
+      doc.file_name,
+      doc.folder,
+      new Date(doc.created_at).toLocaleString("id-ID"),
+      statusLabel(doc.ai_status),
+      doc.ai_analyzed_at ? new Date(doc.ai_analyzed_at).toLocaleString("id-ID") : "-",
+      doc.ai_summary ?? "",
+      (doc.ai_key_points ?? []).map((k, i) => `${i + 1}. ${k.text}`).join(" | "),
+      (ent.authors ?? []).join("; "),
+      (ent.institutions ?? []).join("; "),
+      (ent.topics ?? []).join("; "),
+      ent.year ?? "",
+      ent.location ?? "",
+      ent.methodology ?? "",
+    ];
+    lines.push(row.map(csvEscape).join(","));
+  });
+  const csv = lines.join("\n");
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+  const ts = new Date().toISOString().slice(0, 10);
+  triggerDownload(blob, `dokumen-ekspor-${ts}-${docs.length}item.csv`);
+}
+
+export async function exportBulkPDFs(docs: DocLike[]) {
+  for (let i = 0; i < docs.length; i++) {
+    exportAnalysisPDF(docs[i]);
+    await new Promise((r) => setTimeout(r, 250));
+  }
+}
+

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp, FileSpreadsheet, FileDown } from "lucide-react";
-import { exportAnalysisCSV, exportAnalysisPDF } from "@/lib/export-analysis";
+import { FileText, Upload, Download, Trash2, Loader2, Search, CalendarDays, X, Folder, FolderOpen, ChevronRight, ChevronDown, Lock, Sparkles, AlertCircle, ChevronUp, FileSpreadsheet, FileDown, CheckSquare, Square } from "lucide-react";
+import { exportAnalysisCSV, exportAnalysisPDF, exportBulkCSV, exportBulkPDFs } from "@/lib/export-analysis";
 import {
   Select,
   SelectContent,
@@ -188,6 +188,18 @@ function DocumentsPage() {
   const runAnalyze = useServerFn(analyzeDocument);
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
   const [expandedAnalysis, setExpandedAnalysis] = useState<Record<string, boolean>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const clearSelection = () => setSelectedIds(new Set());
 
   // Folder navigation
   const [activeFolder, setActiveFolder] = useState<FolderName | "ALL">("ALL");
@@ -343,6 +355,60 @@ function DocumentsPage() {
     setSelectedUploader("");
     setDateFrom("");
     setDateTo("");
+  };
+
+  const allVisibleSelected =
+    filteredRows.length > 0 && filteredRows.every((r) => selectedIds.has(r.id));
+  const toggleSelectAllVisible = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allVisibleSelected) {
+        filteredRows.forEach((r) => next.delete(r.id));
+      } else {
+        filteredRows.forEach((r) => next.add(r.id));
+      }
+      return next;
+    });
+  };
+
+  const selectedDocs = useMemo(
+    () => rows.filter((r) => selectedIds.has(r.id)),
+    [rows, selectedIds],
+  );
+
+  const handleBulkCSV = () => {
+    if (selectedDocs.length === 0) return;
+    exportBulkCSV(selectedDocs);
+    toast.success(`CSV berisi ${selectedDocs.length} dokumen diunduh`);
+  };
+
+  const handleBulkPDFs = async () => {
+    if (selectedDocs.length === 0) return;
+    setBulkBusy(true);
+    try {
+      await exportBulkPDFs(selectedDocs);
+      toast.success(`${selectedDocs.length} PDF diunduh`);
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  const handleBulkDownloadFiles = async () => {
+    if (selectedDocs.length === 0) return;
+    setBulkBusy(true);
+    try {
+      for (const r of selectedDocs) {
+        const { data } = await supabase.storage
+          .from("documents")
+          .createSignedUrl(r.file_path, 60, { download: r.file_name });
+        if (data?.signedUrl) {
+          window.open(data.signedUrl, "_blank");
+          await new Promise((res) => setTimeout(res, 300));
+        }
+      }
+    } finally {
+      setBulkBusy(false);
+    }
   };
 
   const handleUpload = async (e: React.FormEvent) => {
@@ -682,12 +748,48 @@ function DocumentsPage() {
         )}
       </div>
 
-      {/* Results count */}
-      {!loading && visibleRows.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          Menampilkan {filteredRows.length} dari {visibleRows.length} dokumen yang dapat Anda akses
-        </p>
+      {/* Bulk selection toolbar */}
+      {!loading && filteredRows.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-3 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button type="button" variant="outline" size="sm" onClick={toggleSelectAllVisible}>
+              {allVisibleSelected ? (
+                <CheckSquare className="h-4 w-4 mr-2" />
+              ) : (
+                <Square className="h-4 w-4 mr-2" />
+              )}
+              {allVisibleSelected ? "Batalkan semua" : "Pilih semua tampilan"}
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              {selectedIds.size > 0
+                ? `${selectedIds.size} dokumen dipilih`
+                : `Menampilkan ${filteredRows.length} dari ${visibleRows.length} dokumen`}
+            </span>
+          </div>
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkCSV} disabled={bulkBusy}>
+                <FileSpreadsheet className="h-4 w-4 mr-2" /> Ekspor CSV
+              </Button>
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkPDFs} disabled={bulkBusy}>
+                {bulkBusy ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <FileDown className="h-4 w-4 mr-2" />
+                )}
+                Ekspor PDF ({selectedIds.size})
+              </Button>
+              <Button type="button" size="sm" variant="outline" onClick={handleBulkDownloadFiles} disabled={bulkBusy}>
+                <Download className="h-4 w-4 mr-2" /> Unduh Berkas
+              </Button>
+              <Button type="button" size="sm" variant="ghost" onClick={clearSelection}>
+                <X className="h-4 w-4 mr-1" /> Bersihkan
+              </Button>
+            </div>
+          )}
+        </div>
       )}
+
 
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
@@ -747,8 +849,15 @@ function DocumentsPage() {
                       const hasAnalysis = r.ai_status === "done" && !!r.ai_summary;
                       const isOpenAnalysis = expandedAnalysis[r.id] ?? false;
                       return (
-                      <li key={r.id} className="px-5 py-4">
+                      <li key={r.id} className={`px-5 py-4 transition ${selectedIds.has(r.id) ? "bg-primary-soft/30" : ""}`}>
                         <div className="flex items-start gap-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(r.id)}
+                            onChange={() => toggleSelect(r.id)}
+                            className="mt-3 h-4 w-4 rounded border-input accent-primary cursor-pointer"
+                            aria-label={`Pilih ${r.title}`}
+                          />
                           <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary-soft text-primary">
                             <FileText className="h-5 w-5" />
                           </div>
