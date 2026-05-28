@@ -116,6 +116,7 @@ function TelaahStafPage() {
   const [reviews, setReviews] = useState<StaffReview[]>([]);
   const [profiles, setProfiles] = useState<ProfileLite[]>([]);
   const [attachments, setAttachments] = useState<Record<string, Attachment[]>>({});
+  const [history, setHistory] = useState<Record<string, HistoryEntry[]>>({});
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showForm, setShowForm] = useState(false);
