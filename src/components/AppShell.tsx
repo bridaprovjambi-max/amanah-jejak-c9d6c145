@@ -18,6 +18,8 @@ import {
   Trophy,
   CalendarDays,
   KeyRound,
+  ShieldCheck,
+
 } from "lucide-react";
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
