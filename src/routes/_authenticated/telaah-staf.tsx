@@ -134,6 +134,26 @@ function TelaahStafPage() {
   const [showForm, setShowForm] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
+  // Collapsible form sections: default only section 1 open
+  const SECTION_COUNT = REVIEW_SECTIONS.length + 1; // +1 for Saran
+  const [formSecOpen, setFormSecOpen] = useState<Record<number, boolean>>(() => {
+    const init: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) init[i] = i === 1;
+    return init;
+  });
+
+  const toggleFormSec = (n: number) => setFormSecOpen((p) => ({ ...p, [n]: !p[n] }));
+  const expandAllForm = () => {
+    const next: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) next[i] = true;
+    setFormSecOpen(next);
+  };
+  const collapseAllForm = () => {
+    const next: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) next[i] = false;
+    setFormSecOpen(next);
+  };
+
   // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
   const [judul, setJudul] = useState("");
