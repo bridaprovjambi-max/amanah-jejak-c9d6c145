@@ -591,14 +591,7 @@ function TelaahStafPage() {
                       </div>
                     )}
 
-                    {r.disposisi_notes && (
-                      <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
-                        <div className="text-[11px] uppercase tracking-wider text-primary mb-1">
-                          Disposisi {r.disposisi_at && `· ${new Date(r.disposisi_at).toLocaleString("id-ID")}`}
-                        </div>
-                        <p className="text-sm whitespace-pre-wrap">{r.disposisi_notes}</p>
-                      </div>
-                    )}
+                    <HistoryTimeline entries={hist} profMap={profMap} />
 
                     {canDisposisi && (
                       <DispositionForm review={r} onSubmit={updateStatus} />
@@ -610,6 +603,60 @@ function TelaahStafPage() {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function HistoryTimeline({
+  entries, profMap,
+}: {
+  entries: HistoryEntry[];
+  profMap: Record<string, ProfileLite>;
+}) {
+  if (entries.length === 0) return null;
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
+        <History className="h-3.5 w-3.5" /> Riwayat Status & Disposisi
+      </div>
+      <ol className="relative border-l border-border ml-2 space-y-3">
+        {entries.map((h) => {
+          const actor = h.changed_by ? profMap[h.changed_by] : null;
+          const isCreate = h.from_status === null;
+          return (
+            <li key={h.id} className="ml-4">
+              <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background bg-primary" />
+              <div className="flex flex-wrap items-center gap-2">
+                {isCreate ? (
+                  <Badge variant="outline">Dibuat</Badge>
+                ) : (
+                  <>
+                    {h.from_status && (
+                      <Badge variant="outline">{STATUS_LABEL[h.from_status]}</Badge>
+                    )}
+                    <span className="text-xs text-muted-foreground">→</span>
+                    <Badge variant={STATUS_VARIANT[h.to_status]}>{STATUS_LABEL[h.to_status]}</Badge>
+                  </>
+                )}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                <b>{actor?.full_name ?? "Sistem"}</b>
+                {actor?.jabatan ? ` — ${actor.jabatan}` : ""}
+                {" · "}
+                {new Date(h.created_at).toLocaleString("id-ID", {
+                  day: "numeric", month: "short", year: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              </div>
+              {h.notes && (
+                <p className="mt-1.5 text-sm whitespace-pre-wrap rounded-md bg-muted/40 border border-border px-3 py-2">
+                  {h.notes}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }
