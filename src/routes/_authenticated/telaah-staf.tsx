@@ -504,6 +504,125 @@ function TelaahStafPage() {
         </Card>
       )}
 
+      {/* Preview Modal */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary" /> Pratinjau Telaah Staf
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <Badge variant="secondary">{CATEGORY_LABEL[category]}</Badge>
+              <span className="text-muted-foreground">→</span>
+              <span className="font-medium">{profMap[recipientId]?.full_name ?? "—"}</span>
+            </div>
+            <h2 className="font-display text-xl font-semibold">{judul.trim() || "(Judul kosong)"}</h2>
+
+            {REVIEW_SECTIONS.map((sec, i) => (
+              <div key={sec.key}>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  {i + 1}. {sec.label}
+                </div>
+                <p className="text-sm whitespace-pre-wrap text-foreground/90">
+                  {(sectionStateMap[sec.key][0] as string).trim() || <span className="italic text-muted-foreground">(kosong)</span>}
+                </p>
+              </div>
+            ))}
+
+            <div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                {REVIEW_SECTIONS.length + 1}. Saran
+              </div>
+              {cleanArr(saran).length > 0 ? (
+                <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+                  {cleanArr(saran).map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
+                </ol>
+              ) : (
+                <p className="text-sm italic text-muted-foreground">(kosong)</p>
+              )}
+            </div>
+
+            {pendingFiles.length > 0 && (
+              <div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">Lampiran</div>
+                <ul className="space-y-1">
+                  {pendingFiles.map((f, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
+                      <FileIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      {f.name} <span className="text-muted-foreground">({fmtBytes(f.size)})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-border">
+              <Button variant="ghost" onClick={() => setShowPreview(false)}>Kembali ke form</Button>
+              <Button
+                onClick={async () => {
+                  setShowPreview(false);
+                  setBusy(true);
+                  const cleanSaran = cleanArr(saran);
+                  const insertPayload: Record<string, unknown> = {
+                    reporter_id: user!.id,
+                    recipient_id: recipientId,
+                    category,
+                    judul: judul.trim(),
+                    status: "submitted" as ReviewStatus,
+                    saran: cleanSaran,
+                  };
+                  for (const sec of REVIEW_SECTIONS) {
+                    const [val] = sectionStateMap[sec.key];
+                    insertPayload[sec.key] = val.trim();
+                  }
+                  const { data, error } = await supabase
+                    .from("staff_reviews")
+                    .insert(insertPayload as any)
+                    .select("id")
+                    .single();
+
+                  if (error || !data) { setBusy(false); return toast.error(error?.message ?? "Gagal menyimpan"); }
+                  if (pendingFiles.length > 0) await uploadFiles(data.id);
+
+                  await supabase.from("activity_log").insert({
+                    user_id: user!.id,
+                    action: "create_staff_review",
+                    entity_type: "staff_review",
+                    entity_id: data.id,
+                    details: { category, recipient_id: recipientId },
+                  });
+
+                  const recipient = profMap[recipientId];
+                  if (recipient?.telegram_chat_id) {
+                    const msg =
+                      `<b>📋 Telaah Staf Baru</b>\n` +
+                      `Kategori: <b>${CATEGORY_LABEL[category]}</b>\n` +
+                      `Pelapor: ${profile?.full_name ?? "—"}\n` +
+                      `Judul: <b>${judul.trim()}</b>\n\n` +
+                      `Pokok Persoalan: ${pokokPersoalan.trim().slice(0, 500)}`;
+                    notify({ data: { userIds: [recipientId], message: msg } }).catch((e) =>
+                      console.error("notify error", e),
+                    );
+                  }
+
+                  setBusy(false);
+                  toast.success("Telaah staf terkirim");
+                  resetForm();
+                  setShowForm(false);
+                  load();
+                }}
+                disabled={busy}
+              >
+                <Send className="h-4 w-4" />
+                {busy ? "Menyimpan..." : "Kirim telaah"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Filter */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
