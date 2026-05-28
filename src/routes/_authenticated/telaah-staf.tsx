@@ -276,11 +276,7 @@ function TelaahStafPage() {
     setShowPreview(true);
   };
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    const v = validateForm();
-    if (!v.ok) return toast.error(v.message);
-
+  const doSubmit = async () => {
     const cleanSaran = cleanArr(saran);
     setBusy(true);
     const insertPayload: Record<string, unknown> = {
@@ -329,7 +325,15 @@ function TelaahStafPage() {
     toast.success("Telaah staf terkirim");
     resetForm();
     setShowForm(false);
+    setShowPreview(false);
     load();
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const v = validateForm();
+    if (!v.ok) return toast.error(v.message);
+    await doSubmit();
   };
 
   const updateStatus = async (r: StaffReview, status: ReviewStatus, notes?: string): Promise<void> => {
