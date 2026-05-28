@@ -695,22 +695,33 @@ function ArrayField({
   );
 }
 
-function Section({ title, text }: { title: string; text: string }) {
+function Section({ num, label, text }: { num: number; label: string; text: string }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{title}</div>
-      <p className="text-sm whitespace-pre-wrap text-foreground/90">{text}</p>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+        {num}. {label}
+      </div>
+      <p className="text-sm whitespace-pre-wrap text-foreground/90">
+        {text.trim() || <span className="italic text-muted-foreground">(kosong)</span>}
+      </p>
     </div>
   );
 }
 
-function ListSection({ title, items }: { title: string; items: string[] }) {
+function ListSection({ num, label, items }: { num: number; label: string; items: string[] }) {
+  const clean = items.map((s) => s.trim()).filter(Boolean);
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{title}</div>
-      <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
-        {items.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
-      </ol>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+        {num}. {label}
+      </div>
+      {clean.length > 0 ? (
+        <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+          {clean.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
+        </ol>
+      ) : (
+        <p className="text-sm italic text-muted-foreground">(kosong)</p>
+      )}
     </div>
   );
 }
