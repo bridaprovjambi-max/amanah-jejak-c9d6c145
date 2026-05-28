@@ -716,30 +716,30 @@ function HistoryTimeline({
   if (entries.length === 0) return null;
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-        <History className="h-3.5 w-3.5" /> Riwayat Status & Disposisi
+      <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 sm:mb-2 flex items-center gap-1.5">
+        <History className="h-3.5 w-3.5 flex-shrink-0" /> Riwayat Status & Disposisi
       </div>
-      <ol className="relative border-l border-border ml-2 space-y-3">
+      <ol className="relative border-l border-border ml-1.5 sm:ml-2 space-y-2.5 sm:space-y-3">
         {entries.map((h) => {
           const actor = h.changed_by ? profMap[h.changed_by] : null;
           const isCreate = h.from_status === null;
           return (
-            <li key={h.id} className="ml-4">
-              <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background bg-primary" />
-              <div className="flex flex-wrap items-center gap-2">
+            <li key={h.id} className="ml-3 sm:ml-4">
+              <span className="absolute -left-[5px] sm:-left-1.5 mt-1 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full border-2 border-background bg-primary" />
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 {isCreate ? (
-                  <Badge variant="outline">Dibuat</Badge>
+                  <Badge variant="outline" className="text-[10px] sm:text-xs">Dibuat</Badge>
                 ) : (
                   <>
                     {h.from_status && (
-                      <Badge variant="outline">{STATUS_LABEL[h.from_status]}</Badge>
+                      <Badge variant="outline" className="text-[10px] sm:text-xs">{STATUS_LABEL[h.from_status]}</Badge>
                     )}
-                    <span className="text-xs text-muted-foreground">→</span>
-                    <Badge variant={STATUS_VARIANT[h.to_status]}>{STATUS_LABEL[h.to_status]}</Badge>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">→</span>
+                    <Badge variant={STATUS_VARIANT[h.to_status]} className="text-[10px] sm:text-xs">{STATUS_LABEL[h.to_status]}</Badge>
                   </>
                 )}
               </div>
-              <div className="mt-1 text-xs text-muted-foreground">
+              <div className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-muted-foreground">
                 <b>{actor?.full_name ?? "Sistem"}</b>
                 {actor?.jabatan ? ` — ${actor.jabatan}` : ""}
                 {" · "}
@@ -749,7 +749,7 @@ function HistoryTimeline({
                 })}
               </div>
               {h.notes && (
-                <p className="mt-1.5 text-sm whitespace-pre-wrap rounded-md bg-muted/40 border border-border px-3 py-2">
+                <p className="mt-1 sm:mt-1.5 text-xs sm:text-sm whitespace-pre-wrap rounded-md bg-muted/40 border border-border px-2.5 sm:px-3 py-1.5 sm:py-2">
                   {h.notes}
                 </p>
               )}
@@ -768,7 +768,7 @@ function ArrayField({
 }) {
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
+      <Label className="text-xs sm:text-sm">{label}</Label>
       {items.map((item, i) => (
         <div key={i} className="flex gap-2">
           <Input
@@ -780,15 +780,16 @@ function ArrayField({
             }}
             placeholder={`${placeholder}${i + 1}`}
             maxLength={1000}
+            className="h-9 sm:h-10 text-sm"
           />
           {items.length > 1 && (
-            <Button type="button" variant="ghost" size="icon" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>
+            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
       ))}
-      <Button type="button" variant="outline" size="sm" onClick={() => setItems([...items, ""])}>
+      <Button type="button" variant="outline" size="sm" className="h-8 text-xs sm:text-sm" onClick={() => setItems([...items, ""])}>
         <Plus className="h-4 w-4" /> Tambah
       </Button>
     </div>
@@ -798,10 +799,10 @@ function ArrayField({
 function Section({ num, label, text }: { num: number; label: string; text: string }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+      <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
         {num}. {label}
       </div>
-      <p className="text-sm whitespace-pre-wrap text-foreground/90">
+      <p className="text-xs sm:text-sm whitespace-pre-wrap text-foreground/90">
         {text.trim() || <span className="italic text-muted-foreground">(kosong)</span>}
       </p>
     </div>
@@ -812,15 +813,15 @@ function ListSection({ num, label, items }: { num: number; label: string; items:
   const clean = items.map((s) => s.trim()).filter(Boolean);
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+      <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
         {num}. {label}
       </div>
       {clean.length > 0 ? (
-        <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+        <ol className="list-decimal list-inside text-xs sm:text-sm space-y-0.5 sm:space-y-1 text-foreground/90">
           {clean.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
         </ol>
       ) : (
-        <p className="text-sm italic text-muted-foreground">(kosong)</p>
+        <p className="text-xs sm:text-sm italic text-muted-foreground">(kosong)</p>
       )}
     </div>
   );
@@ -837,10 +838,10 @@ function DispositionForm({
   const [busy, setBusy] = useState(false);
   return (
     <div className="rounded-md border border-dashed border-border bg-muted/20 p-3 space-y-3">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Beri disposisi</div>
+      <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground">Beri disposisi</div>
       <div className="grid sm:grid-cols-3 gap-3">
         <Select value={status} onValueChange={(v) => setStatus(v as ReviewStatus)}>
-          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-9 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="reviewed">Ditelaah</SelectItem>
             <SelectItem value="approved">Disetujui</SelectItem>
@@ -848,7 +849,7 @@ function DispositionForm({
           </SelectContent>
         </Select>
         <Textarea
-          className="sm:col-span-2"
+          className="sm:col-span-2 text-base sm:text-sm min-h-[72px]"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Catatan disposisi..."
@@ -860,6 +861,7 @@ function DispositionForm({
         <Button
           size="sm"
           disabled={busy}
+          className="h-8 text-xs sm:text-sm"
           onClick={async () => {
             setBusy(true);
             await onSubmit(review, status, notes.trim() || undefined);
