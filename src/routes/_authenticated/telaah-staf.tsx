@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, FileText, Send,
+  ChevronDown, ChevronUp, FileText, Send, History,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type Jenjang } from "@/lib/auth";
