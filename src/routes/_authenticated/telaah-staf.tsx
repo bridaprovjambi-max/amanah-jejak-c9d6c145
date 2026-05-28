@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
   ChevronDown, ChevronUp, FileText, Send, History, Eye,
+  ChevronRight, MinusSquare, PlusSquare,
 } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
