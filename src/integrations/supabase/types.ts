@@ -449,68 +449,56 @@ export type Database = {
       }
       staff_reviews: {
         Row: {
-          alternatif_pemecahan: Json
-          analisis_ekonomi: string | null
-          analisis_hukum: string | null
-          analisis_sosial: string | null
-          analisis_teknis: string | null
           category: Database["public"]["Enums"]["staff_review_category"]
           created_at: string
           disposisi_at: string | null
           disposisi_notes: string | null
+          fakta_data: string
           id: string
           judul: string
           kesimpulan: string
-          latar_belakang: string
-          maksud_tujuan: string
-          permasalahan: Json
+          pembahasan: string
+          pokok_persoalan: string
+          pra_anggapan: string
           recipient_id: string
-          rekomendasi: Json
           reporter_id: string
+          saran: Json
           status: Database["public"]["Enums"]["staff_review_status"]
           updated_at: string
         }
         Insert: {
-          alternatif_pemecahan?: Json
-          analisis_ekonomi?: string | null
-          analisis_hukum?: string | null
-          analisis_sosial?: string | null
-          analisis_teknis?: string | null
           category: Database["public"]["Enums"]["staff_review_category"]
           created_at?: string
           disposisi_at?: string | null
           disposisi_notes?: string | null
+          fakta_data: string
           id?: string
           judul: string
           kesimpulan: string
-          latar_belakang: string
-          maksud_tujuan: string
-          permasalahan?: Json
+          pembahasan: string
+          pokok_persoalan: string
+          pra_anggapan: string
           recipient_id: string
-          rekomendasi?: Json
           reporter_id: string
+          saran?: Json
           status?: Database["public"]["Enums"]["staff_review_status"]
           updated_at?: string
         }
         Update: {
-          alternatif_pemecahan?: Json
-          analisis_ekonomi?: string | null
-          analisis_hukum?: string | null
-          analisis_sosial?: string | null
-          analisis_teknis?: string | null
           category?: Database["public"]["Enums"]["staff_review_category"]
           created_at?: string
           disposisi_at?: string | null
           disposisi_notes?: string | null
+          fakta_data?: string
           id?: string
           judul?: string
           kesimpulan?: string
-          latar_belakang?: string
-          maksud_tujuan?: string
-          permasalahan?: Json
+          pembahasan?: string
+          pokok_persoalan?: string
+          pra_anggapan?: string
           recipient_id?: string
-          rekomendasi?: Json
           reporter_id?: string
+          saran?: Json
           status?: Database["public"]["Enums"]["staff_review_status"]
           updated_at?: string
         }
