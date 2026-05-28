@@ -48,6 +48,14 @@ const STATUS_VARIANT: Record<ReviewStatus, "default" | "secondary" | "outline" |
   rejected: "destructive",
 };
 
+const REVIEW_SECTIONS = [
+  { key: "pokok_persoalan" as const, label: "Pokok Persoalan", placeholder: "Inti persoalan yang akan ditelaah", rows: 3, maxLength: 3000 },
+  { key: "pra_anggapan" as const, label: "Pra Anggapan", placeholder: "Dugaan/anggapan dasar sebelum analisis", rows: 3, maxLength: 3000 },
+  { key: "fakta_data" as const, label: "Fakta dan Data yang Berpengaruh Terhadap Persoalan", placeholder: "Uraikan fakta, data, regulasi, atau kondisi yang relevan", rows: 5, maxLength: 6000 },
+  { key: "pembahasan" as const, label: "Pembahasan / Analisis", placeholder: "Analisis persoalan berdasarkan fakta dan pra anggapan", rows: 6, maxLength: 8000 },
+  { key: "kesimpulan" as const, label: "Kesimpulan", placeholder: "", rows: 3, maxLength: 3000 },
+];
+
 interface ProfileLite {
   id: string;
   full_name: string;
