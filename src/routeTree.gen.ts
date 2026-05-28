@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWewenangRouteImport } from './routes/_authenticated/wewenang'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
@@ -49,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedWewenangRoute = AuthenticatedWewenangRouteImport.update({
+  id: '/wewenang',
+  path: '/wewenang',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/wewenang': typeof AuthenticatedWewenangRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/wewenang': typeof AuthenticatedWewenangRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/wewenang': typeof AuthenticatedWewenangRoute
   '/_authenticated/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/tasks/new': typeof AuthenticatedTasksNewRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/pokja'
     | '/settings'
     | '/users'
+    | '/wewenang'
     | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/pokja'
     | '/settings'
     | '/users'
+    | '/wewenang'
     | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
     | '/_authenticated/users'
+    | '/_authenticated/wewenang'
     | '/_authenticated/reports/rekap'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/tasks/new'
@@ -315,6 +327,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/wewenang': {
+      id: '/_authenticated/wewenang'
+      path: '/wewenang'
+      fullPath: '/wewenang'
+      preLoaderRoute: typeof AuthenticatedWewenangRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/users': {
       id: '/_authenticated/users'
@@ -450,6 +469,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedWewenangRoute: typeof AuthenticatedWewenangRoute
   AuthenticatedReportsRekapRoute: typeof AuthenticatedReportsRekapRoute
   AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
   AuthenticatedTasksNewRoute: typeof AuthenticatedTasksNewRoute
@@ -468,6 +488,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedWewenangRoute: AuthenticatedWewenangRoute,
   AuthenticatedReportsRekapRoute: AuthenticatedReportsRekapRoute,
   AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
   AuthenticatedTasksNewRoute: AuthenticatedTasksNewRoute,
