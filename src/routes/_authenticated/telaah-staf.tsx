@@ -280,7 +280,7 @@ function TelaahStafPage() {
     }
     const { data, error } = await supabase
       .from("staff_reviews")
-      .insert(insertPayload)
+      .insert(insertPayload as any)
       .select("id")
       .single();
 
