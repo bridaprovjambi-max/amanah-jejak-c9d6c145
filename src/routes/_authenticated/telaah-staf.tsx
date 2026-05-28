@@ -308,7 +308,8 @@ function TelaahStafPage() {
         disposisi_at: new Date().toISOString(),
       })
       .eq("id", r.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
+
     toast.success("Disposisi diperbarui");
     // Notifikasi balik ke pelapor
     const reporter = profMap[r.reporter_id];
