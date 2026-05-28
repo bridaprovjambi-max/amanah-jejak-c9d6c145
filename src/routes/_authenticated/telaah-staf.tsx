@@ -62,16 +62,12 @@ interface StaffReview {
   recipient_id: string;
   category: Category;
   judul: string;
-  latar_belakang: string;
-  maksud_tujuan: string;
-  permasalahan: string[];
-  analisis_hukum: string | null;
-  analisis_sosial: string | null;
-  analisis_ekonomi: string | null;
-  analisis_teknis: string | null;
-  alternatif_pemecahan: string[];
+  pokok_persoalan: string;
+  pra_anggapan: string;
+  fakta_data: string;
+  pembahasan: string;
   kesimpulan: string;
-  rekomendasi: string[];
+  saran: string[];
   status: ReviewStatus;
   disposisi_notes: string | null;
   disposisi_at: string | null;
@@ -88,7 +84,6 @@ interface Attachment {
   mime_type: string | null;
 }
 
-// Atasan default berdasarkan jenjang pelapor
 const ATASAN_JENJANG: Record<Jenjang, Jenjang[]> = {
   staf: ["eselon_iv", "eselon_iii"],
   pokja: ["eselon_iii"],
@@ -115,20 +110,16 @@ function TelaahStafPage() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showForm, setShowForm] = useState(false);
 
-  // Form state
+  // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
   const [judul, setJudul] = useState("");
   const [recipientId, setRecipientId] = useState<string>("");
-  const [latarBelakang, setLatarBelakang] = useState("");
-  const [maksudTujuan, setMaksudTujuan] = useState("");
-  const [permasalahan, setPermasalahan] = useState<string[]>([""]);
-  const [hukum, setHukum] = useState("");
-  const [sosial, setSosial] = useState("");
-  const [ekonomi, setEkonomi] = useState("");
-  const [teknis, setTeknis] = useState("");
-  const [alternatif, setAlternatif] = useState<string[]>([""]);
+  const [pokokPersoalan, setPokokPersoalan] = useState("");
+  const [praAnggapan, setPraAnggapan] = useState("");
+  const [faktaData, setFaktaData] = useState("");
+  const [pembahasan, setPembahasan] = useState("");
   const [kesimpulan, setKesimpulan] = useState("");
-  const [rekomendasi, setRekomendasi] = useState<string[]>([""]);
+  const [saran, setSaran] = useState<string[]>([""]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -143,7 +134,6 @@ function TelaahStafPage() {
     return m;
   }, [profiles]);
 
-  // Atasan default: pilih pengguna pertama yang jenjang-nya cocok
   const suggestedRecipient = useMemo(() => {
     if (!profile) return "";
     const targets = ATASAN_JENJANG[profile.jenjang] ?? [];
@@ -166,9 +156,7 @@ function TelaahStafPage() {
     ]);
     const rows = ((rev ?? []) as unknown as StaffReview[]).map((r) => ({
       ...r,
-      permasalahan: Array.isArray(r.permasalahan) ? r.permasalahan : [],
-      alternatif_pemecahan: Array.isArray(r.alternatif_pemecahan) ? r.alternatif_pemecahan : [],
-      rekomendasi: Array.isArray(r.rekomendasi) ? r.rekomendasi : [],
+      saran: Array.isArray(r.saran) ? r.saran : [],
     }));
     setReviews(rows);
     setProfiles((profs ?? []) as ProfileLite[]);
@@ -221,13 +209,12 @@ function TelaahStafPage() {
 
   const resetForm = () => {
     setJudul("");
-    setLatarBelakang("");
-    setMaksudTujuan("");
-    setPermasalahan([""]);
-    setHukum(""); setSosial(""); setEkonomi(""); setTeknis("");
-    setAlternatif([""]);
+    setPokokPersoalan("");
+    setPraAnggapan("");
+    setFaktaData("");
+    setPembahasan("");
     setKesimpulan("");
-    setRekomendasi([""]);
+    setSaran([""]);
     setPendingFiles([]);
     setRecipientId(suggestedRecipient);
   };
@@ -238,11 +225,13 @@ function TelaahStafPage() {
     e.preventDefault();
     if (!recipientId) return toast.error("Pilih tujuan telaah (atasan)");
     if (judul.trim().length < 3) return toast.error("Judul minimal 3 karakter");
-    if (latarBelakang.trim().length < 5) return toast.error("Latar belakang wajib diisi");
-    if (maksudTujuan.trim().length < 5) return toast.error("Maksud & tujuan wajib diisi");
-    const cleanPermasalahan = cleanArr(permasalahan);
-    if (cleanPermasalahan.length === 0) return toast.error("Tambahkan minimal 1 permasalahan");
+    if (pokokPersoalan.trim().length < 5) return toast.error("Pokok persoalan wajib diisi");
+    if (praAnggapan.trim().length < 5) return toast.error("Pra anggapan wajib diisi");
+    if (faktaData.trim().length < 5) return toast.error("Fakta dan data wajib diisi");
+    if (pembahasan.trim().length < 5) return toast.error("Pembahasan/analisis wajib diisi");
     if (kesimpulan.trim().length < 5) return toast.error("Kesimpulan wajib diisi");
+    const cleanSaran = cleanArr(saran);
+    if (cleanSaran.length === 0) return toast.error("Tambahkan minimal 1 saran");
 
     setBusy(true);
     const { data, error } = await supabase
@@ -252,16 +241,12 @@ function TelaahStafPage() {
         recipient_id: recipientId,
         category,
         judul: judul.trim(),
-        latar_belakang: latarBelakang.trim(),
-        maksud_tujuan: maksudTujuan.trim(),
-        permasalahan: cleanPermasalahan,
-        analisis_hukum: hukum.trim() || null,
-        analisis_sosial: sosial.trim() || null,
-        analisis_ekonomi: ekonomi.trim() || null,
-        analisis_teknis: teknis.trim() || null,
-        alternatif_pemecahan: cleanArr(alternatif),
+        pokok_persoalan: pokokPersoalan.trim(),
+        pra_anggapan: praAnggapan.trim(),
+        fakta_data: faktaData.trim(),
+        pembahasan: pembahasan.trim(),
         kesimpulan: kesimpulan.trim(),
-        rekomendasi: cleanArr(rekomendasi),
+        saran: cleanSaran,
         status: "submitted" as ReviewStatus,
       })
       .select("id")
@@ -278,7 +263,6 @@ function TelaahStafPage() {
       details: { category, recipient_id: recipientId },
     });
 
-    // Notifikasi Telegram ke tujuan
     const recipient = profMap[recipientId];
     if (recipient?.telegram_chat_id) {
       const msg =
@@ -286,7 +270,7 @@ function TelaahStafPage() {
         `Kategori: <b>${CATEGORY_LABEL[category]}</b>\n` +
         `Pelapor: ${profile?.full_name ?? "—"}\n` +
         `Judul: <b>${judul.trim()}</b>\n\n` +
-        `${latarBelakang.trim().slice(0, 600)}`;
+        `Pokok Persoalan: ${pokokPersoalan.trim().slice(0, 500)}`;
       notify({ data: { userIds: [recipientId], message: msg } }).catch((e) =>
         console.error("notify error", e),
       );
@@ -311,7 +295,6 @@ function TelaahStafPage() {
     if (error) { toast.error(error.message); return; }
 
     toast.success("Disposisi diperbarui");
-    // Notifikasi balik ke pelapor
     const reporter = profMap[r.reporter_id];
     if (reporter?.telegram_chat_id) {
       const msg =
@@ -356,7 +339,7 @@ function TelaahStafPage() {
             Telaah Staf
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Telaah staf/pelaksana ke atasan — Perencanaan, Keuangan, dan Kepegawaian.
+            Format baku: Pokok Persoalan · Pra Anggapan · Fakta & Data · Pembahasan · Kesimpulan · Saran.
           </p>
         </div>
         <Button onClick={() => setShowForm((v) => !v)}>
@@ -408,35 +391,31 @@ function TelaahStafPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Latar Belakang *</Label>
-                <Textarea value={latarBelakang} onChange={(e) => setLatarBelakang(e.target.value)} rows={4} maxLength={4000} />
+                <Label>1. Pokok Persoalan *</Label>
+                <Textarea value={pokokPersoalan} onChange={(e) => setPokokPersoalan(e.target.value)} rows={3} maxLength={3000} placeholder="Inti persoalan yang akan ditelaah" />
               </div>
 
               <div className="space-y-2">
-                <Label>Maksud & Tujuan *</Label>
-                <Textarea value={maksudTujuan} onChange={(e) => setMaksudTujuan(e.target.value)} rows={3} maxLength={2000} />
+                <Label>2. Pra Anggapan *</Label>
+                <Textarea value={praAnggapan} onChange={(e) => setPraAnggapan(e.target.value)} rows={3} maxLength={3000} placeholder="Dugaan/anggapan dasar sebelum analisis" />
               </div>
-
-              <ArrayField label="Permasalahan *" items={permasalahan} setItems={setPermasalahan} placeholder="Pokok masalah ke-" />
-
-              <div>
-                <Label className="text-base">Analisis</Label>
-                <div className="grid sm:grid-cols-2 gap-3 mt-2">
-                  <Textarea placeholder="Aspek hukum" value={hukum} onChange={(e) => setHukum(e.target.value)} rows={3} maxLength={2000} />
-                  <Textarea placeholder="Aspek sosial" value={sosial} onChange={(e) => setSosial(e.target.value)} rows={3} maxLength={2000} />
-                  <Textarea placeholder="Aspek ekonomi" value={ekonomi} onChange={(e) => setEkonomi(e.target.value)} rows={3} maxLength={2000} />
-                  <Textarea placeholder="Aspek teknis" value={teknis} onChange={(e) => setTeknis(e.target.value)} rows={3} maxLength={2000} />
-                </div>
-              </div>
-
-              <ArrayField label="Alternatif Pemecahan" items={alternatif} setItems={setAlternatif} placeholder="Alternatif ke-" />
 
               <div className="space-y-2">
-                <Label>Kesimpulan *</Label>
+                <Label>3. Fakta dan Data yang Berpengaruh Terhadap Persoalan *</Label>
+                <Textarea value={faktaData} onChange={(e) => setFaktaData(e.target.value)} rows={5} maxLength={6000} placeholder="Uraikan fakta, data, regulasi, atau kondisi yang relevan" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>4. Pembahasan / Analisis *</Label>
+                <Textarea value={pembahasan} onChange={(e) => setPembahasan(e.target.value)} rows={6} maxLength={8000} placeholder="Analisis persoalan berdasarkan fakta dan pra anggapan" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>5. Kesimpulan *</Label>
                 <Textarea value={kesimpulan} onChange={(e) => setKesimpulan(e.target.value)} rows={3} maxLength={3000} />
               </div>
 
-              <ArrayField label="Rekomendasi" items={rekomendasi} setItems={setRekomendasi} placeholder="Rekomendasi ke-" />
+              <ArrayField label="6. Saran *" items={saran} setItems={setSaran} placeholder="Saran ke-" />
 
               <div className="space-y-2">
                 <Label>Lampiran pendukung</Label>
@@ -564,25 +543,12 @@ function TelaahStafPage() {
                 </CardHeader>
                 {isOpen && (
                   <CardContent className="space-y-4 border-t border-border pt-4">
-                    <Section title="Latar Belakang" text={r.latar_belakang} />
-                    <Section title="Maksud & Tujuan" text={r.maksud_tujuan} />
-                    <ListSection title="Permasalahan" items={r.permasalahan} />
-                    {(r.analisis_hukum || r.analisis_sosial || r.analisis_ekonomi || r.analisis_teknis) && (
-                      <div>
-                        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Analisis</div>
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          {r.analisis_hukum && <Aspect label="Hukum" text={r.analisis_hukum} />}
-                          {r.analisis_sosial && <Aspect label="Sosial" text={r.analisis_sosial} />}
-                          {r.analisis_ekonomi && <Aspect label="Ekonomi" text={r.analisis_ekonomi} />}
-                          {r.analisis_teknis && <Aspect label="Teknis" text={r.analisis_teknis} />}
-                        </div>
-                      </div>
-                    )}
-                    {r.alternatif_pemecahan.length > 0 && (
-                      <ListSection title="Alternatif Pemecahan" items={r.alternatif_pemecahan} />
-                    )}
-                    <Section title="Kesimpulan" text={r.kesimpulan} />
-                    {r.rekomendasi.length > 0 && <ListSection title="Rekomendasi" items={r.rekomendasi} />}
+                    <Section title="1. Pokok Persoalan" text={r.pokok_persoalan} />
+                    <Section title="2. Pra Anggapan" text={r.pra_anggapan} />
+                    <Section title="3. Fakta dan Data yang Berpengaruh Terhadap Persoalan" text={r.fakta_data} />
+                    <Section title="4. Pembahasan / Analisis" text={r.pembahasan} />
+                    <Section title="5. Kesimpulan" text={r.kesimpulan} />
+                    {r.saran.length > 0 && <ListSection title="6. Saran" items={r.saran} />}
 
                     {atts.length > 0 && (
                       <div>
@@ -676,15 +642,6 @@ function ListSection({ title, items }: { title: string; items: string[] }) {
       <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
         {items.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
       </ol>
-    </div>
-  );
-}
-
-function Aspect({ label, text }: { label: string; text: string }) {
-  return (
-    <div className="rounded-md border border-border bg-muted/30 p-3">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{label}</div>
-      <p className="text-sm whitespace-pre-wrap">{text}</p>
     </div>
   );
 }
