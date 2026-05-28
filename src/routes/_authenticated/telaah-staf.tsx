@@ -467,11 +467,28 @@ function TelaahStafPage() {
                 <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." className="h-9 sm:h-10 text-sm" />
               </div>
 
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground">Konten telaah (1–6)</span>
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Buka semua</button>
+                  <span className="text-muted-foreground">·</span>
+                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Tutup semua</button>
+                </div>
+              </div>
+
               {REVIEW_SECTIONS.map((sec, i) => {
+                const num = i + 1;
                 const [val, setVal] = sectionStateMap[sec.key];
+                const isOpen = !!formSecOpen[num];
                 return (
-                  <div key={sec.key} className="space-y-2">
-                    <Label className="text-xs sm:text-sm">{i + 1}. {sec.label} *</Label>
+                  <CollapsibleFormSection
+                    key={sec.key}
+                    num={num}
+                    label={sec.label}
+                    required
+                    isOpen={isOpen}
+                    onToggle={() => toggleFormSec(num)}
+                  >
                     <Textarea
                       value={val}
                       onChange={(e) => setVal(e.target.value)}
@@ -480,11 +497,19 @@ function TelaahStafPage() {
                       placeholder={sec.placeholder}
                       className="text-base sm:text-sm min-h-[80px]"
                     />
-                  </div>
+                  </CollapsibleFormSection>
                 );
               })}
 
-              <ArrayField label={`${REVIEW_SECTIONS.length + 1}. Saran *`} items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              <CollapsibleFormSection
+                num={REVIEW_SECTIONS.length + 1}
+                label="Saran"
+                required
+                isOpen={!!formSecOpen[REVIEW_SECTIONS.length + 1]}
+                onToggle={() => toggleFormSec(REVIEW_SECTIONS.length + 1)}
+              >
+                <ArrayField label="Saran" items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              </CollapsibleFormSection>
 
               <div className="space-y-2">
                 <Label className="text-xs sm:text-sm">Lampiran pendukung</Label>
