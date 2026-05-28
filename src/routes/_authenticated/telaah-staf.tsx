@@ -666,10 +666,14 @@ function TelaahStafPage() {
                 </CardHeader>
                 {isOpen && (
                   <CardContent className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
+                    <SectionJumpNav
+                      prefix={r.id}
+                      labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
+                    />
                     {REVIEW_SECTIONS.map((sec, i) => (
-                      <Section key={sec.key} num={i + 1} label={sec.label} text={(r as any)[sec.key] ?? ""} />
+                      <Section key={sec.key} id={`${r.id}-sec-${i + 1}`} num={i + 1} label={sec.label} text={(r as any)[sec.key] ?? ""} />
                     ))}
-                    <ListSection num={REVIEW_SECTIONS.length + 1} label="Saran" items={r.saran} />
+                    <ListSection id={`${r.id}-sec-${REVIEW_SECTIONS.length + 1}`} num={REVIEW_SECTIONS.length + 1} label="Saran" items={r.saran} />
 
                     {atts.length > 0 && (
                       <div>
