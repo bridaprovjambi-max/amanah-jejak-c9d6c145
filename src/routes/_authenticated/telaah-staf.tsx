@@ -519,6 +519,10 @@ function TelaahStafPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 sm:space-y-5">
+            <SectionJumpNav
+              prefix="preview"
+              labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
+            />
             <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
               <Badge variant="secondary" className="text-[10px] sm:text-xs">{CATEGORY_LABEL[category]}</Badge>
               <span className="text-muted-foreground">→</span>
@@ -527,7 +531,7 @@ function TelaahStafPage() {
             <h2 className="font-display text-lg sm:text-xl font-semibold break-words">{judul.trim() || "(Judul kosong)"}</h2>
 
             {REVIEW_SECTIONS.map((sec, i) => (
-              <div key={sec.key}>
+              <div key={sec.key} id={`preview-sec-${i + 1}`} className="scroll-mt-20">
                 <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
                   {i + 1}. {sec.label}
                 </div>
@@ -537,7 +541,7 @@ function TelaahStafPage() {
               </div>
             ))}
 
-            <div>
+            <div id={`preview-sec-${REVIEW_SECTIONS.length + 1}`} className="scroll-mt-20">
               <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
                 {REVIEW_SECTIONS.length + 1}. Saran
               </div>
