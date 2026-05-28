@@ -512,67 +512,69 @@ function TelaahStafPage() {
 
       {/* Preview Modal */}
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5 text-primary" /> Pratinjau Telaah Staf
+        <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[85dvh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="pb-2">
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Eye className="h-5 w-5 text-primary flex-shrink-0" /> Pratinjau Telaah Staf
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-5">
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <Badge variant="secondary">{CATEGORY_LABEL[category]}</Badge>
+          <div className="space-y-4 sm:space-y-5">
+            <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+              <Badge variant="secondary" className="text-[10px] sm:text-xs">{CATEGORY_LABEL[category]}</Badge>
               <span className="text-muted-foreground">→</span>
               <span className="font-medium">{profMap[recipientId]?.full_name ?? "—"}</span>
             </div>
-            <h2 className="font-display text-xl font-semibold">{judul.trim() || "(Judul kosong)"}</h2>
+            <h2 className="font-display text-lg sm:text-xl font-semibold break-words">{judul.trim() || "(Judul kosong)"}</h2>
 
             {REVIEW_SECTIONS.map((sec, i) => (
               <div key={sec.key}>
-                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
                   {i + 1}. {sec.label}
                 </div>
-                <p className="text-sm whitespace-pre-wrap text-foreground/90">
+                <p className="text-xs sm:text-sm whitespace-pre-wrap text-foreground/90">
                   {(sectionStateMap[sec.key][0] as string).trim() || <span className="italic text-muted-foreground">(kosong)</span>}
                 </p>
               </div>
             ))}
 
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+              <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
                 {REVIEW_SECTIONS.length + 1}. Saran
               </div>
               {cleanArr(saran).length > 0 ? (
-                <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+                <ol className="list-decimal list-inside text-xs sm:text-sm space-y-1 text-foreground/90">
                   {cleanArr(saran).map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
                 </ol>
               ) : (
-                <p className="text-sm italic text-muted-foreground">(kosong)</p>
+                <p className="text-xs sm:text-sm italic text-muted-foreground">(kosong)</p>
               )}
             </div>
 
             {pendingFiles.length > 0 && (
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">Lampiran</div>
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Lampiran</div>
                 <ul className="space-y-1">
                   {pendingFiles.map((f, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
-                      <FileIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                      {f.name} <span className="text-muted-foreground">({fmtBytes(f.size)})</span>
+                    <li key={i} className="flex items-center gap-2 text-xs sm:text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
+                      <FileIcon className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{f.name}</span>
+                      <span className="text-muted-foreground hidden sm:inline">({fmtBytes(f.size)})</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-border">
-                <Button variant="ghost" onClick={() => setShowPreview(false)}>Kembali ke form</Button>
-                <Button
-                  onClick={async () => {
-                    setShowPreview(false);
-                    await doSubmit();
-                  }}
-                  disabled={busy}
-                >
+            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t border-border">
+              <Button variant="ghost" onClick={() => setShowPreview(false)} className="h-9 text-xs sm:text-sm">Kembali ke form</Button>
+              <Button
+                onClick={async () => {
+                  setShowPreview(false);
+                  await doSubmit();
+                }}
+                disabled={busy}
+                className="h-9 text-xs sm:text-sm"
+              >
                 <Send className="h-4 w-4" />
                 {busy ? "Menyimpan..." : "Kirim telaah"}
               </Button>
