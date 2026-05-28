@@ -275,6 +275,9 @@ function TelaahStafPage() {
     setSaran([""]);
     setPendingFiles([]);
     setRecipientId(suggestedRecipient);
+    const init: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) init[i] = i === 1;
+    setFormSecOpen(init);
   };
 
   const cleanArr = (a: string[]) => a.map((s) => s.trim()).filter(Boolean);
