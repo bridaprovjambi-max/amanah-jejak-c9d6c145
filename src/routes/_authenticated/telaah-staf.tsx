@@ -910,6 +910,35 @@ function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }
   );
 }
 
+function CollapsibleFormSection({
+  num, label, required, isOpen, onToggle, children,
+}: {
+  num: number; label: string; required?: boolean; isOpen: boolean; onToggle: () => void; children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg border border-border overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/30 hover:bg-muted/50 transition-colors"
+        aria-expanded={isOpen}
+      >
+        <span className="text-xs sm:text-sm font-medium text-foreground">
+          {num}. {label}{required && <span className="text-destructive ml-0.5">*</span>}
+        </span>
+        <span className="ml-2 shrink-0 text-muted-foreground">
+          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </span>
+      </button>
+      {isOpen && (
+        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DispositionForm({
   review, onSubmit,
 }: {
