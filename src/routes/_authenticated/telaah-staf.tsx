@@ -4,8 +4,11 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, FileText, Send, History,
+  ChevronDown, ChevronUp, FileText, Send, History, Eye,
 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type Jenjang } from "@/lib/auth";
 import { sendTelegramNotification } from "@/lib/telegram.functions";
@@ -128,6 +131,7 @@ function TelaahStafPage() {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showForm, setShowForm] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
@@ -254,17 +258,26 @@ function TelaahStafPage() {
 
   const cleanArr = (a: string[]) => a.map((s) => s.trim()).filter(Boolean);
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!recipientId) return toast.error("Pilih tujuan telaah (atasan)");
-    if (judul.trim().length < 3) return toast.error("Judul minimal 3 karakter");
+  function validateForm(): { ok: true } | { ok: false; message: string } {
+    if (!recipientId) return { ok: false, message: "Pilih tujuan telaah (atasan)" };
+    if (judul.trim().length < 3) return { ok: false, message: "Judul minimal 3 karakter" };
     for (const sec of REVIEW_SECTIONS) {
       const [val] = sectionStateMap[sec.key];
-      if (val.trim().length < 5) return toast.error(`${sec.label} wajib diisi`);
+      if (val.trim().length < 5) return { ok: false, message: `${sec.label} wajib diisi` };
     }
     const cleanSaran = cleanArr(saran);
-    if (cleanSaran.length === 0) return toast.error("Tambahkan minimal 1 saran");
+    if (cleanSaran.length === 0) return { ok: false, message: "Tambahkan minimal 1 saran" };
+    return { ok: true };
+  }
 
+  const openPreview = () => {
+    const v = validateForm();
+    if (!v.ok) { toast.error(v.message); return; }
+    setShowPreview(true);
+  };
+
+  const doSubmit = async () => {
+    const cleanSaran = cleanArr(saran);
     setBusy(true);
     const insertPayload: Record<string, unknown> = {
       reporter_id: user!.id,
@@ -312,7 +325,15 @@ function TelaahStafPage() {
     toast.success("Telaah staf terkirim");
     resetForm();
     setShowForm(false);
+    setShowPreview(false);
     load();
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const v = validateForm();
+    if (!v.ok) return toast.error(v.message);
+    await doSubmit();
   };
 
   const updateStatus = async (r: StaffReview, status: ReviewStatus, notes?: string): Promise<void> => {
@@ -474,6 +495,9 @@ function TelaahStafPage() {
 
               <div className="flex justify-end gap-2 pt-2">
                 <Button type="button" variant="ghost" onClick={() => { resetForm(); setShowForm(false); }}>Batal</Button>
+                <Button type="button" variant="outline" onClick={openPreview}>
+                  <Eye className="h-4 w-4" /> Pratinjau
+                </Button>
                 <Button type="submit" disabled={busy}>
                   <Send className="h-4 w-4" />
                   {busy ? "Menyimpan..." : "Kirim telaah"}
@@ -483,6 +507,77 @@ function TelaahStafPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Preview Modal */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary" /> Pratinjau Telaah Staf
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <Badge variant="secondary">{CATEGORY_LABEL[category]}</Badge>
+              <span className="text-muted-foreground">→</span>
+              <span className="font-medium">{profMap[recipientId]?.full_name ?? "—"}</span>
+            </div>
+            <h2 className="font-display text-xl font-semibold">{judul.trim() || "(Judul kosong)"}</h2>
+
+            {REVIEW_SECTIONS.map((sec, i) => (
+              <div key={sec.key}>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  {i + 1}. {sec.label}
+                </div>
+                <p className="text-sm whitespace-pre-wrap text-foreground/90">
+                  {(sectionStateMap[sec.key][0] as string).trim() || <span className="italic text-muted-foreground">(kosong)</span>}
+                </p>
+              </div>
+            ))}
+
+            <div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                {REVIEW_SECTIONS.length + 1}. Saran
+              </div>
+              {cleanArr(saran).length > 0 ? (
+                <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+                  {cleanArr(saran).map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
+                </ol>
+              ) : (
+                <p className="text-sm italic text-muted-foreground">(kosong)</p>
+              )}
+            </div>
+
+            {pendingFiles.length > 0 && (
+              <div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">Lampiran</div>
+                <ul className="space-y-1">
+                  {pendingFiles.map((f, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
+                      <FileIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      {f.name} <span className="text-muted-foreground">({fmtBytes(f.size)})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                <Button variant="ghost" onClick={() => setShowPreview(false)}>Kembali ke form</Button>
+                <Button
+                  onClick={async () => {
+                    setShowPreview(false);
+                    await doSubmit();
+                  }}
+                  disabled={busy}
+                >
+                <Send className="h-4 w-4" />
+                {busy ? "Menyimpan..." : "Kirim telaah"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Filter */}
       <div className="flex flex-wrap items-center gap-3">
