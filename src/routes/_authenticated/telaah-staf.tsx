@@ -84,6 +84,16 @@ interface Attachment {
   mime_type: string | null;
 }
 
+interface HistoryEntry {
+  id: string;
+  review_id: string;
+  changed_by: string | null;
+  from_status: ReviewStatus | null;
+  to_status: ReviewStatus;
+  notes: string | null;
+  created_at: string;
+}
+
 const ATASAN_JENJANG: Record<Jenjang, Jenjang[]> = {
   staf: ["eselon_iv", "eselon_iii"],
   pokja: ["eselon_iii"],
