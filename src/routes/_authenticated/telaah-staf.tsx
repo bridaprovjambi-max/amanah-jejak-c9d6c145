@@ -566,13 +566,11 @@ function TelaahStafPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 border-t border-border pt-4">
-                    <Section title="1. Pokok Persoalan" text={r.pokok_persoalan} />
-                    <Section title="2. Pra Anggapan" text={r.pra_anggapan} />
-                    <Section title="3. Fakta dan Data yang Berpengaruh Terhadap Persoalan" text={r.fakta_data} />
-                    <Section title="4. Pembahasan / Analisis" text={r.pembahasan} />
-                    <Section title="5. Kesimpulan" text={r.kesimpulan} />
-                    {r.saran.length > 0 && <ListSection title="6. Saran" items={r.saran} />}
+                  <CardContent className="space-y-5 border-t border-border pt-4">
+                    {REVIEW_SECTIONS.map((sec, i) => (
+                      <Section key={sec.key} num={i + 1} label={sec.label} text={(r as any)[sec.key] ?? ""} />
+                    ))}
+                    <ListSection num={REVIEW_SECTIONS.length + 1} label="Saran" items={r.saran} />
 
                     {atts.length > 0 && (
                       <div>
