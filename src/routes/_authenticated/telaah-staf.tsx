@@ -48,6 +48,14 @@ const STATUS_VARIANT: Record<ReviewStatus, "default" | "secondary" | "outline" |
   rejected: "destructive",
 };
 
+const REVIEW_SECTIONS = [
+  { key: "pokok_persoalan" as const, label: "Pokok Persoalan", placeholder: "Inti persoalan yang akan ditelaah", rows: 3, maxLength: 3000 },
+  { key: "pra_anggapan" as const, label: "Pra Anggapan", placeholder: "Dugaan/anggapan dasar sebelum analisis", rows: 3, maxLength: 3000 },
+  { key: "fakta_data" as const, label: "Fakta dan Data yang Berpengaruh Terhadap Persoalan", placeholder: "Uraikan fakta, data, regulasi, atau kondisi yang relevan", rows: 5, maxLength: 6000 },
+  { key: "pembahasan" as const, label: "Pembahasan / Analisis", placeholder: "Analisis persoalan berdasarkan fakta dan pra anggapan", rows: 6, maxLength: 8000 },
+  { key: "kesimpulan" as const, label: "Kesimpulan", placeholder: "", rows: 3, maxLength: 3000 },
+];
+
 interface ProfileLite {
   id: string;
   full_name: string;
@@ -134,6 +142,14 @@ function TelaahStafPage() {
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const sectionStateMap = {
+    pokok_persoalan: [pokokPersoalan, setPokokPersoalan] as const,
+    pra_anggapan: [praAnggapan, setPraAnggapan] as const,
+    fakta_data: [faktaData, setFaktaData] as const,
+    pembahasan: [pembahasan, setPembahasan] as const,
+    kesimpulan: [kesimpulan, setKesimpulan] as const,
+  };
 
   // Filter
   const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
@@ -230,11 +246,7 @@ function TelaahStafPage() {
 
   const resetForm = () => {
     setJudul("");
-    setPokokPersoalan("");
-    setPraAnggapan("");
-    setFaktaData("");
-    setPembahasan("");
-    setKesimpulan("");
+    REVIEW_SECTIONS.forEach((s) => sectionStateMap[s.key][1](""));
     setSaran([""]);
     setPendingFiles([]);
     setRecipientId(suggestedRecipient);
@@ -246,30 +258,29 @@ function TelaahStafPage() {
     e.preventDefault();
     if (!recipientId) return toast.error("Pilih tujuan telaah (atasan)");
     if (judul.trim().length < 3) return toast.error("Judul minimal 3 karakter");
-    if (pokokPersoalan.trim().length < 5) return toast.error("Pokok persoalan wajib diisi");
-    if (praAnggapan.trim().length < 5) return toast.error("Pra anggapan wajib diisi");
-    if (faktaData.trim().length < 5) return toast.error("Fakta dan data wajib diisi");
-    if (pembahasan.trim().length < 5) return toast.error("Pembahasan/analisis wajib diisi");
-    if (kesimpulan.trim().length < 5) return toast.error("Kesimpulan wajib diisi");
+    for (const sec of REVIEW_SECTIONS) {
+      const [val] = sectionStateMap[sec.key];
+      if (val.trim().length < 5) return toast.error(`${sec.label} wajib diisi`);
+    }
     const cleanSaran = cleanArr(saran);
     if (cleanSaran.length === 0) return toast.error("Tambahkan minimal 1 saran");
 
     setBusy(true);
+    const insertPayload: Record<string, unknown> = {
+      reporter_id: user!.id,
+      recipient_id: recipientId,
+      category,
+      judul: judul.trim(),
+      status: "submitted" as ReviewStatus,
+      saran: cleanSaran,
+    };
+    for (const sec of REVIEW_SECTIONS) {
+      const [val] = sectionStateMap[sec.key];
+      insertPayload[sec.key] = val.trim();
+    }
     const { data, error } = await supabase
       .from("staff_reviews")
-      .insert({
-        reporter_id: user!.id,
-        recipient_id: recipientId,
-        category,
-        judul: judul.trim(),
-        pokok_persoalan: pokokPersoalan.trim(),
-        pra_anggapan: praAnggapan.trim(),
-        fakta_data: faktaData.trim(),
-        pembahasan: pembahasan.trim(),
-        kesimpulan: kesimpulan.trim(),
-        saran: cleanSaran,
-        status: "submitted" as ReviewStatus,
-      })
+      .insert(insertPayload as any)
       .select("id")
       .single();
 
@@ -411,32 +422,23 @@ function TelaahStafPage() {
                 <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." />
               </div>
 
-              <div className="space-y-2">
-                <Label>1. Pokok Persoalan *</Label>
-                <Textarea value={pokokPersoalan} onChange={(e) => setPokokPersoalan(e.target.value)} rows={3} maxLength={3000} placeholder="Inti persoalan yang akan ditelaah" />
-              </div>
+              {REVIEW_SECTIONS.map((sec, i) => {
+                const [val, setVal] = sectionStateMap[sec.key];
+                return (
+                  <div key={sec.key} className="space-y-2">
+                    <Label>{i + 1}. {sec.label} *</Label>
+                    <Textarea
+                      value={val}
+                      onChange={(e) => setVal(e.target.value)}
+                      rows={sec.rows}
+                      maxLength={sec.maxLength}
+                      placeholder={sec.placeholder}
+                    />
+                  </div>
+                );
+              })}
 
-              <div className="space-y-2">
-                <Label>2. Pra Anggapan *</Label>
-                <Textarea value={praAnggapan} onChange={(e) => setPraAnggapan(e.target.value)} rows={3} maxLength={3000} placeholder="Dugaan/anggapan dasar sebelum analisis" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>3. Fakta dan Data yang Berpengaruh Terhadap Persoalan *</Label>
-                <Textarea value={faktaData} onChange={(e) => setFaktaData(e.target.value)} rows={5} maxLength={6000} placeholder="Uraikan fakta, data, regulasi, atau kondisi yang relevan" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>4. Pembahasan / Analisis *</Label>
-                <Textarea value={pembahasan} onChange={(e) => setPembahasan(e.target.value)} rows={6} maxLength={8000} placeholder="Analisis persoalan berdasarkan fakta dan pra anggapan" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>5. Kesimpulan *</Label>
-                <Textarea value={kesimpulan} onChange={(e) => setKesimpulan(e.target.value)} rows={3} maxLength={3000} />
-              </div>
-
-              <ArrayField label="6. Saran *" items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              <ArrayField label={`${REVIEW_SECTIONS.length + 1}. Saran *`} items={saran} setItems={setSaran} placeholder="Saran ke-" />
 
               <div className="space-y-2">
                 <Label>Lampiran pendukung</Label>
@@ -564,13 +566,11 @@ function TelaahStafPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 border-t border-border pt-4">
-                    <Section title="1. Pokok Persoalan" text={r.pokok_persoalan} />
-                    <Section title="2. Pra Anggapan" text={r.pra_anggapan} />
-                    <Section title="3. Fakta dan Data yang Berpengaruh Terhadap Persoalan" text={r.fakta_data} />
-                    <Section title="4. Pembahasan / Analisis" text={r.pembahasan} />
-                    <Section title="5. Kesimpulan" text={r.kesimpulan} />
-                    {r.saran.length > 0 && <ListSection title="6. Saran" items={r.saran} />}
+                  <CardContent className="space-y-5 border-t border-border pt-4">
+                    {REVIEW_SECTIONS.map((sec, i) => (
+                      <Section key={sec.key} num={i + 1} label={sec.label} text={(r as any)[sec.key] ?? ""} />
+                    ))}
+                    <ListSection num={REVIEW_SECTIONS.length + 1} label="Saran" items={r.saran} />
 
                     {atts.length > 0 && (
                       <div>
@@ -695,22 +695,33 @@ function ArrayField({
   );
 }
 
-function Section({ title, text }: { title: string; text: string }) {
+function Section({ num, label, text }: { num: number; label: string; text: string }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{title}</div>
-      <p className="text-sm whitespace-pre-wrap text-foreground/90">{text}</p>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+        {num}. {label}
+      </div>
+      <p className="text-sm whitespace-pre-wrap text-foreground/90">
+        {text.trim() || <span className="italic text-muted-foreground">(kosong)</span>}
+      </p>
     </div>
   );
 }
 
-function ListSection({ title, items }: { title: string; items: string[] }) {
+function ListSection({ num, label, items }: { num: number; label: string; items: string[] }) {
+  const clean = items.map((s) => s.trim()).filter(Boolean);
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{title}</div>
-      <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
-        {items.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
-      </ol>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+        {num}. {label}
+      </div>
+      {clean.length > 0 ? (
+        <ol className="list-decimal list-inside text-sm space-y-1 text-foreground/90">
+          {clean.map((it, i) => <li key={i} className="whitespace-pre-wrap">{it}</li>)}
+        </ol>
+      ) : (
+        <p className="text-sm italic text-muted-foreground">(kosong)</p>
+      )}
     </div>
   );
 }
