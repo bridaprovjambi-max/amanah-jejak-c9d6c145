@@ -258,16 +258,28 @@ function TelaahStafPage() {
 
   const cleanArr = (a: string[]) => a.map((s) => s.trim()).filter(Boolean);
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!recipientId) return toast.error("Pilih tujuan telaah (atasan)");
-    if (judul.trim().length < 3) return toast.error("Judul minimal 3 karakter");
+  function validateForm(): { ok: true } | { ok: false; message: string } {
+    if (!recipientId) return { ok: false, message: "Pilih tujuan telaah (atasan)" };
+    if (judul.trim().length < 3) return { ok: false, message: "Judul minimal 3 karakter" };
     for (const sec of REVIEW_SECTIONS) {
       const [val] = sectionStateMap[sec.key];
-      if (val.trim().length < 5) return toast.error(`${sec.label} wajib diisi`);
+      if (val.trim().length < 5) return { ok: false, message: `${sec.label} wajib diisi` };
     }
     const cleanSaran = cleanArr(saran);
-    if (cleanSaran.length === 0) return toast.error("Tambahkan minimal 1 saran");
+    if (cleanSaran.length === 0) return { ok: false, message: "Tambahkan minimal 1 saran" };
+    return { ok: true };
+  }
+
+  const openPreview = () => {
+    const v = validateForm();
+    if (!v.ok) { toast.error(v.message); return; }
+    setShowPreview(true);
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const v = validateForm();
+    if (!v.ok) return toast.error(v.message);
 
     setBusy(true);
     const insertPayload: Record<string, unknown> = {
