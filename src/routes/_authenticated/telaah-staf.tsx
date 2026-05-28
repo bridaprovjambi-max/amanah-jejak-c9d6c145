@@ -403,16 +403,16 @@ function TelaahStafPage() {
 
       {showForm && (
         <Card>
-          <CardHeader>
-            <CardTitle>Formulir Telaah Staf</CardTitle>
+          <CardHeader className="pb-3 px-4 sm:px-6">
+            <CardTitle className="text-base sm:text-lg">Formulir Telaah Staf</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <form onSubmit={submit} className="space-y-5">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Kategori *</Label>
+                  <Label className="text-xs sm:text-sm">Kategori *</Label>
                   <Select value={category} onValueChange={(v) => setCategory(v as Category)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-9 sm:h-10 text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
                         <SelectItem key={c} value={c}>{CATEGORY_LABEL[c]}</SelectItem>
@@ -421,9 +421,9 @@ function TelaahStafPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Ditujukan kepada *</Label>
+                  <Label className="text-xs sm:text-sm">Ditujukan kepada *</Label>
                   <Select value={recipientId} onValueChange={setRecipientId}>
-                    <SelectTrigger><SelectValue placeholder="Pilih atasan" /></SelectTrigger>
+                    <SelectTrigger className="h-9 sm:h-10 text-sm"><SelectValue placeholder="Pilih atasan" /></SelectTrigger>
                     <SelectContent>
                       {profiles
                         .filter((p) => p.id !== user?.id)
@@ -439,21 +439,22 @@ function TelaahStafPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Judul *</Label>
-                <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." />
+                <Label className="text-xs sm:text-sm">Judul *</Label>
+                <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." className="h-9 sm:h-10 text-sm" />
               </div>
 
               {REVIEW_SECTIONS.map((sec, i) => {
                 const [val, setVal] = sectionStateMap[sec.key];
                 return (
                   <div key={sec.key} className="space-y-2">
-                    <Label>{i + 1}. {sec.label} *</Label>
+                    <Label className="text-xs sm:text-sm">{i + 1}. {sec.label} *</Label>
                     <Textarea
                       value={val}
                       onChange={(e) => setVal(e.target.value)}
-                      rows={sec.rows}
+                      rows={Math.max(2, sec.rows - 1)}
                       maxLength={sec.maxLength}
                       placeholder={sec.placeholder}
+                      className="text-base sm:text-sm min-h-[80px]"
                     />
                   </div>
                 );
@@ -462,7 +463,7 @@ function TelaahStafPage() {
               <ArrayField label={`${REVIEW_SECTIONS.length + 1}. Saran *`} items={saran} setItems={setSaran} placeholder="Saran ke-" />
 
               <div className="space-y-2">
-                <Label>Lampiran pendukung</Label>
+                <Label className="text-xs sm:text-sm">Lampiran pendukung</Label>
                 <div className="flex flex-wrap items-center gap-2">
                   <input
                     ref={fileInputRef}
@@ -471,20 +472,21 @@ function TelaahStafPage() {
                     className="hidden"
                     onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }}
                   />
-                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Button type="button" variant="outline" size="sm" className="h-9 text-xs sm:text-sm" onClick={() => fileInputRef.current?.click()}>
                     <Paperclip className="h-4 w-4" /> Tambah file
                   </Button>
-                  <span className="text-xs text-muted-foreground">Maks 20 MB per file</span>
+                  <span className="text-[11px] sm:text-xs text-muted-foreground">Maks 20 MB per file</span>
                 </div>
                 {pendingFiles.length > 0 && (
                   <ul className="mt-2 space-y-1">
                     {pendingFiles.map((f, i) => (
-                      <li key={i} className="flex items-center justify-between text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
-                        <span className="truncate flex items-center gap-2">
-                          <FileIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                          {f.name} <span className="text-muted-foreground">({fmtBytes(f.size)})</span>
+                      <li key={i} className="flex items-center justify-between text-xs sm:text-sm rounded-md border border-border bg-muted/40 px-3 py-1.5">
+                        <span className="truncate flex items-center gap-2 min-w-0">
+                          <FileIcon className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="truncate">{f.name}</span>
+                          <span className="text-muted-foreground hidden sm:inline">({fmtBytes(f.size)})</span>
                         </span>
-                        <button type="button" onClick={() => setPendingFiles((prev) => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-destructive">
+                        <button type="button" onClick={() => setPendingFiles((prev) => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-destructive flex-shrink-0 ml-2">
                           <X className="h-4 w-4" />
                         </button>
                       </li>
@@ -493,12 +495,12 @@ function TelaahStafPage() {
                 )}
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="ghost" onClick={() => { resetForm(); setShowForm(false); }}>Batal</Button>
-                <Button type="button" variant="outline" onClick={openPreview}>
+              <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
+                <Button type="button" variant="ghost" onClick={() => { resetForm(); setShowForm(false); }} className="h-9 text-xs sm:text-sm">Batal</Button>
+                <Button type="button" variant="outline" onClick={openPreview} className="h-9 text-xs sm:text-sm">
                   <Eye className="h-4 w-4" /> Pratinjau
                 </Button>
-                <Button type="submit" disabled={busy}>
+                <Button type="submit" disabled={busy} className="h-9 text-xs sm:text-sm">
                   <Send className="h-4 w-4" />
                   {busy ? "Menyimpan..." : "Kirim telaah"}
                 </Button>
