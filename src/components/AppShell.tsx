@@ -37,6 +37,8 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
   { to: "/wewenang", label: "Laporan Wewenang", icon: ShieldCheck },
+  { to: "/telaah-staf", label: "Telaah Staf", icon: FileText },
+
 
   { to: "/kalender", label: "Kalender", icon: CalendarDays },
   { to: "/reports/rekap", label: "Rekap PDF", icon: FileDown, roles: ["leader", "admin"] },
