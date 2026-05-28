@@ -281,6 +281,7 @@ function TelaahStafPage() {
     const v = validateForm();
     if (!v.ok) return toast.error(v.message);
 
+    const cleanSaran = cleanArr(saran);
     setBusy(true);
     const insertPayload: Record<string, unknown> = {
       reporter_id: user!.id,
