@@ -4,8 +4,11 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, FileText, Send, History,
+  ChevronDown, ChevronUp, FileText, Send, History, Eye,
 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type Jenjang } from "@/lib/auth";
 import { sendTelegramNotification } from "@/lib/telegram.functions";
