@@ -299,7 +299,7 @@ function TelaahStafPage() {
     load();
   };
 
-  const updateStatus = async (r: StaffReview, status: ReviewStatus, notes?: string) => {
+  const updateStatus = async (r: StaffReview, status: ReviewStatus, notes?: string): Promise<void> => {
     const { error } = await supabase
       .from("staff_reviews")
       .update({
