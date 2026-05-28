@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWewenangRouteImport } from './routes/_authenticated/wewenang'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedTelaahStafRouteImport } from './routes/_authenticated/telaah-staf'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedKinerjaRouteImport } from './routes/_authenticated/kinerja'
@@ -59,6 +60,11 @@ const AuthenticatedWewenangRoute = AuthenticatedWewenangRouteImport.update({
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTelaahStafRoute = AuthenticatedTelaahStafRouteImport.update({
+  id: '/telaah-staf',
+  path: '/telaah-staf',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/users': typeof AuthenticatedUsersRoute
   '/wewenang': typeof AuthenticatedWewenangRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/users': typeof AuthenticatedUsersRoute
   '/wewenang': typeof AuthenticatedWewenangRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/kinerja': typeof AuthenticatedKinerjaRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/wewenang': typeof AuthenticatedWewenangRoute
   '/_authenticated/reports/rekap': typeof AuthenticatedReportsRekapRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/kinerja'
     | '/pokja'
     | '/settings'
+    | '/telaah-staf'
     | '/users'
     | '/wewenang'
     | '/reports/rekap'
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/kinerja'
     | '/pokja'
     | '/settings'
+    | '/telaah-staf'
     | '/users'
     | '/wewenang'
     | '/reports/rekap'
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/_authenticated/kinerja'
     | '/_authenticated/pokja'
     | '/_authenticated/settings'
+    | '/_authenticated/telaah-staf'
     | '/_authenticated/users'
     | '/_authenticated/wewenang'
     | '/_authenticated/reports/rekap'
@@ -340,6 +352,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/telaah-staf': {
+      id: '/_authenticated/telaah-staf'
+      path: '/telaah-staf'
+      fullPath: '/telaah-staf'
+      preLoaderRoute: typeof AuthenticatedTelaahStafRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/settings': {
@@ -468,6 +487,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedKinerjaRoute: typeof AuthenticatedKinerjaRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTelaahStafRoute: typeof AuthenticatedTelaahStafRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWewenangRoute: typeof AuthenticatedWewenangRoute
   AuthenticatedReportsRekapRoute: typeof AuthenticatedReportsRekapRoute
@@ -487,6 +507,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKinerjaRoute: AuthenticatedKinerjaRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTelaahStafRoute: AuthenticatedTelaahStafRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWewenangRoute: AuthenticatedWewenangRoute,
   AuthenticatedReportsRekapRoute: AuthenticatedReportsRekapRoute,
@@ -510,3 +531,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
