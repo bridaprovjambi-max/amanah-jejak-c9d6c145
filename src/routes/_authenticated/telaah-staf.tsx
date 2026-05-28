@@ -174,16 +174,26 @@ function TelaahStafPage() {
 
     if (rows.length > 0) {
       const ids = rows.map((r) => r.id);
-      const { data: atts } = await supabase
-        .from("staff_review_attachments")
-        .select("*")
-        .in("review_id", ids);
+      const [{ data: atts }, { data: hist }] = await Promise.all([
+        supabase.from("staff_review_attachments").select("*").in("review_id", ids),
+        supabase
+          .from("staff_review_history")
+          .select("*")
+          .in("review_id", ids)
+          .order("created_at", { ascending: true }),
+      ]);
       const grouped: Record<string, Attachment[]> = {};
       ((atts ?? []) as Attachment[]).forEach((a) => {
         (grouped[a.review_id] ??= []).push(a);
       });
       setAttachments(grouped);
-    } else setAttachments({});
+
+      const groupedHist: Record<string, HistoryEntry[]> = {};
+      ((hist ?? []) as unknown as HistoryEntry[]).forEach((h) => {
+        (groupedHist[h.review_id] ??= []).push(h);
+      });
+      setHistory(groupedHist);
+    } else { setAttachments({}); setHistory({}); }
     setLoading(false);
   };
 
