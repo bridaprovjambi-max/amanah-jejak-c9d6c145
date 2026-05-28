@@ -143,6 +143,14 @@ function TelaahStafPage() {
   const [busy, setBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const sectionStateMap = {
+    pokok_persoalan: [pokokPersoalan, setPokokPersoalan] as const,
+    pra_anggapan: [praAnggapan, setPraAnggapan] as const,
+    fakta_data: [faktaData, setFaktaData] as const,
+    pembahasan: [pembahasan, setPembahasan] as const,
+    kesimpulan: [kesimpulan, setKesimpulan] as const,
+  };
+
   // Filter
   const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
   const [filterScope, setFilterScope] = useState<"all" | "mine" | "incoming">("all");
