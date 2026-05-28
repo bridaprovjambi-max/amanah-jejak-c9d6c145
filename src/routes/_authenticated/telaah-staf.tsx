@@ -246,11 +246,7 @@ function TelaahStafPage() {
 
   const resetForm = () => {
     setJudul("");
-    setPokokPersoalan("");
-    setPraAnggapan("");
-    setFaktaData("");
-    setPembahasan("");
-    setKesimpulan("");
+    REVIEW_SECTIONS.forEach((s) => sectionStateMap[s.key][1](""));
     setSaran([""]);
     setPendingFiles([]);
     setRecipientId(suggestedRecipient);
