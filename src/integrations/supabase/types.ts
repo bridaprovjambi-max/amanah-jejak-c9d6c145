@@ -406,6 +406,116 @@ export type Database = {
           },
         ]
       }
+      staff_review_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string | null
+          review_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type?: string | null
+          review_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string | null
+          review_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_review_attachments_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "staff_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_reviews: {
+        Row: {
+          alternatif_pemecahan: Json
+          analisis_ekonomi: string | null
+          analisis_hukum: string | null
+          analisis_sosial: string | null
+          analisis_teknis: string | null
+          category: Database["public"]["Enums"]["staff_review_category"]
+          created_at: string
+          disposisi_at: string | null
+          disposisi_notes: string | null
+          id: string
+          judul: string
+          kesimpulan: string
+          latar_belakang: string
+          maksud_tujuan: string
+          permasalahan: Json
+          recipient_id: string
+          rekomendasi: Json
+          reporter_id: string
+          status: Database["public"]["Enums"]["staff_review_status"]
+          updated_at: string
+        }
+        Insert: {
+          alternatif_pemecahan?: Json
+          analisis_ekonomi?: string | null
+          analisis_hukum?: string | null
+          analisis_sosial?: string | null
+          analisis_teknis?: string | null
+          category: Database["public"]["Enums"]["staff_review_category"]
+          created_at?: string
+          disposisi_at?: string | null
+          disposisi_notes?: string | null
+          id?: string
+          judul: string
+          kesimpulan: string
+          latar_belakang: string
+          maksud_tujuan: string
+          permasalahan?: Json
+          recipient_id: string
+          rekomendasi?: Json
+          reporter_id: string
+          status?: Database["public"]["Enums"]["staff_review_status"]
+          updated_at?: string
+        }
+        Update: {
+          alternatif_pemecahan?: Json
+          analisis_ekonomi?: string | null
+          analisis_hukum?: string | null
+          analisis_sosial?: string | null
+          analisis_teknis?: string | null
+          category?: Database["public"]["Enums"]["staff_review_category"]
+          created_at?: string
+          disposisi_at?: string | null
+          disposisi_notes?: string | null
+          id?: string
+          judul?: string
+          kesimpulan?: string
+          latar_belakang?: string
+          maksud_tujuan?: string
+          permasalahan?: Json
+          recipient_id?: string
+          rekomendasi?: Json
+          reporter_id?: string
+          status?: Database["public"]["Enums"]["staff_review_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       task_attachments: {
         Row: {
           created_at: string
@@ -615,6 +725,13 @@ export type Database = {
         | "pokja"
         | "staf"
         | "jafung"
+      staff_review_category: "perencanaan" | "keuangan" | "kepegawaian"
+      staff_review_status:
+        | "draft"
+        | "submitted"
+        | "reviewed"
+        | "approved"
+        | "rejected"
       task_status: "pending" | "in_progress" | "completed" | "overdue"
     }
     CompositeTypes: {
@@ -759,6 +876,14 @@ export const Constants = {
         "pokja",
         "staf",
         "jafung",
+      ],
+      staff_review_category: ["perencanaan", "keuangan", "kepegawaian"],
+      staff_review_status: [
+        "draft",
+        "submitted",
+        "reviewed",
+        "approved",
+        "rejected",
       ],
       task_status: ["pending", "in_progress", "completed", "overdue"],
     },
