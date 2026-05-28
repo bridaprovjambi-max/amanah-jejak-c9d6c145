@@ -131,6 +131,7 @@ function TelaahStafPage() {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showForm, setShowForm] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
