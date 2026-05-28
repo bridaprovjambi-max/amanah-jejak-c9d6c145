@@ -525,6 +525,7 @@ function TelaahStafPage() {
             const reporter = profMap[r.reporter_id];
             const recipient = profMap[r.recipient_id];
             const atts = attachments[r.id] ?? [];
+            const hist = history[r.id] ?? [];
             const canDelete = r.reporter_id === user?.id || hasRole("admin");
             const canDisposisi = r.recipient_id === user?.id;
             return (
