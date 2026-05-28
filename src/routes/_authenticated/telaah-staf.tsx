@@ -422,32 +422,23 @@ function TelaahStafPage() {
                 <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." />
               </div>
 
-              <div className="space-y-2">
-                <Label>1. Pokok Persoalan *</Label>
-                <Textarea value={pokokPersoalan} onChange={(e) => setPokokPersoalan(e.target.value)} rows={3} maxLength={3000} placeholder="Inti persoalan yang akan ditelaah" />
-              </div>
+              {REVIEW_SECTIONS.map((sec, i) => {
+                const [val, setVal] = sectionStateMap[sec.key];
+                return (
+                  <div key={sec.key} className="space-y-2">
+                    <Label>{i + 1}. {sec.label} *</Label>
+                    <Textarea
+                      value={val}
+                      onChange={(e) => setVal(e.target.value)}
+                      rows={sec.rows}
+                      maxLength={sec.maxLength}
+                      placeholder={sec.placeholder}
+                    />
+                  </div>
+                );
+              })}
 
-              <div className="space-y-2">
-                <Label>2. Pra Anggapan *</Label>
-                <Textarea value={praAnggapan} onChange={(e) => setPraAnggapan(e.target.value)} rows={3} maxLength={3000} placeholder="Dugaan/anggapan dasar sebelum analisis" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>3. Fakta dan Data yang Berpengaruh Terhadap Persoalan *</Label>
-                <Textarea value={faktaData} onChange={(e) => setFaktaData(e.target.value)} rows={5} maxLength={6000} placeholder="Uraikan fakta, data, regulasi, atau kondisi yang relevan" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>4. Pembahasan / Analisis *</Label>
-                <Textarea value={pembahasan} onChange={(e) => setPembahasan(e.target.value)} rows={6} maxLength={8000} placeholder="Analisis persoalan berdasarkan fakta dan pra anggapan" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>5. Kesimpulan *</Label>
-                <Textarea value={kesimpulan} onChange={(e) => setKesimpulan(e.target.value)} rows={3} maxLength={3000} />
-              </div>
-
-              <ArrayField label="6. Saran *" items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              <ArrayField label={`${REVIEW_SECTIONS.length + 1}. Saran *`} items={saran} setItems={setSaran} placeholder="Saran ke-" />
 
               <div className="space-y-2">
                 <Label>Lampiran pendukung</Label>
