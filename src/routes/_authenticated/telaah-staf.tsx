@@ -491,6 +491,9 @@ function TelaahStafPage() {
 
               <div className="flex justify-end gap-2 pt-2">
                 <Button type="button" variant="ghost" onClick={() => { resetForm(); setShowForm(false); }}>Batal</Button>
+                <Button type="button" variant="outline" onClick={openPreview}>
+                  <Eye className="h-4 w-4" /> Pratinjau
+                </Button>
                 <Button type="submit" disabled={busy}>
                   <Send className="h-4 w-4" />
                   {busy ? "Menyimpan..." : "Kirim telaah"}
