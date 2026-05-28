@@ -584,11 +584,11 @@ function TelaahStafPage() {
       </Dialog>
 
       {/* Filter */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <Label className="text-xs">Kategori</Label>
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Label className="text-[10px] sm:text-xs">Kategori</Label>
           <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as Category | "all")}>
-            <SelectTrigger className="h-8 w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[150px] sm:w-[180px] text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Semua kategori</SelectItem>
               {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
@@ -597,10 +597,10 @@ function TelaahStafPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Label className="text-xs">Lingkup</Label>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Label className="text-[10px] sm:text-xs">Lingkup</Label>
           <Select value={filterScope} onValueChange={(v) => setFilterScope(v as typeof filterScope)}>
-            <SelectTrigger className="h-8 w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[140px] sm:w-[180px] text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Semua</SelectItem>
               <SelectItem value="mine">Telaah saya</SelectItem>
@@ -608,7 +608,7 @@ function TelaahStafPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="text-xs text-muted-foreground ml-auto">{filtered.length} telaah</div>
+        <div className="text-[10px] sm:text-xs text-muted-foreground ml-auto">{filtered.length} telaah</div>
       </div>
 
       {loading ? (
@@ -631,33 +631,33 @@ function TelaahStafPage() {
             const canDisposisi = r.recipient_id === user?.id;
             return (
               <Card key={r.id}>
-                <CardHeader className="pb-3">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
+                <CardHeader className="pb-3 px-4 sm:px-6">
+                  <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="secondary">{CATEGORY_LABEL[r.category]}</Badge>
-                        <Badge variant={STATUS_VARIANT[r.status]}>{STATUS_LABEL[r.status]}</Badge>
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <Badge variant="secondary" className="text-[10px] sm:text-xs">{CATEGORY_LABEL[r.category]}</Badge>
+                        <Badge variant={STATUS_VARIANT[r.status]} className="text-[10px] sm:text-xs">{STATUS_LABEL[r.status]}</Badge>
                         {atts.length > 0 && (
-                          <Badge variant="outline" className="gap-1">
+                          <Badge variant="outline" className="gap-1 text-[10px] sm:text-xs">
                             <Paperclip className="h-3 w-3" /> {atts.length}
                           </Badge>
                         )}
                       </div>
-                      <h3 className="mt-2 font-display text-lg font-semibold">{r.judul}</h3>
-                      <div className="mt-1 text-xs text-muted-foreground">
+                      <h3 className="mt-2 font-display text-base sm:text-lg font-semibold break-words">{r.judul}</h3>
+                      <div className="mt-1 text-[10px] sm:text-xs text-muted-foreground">
                         Dari <b>{reporter?.full_name ?? "—"}</b>
                         {" → "}
                         Kepada <b>{recipient?.full_name ?? "—"}</b>
                         {" · "}
-                        {new Date(r.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(r.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                       {canDelete && (
-                        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteReview(r)}>
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => deleteReview(r)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
@@ -665,7 +665,7 @@ function TelaahStafPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-5 border-t border-border pt-4">
+                  <CardContent className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
                     {REVIEW_SECTIONS.map((sec, i) => (
                       <Section key={sec.key} num={i + 1} label={sec.label} text={(r as any)[sec.key] ?? ""} />
                     ))}
@@ -673,15 +673,16 @@ function TelaahStafPage() {
 
                     {atts.length > 0 && (
                       <div>
-                        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Lampiran</div>
+                        <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 sm:mb-2">Lampiran</div>
                         <ul className="space-y-1">
                           {atts.map((a) => (
-                            <li key={a.id} className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-1.5 text-sm">
-                              <span className="truncate flex items-center gap-2">
-                                <FileIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                                {a.file_name} <span className="text-muted-foreground">({fmtBytes(a.file_size)})</span>
+                            <li key={a.id} className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs sm:text-sm">
+                              <span className="truncate flex items-center gap-2 min-w-0">
+                                <FileIcon className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                                <span className="truncate">{a.file_name}</span>
+                                <span className="text-muted-foreground hidden sm:inline">({fmtBytes(a.file_size)})</span>
                               </span>
-                              <Button size="sm" variant="ghost" onClick={() => downloadAtt(a)}>
+                              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0 ml-2" onClick={() => downloadAtt(a)}>
                                 <Download className="h-4 w-4" />
                               </Button>
                             </li>
