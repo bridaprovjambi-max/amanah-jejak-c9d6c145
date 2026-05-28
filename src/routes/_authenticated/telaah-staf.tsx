@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, FileText, Send,
+  ChevronDown, ChevronUp, FileText, Send, History,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type Jenjang } from "@/lib/auth";
@@ -84,6 +84,16 @@ interface Attachment {
   mime_type: string | null;
 }
 
+interface HistoryEntry {
+  id: string;
+  review_id: string;
+  changed_by: string | null;
+  from_status: ReviewStatus | null;
+  to_status: ReviewStatus;
+  notes: string | null;
+  created_at: string;
+}
+
 const ATASAN_JENJANG: Record<Jenjang, Jenjang[]> = {
   staf: ["eselon_iv", "eselon_iii"],
   pokja: ["eselon_iii"],
@@ -106,6 +116,7 @@ function TelaahStafPage() {
   const [reviews, setReviews] = useState<StaffReview[]>([]);
   const [profiles, setProfiles] = useState<ProfileLite[]>([]);
   const [attachments, setAttachments] = useState<Record<string, Attachment[]>>({});
+  const [history, setHistory] = useState<Record<string, HistoryEntry[]>>({});
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showForm, setShowForm] = useState(false);
@@ -163,16 +174,26 @@ function TelaahStafPage() {
 
     if (rows.length > 0) {
       const ids = rows.map((r) => r.id);
-      const { data: atts } = await supabase
-        .from("staff_review_attachments")
-        .select("*")
-        .in("review_id", ids);
+      const [{ data: atts }, { data: hist }] = await Promise.all([
+        supabase.from("staff_review_attachments").select("*").in("review_id", ids),
+        supabase
+          .from("staff_review_history")
+          .select("*")
+          .in("review_id", ids)
+          .order("created_at", { ascending: true }),
+      ]);
       const grouped: Record<string, Attachment[]> = {};
       ((atts ?? []) as Attachment[]).forEach((a) => {
         (grouped[a.review_id] ??= []).push(a);
       });
       setAttachments(grouped);
-    } else setAttachments({});
+
+      const groupedHist: Record<string, HistoryEntry[]> = {};
+      ((hist ?? []) as unknown as HistoryEntry[]).forEach((h) => {
+        (groupedHist[h.review_id] ??= []).push(h);
+      });
+      setHistory(groupedHist);
+    } else { setAttachments({}); setHistory({}); }
     setLoading(false);
   };
 
@@ -504,6 +525,7 @@ function TelaahStafPage() {
             const reporter = profMap[r.reporter_id];
             const recipient = profMap[r.recipient_id];
             const atts = attachments[r.id] ?? [];
+            const hist = history[r.id] ?? [];
             const canDelete = r.reporter_id === user?.id || hasRole("admin");
             const canDisposisi = r.recipient_id === user?.id;
             return (
@@ -569,14 +591,7 @@ function TelaahStafPage() {
                       </div>
                     )}
 
-                    {r.disposisi_notes && (
-                      <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
-                        <div className="text-[11px] uppercase tracking-wider text-primary mb-1">
-                          Disposisi {r.disposisi_at && `· ${new Date(r.disposisi_at).toLocaleString("id-ID")}`}
-                        </div>
-                        <p className="text-sm whitespace-pre-wrap">{r.disposisi_notes}</p>
-                      </div>
-                    )}
+                    <HistoryTimeline entries={hist} profMap={profMap} />
 
                     {canDisposisi && (
                       <DispositionForm review={r} onSubmit={updateStatus} />
@@ -588,6 +603,60 @@ function TelaahStafPage() {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function HistoryTimeline({
+  entries, profMap,
+}: {
+  entries: HistoryEntry[];
+  profMap: Record<string, ProfileLite>;
+}) {
+  if (entries.length === 0) return null;
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
+        <History className="h-3.5 w-3.5" /> Riwayat Status & Disposisi
+      </div>
+      <ol className="relative border-l border-border ml-2 space-y-3">
+        {entries.map((h) => {
+          const actor = h.changed_by ? profMap[h.changed_by] : null;
+          const isCreate = h.from_status === null;
+          return (
+            <li key={h.id} className="ml-4">
+              <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background bg-primary" />
+              <div className="flex flex-wrap items-center gap-2">
+                {isCreate ? (
+                  <Badge variant="outline">Dibuat</Badge>
+                ) : (
+                  <>
+                    {h.from_status && (
+                      <Badge variant="outline">{STATUS_LABEL[h.from_status]}</Badge>
+                    )}
+                    <span className="text-xs text-muted-foreground">→</span>
+                    <Badge variant={STATUS_VARIANT[h.to_status]}>{STATUS_LABEL[h.to_status]}</Badge>
+                  </>
+                )}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                <b>{actor?.full_name ?? "Sistem"}</b>
+                {actor?.jabatan ? ` — ${actor.jabatan}` : ""}
+                {" · "}
+                {new Date(h.created_at).toLocaleString("id-ID", {
+                  day: "numeric", month: "short", year: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              </div>
+              {h.notes && (
+                <p className="mt-1.5 text-sm whitespace-pre-wrap rounded-md bg-muted/40 border border-border px-3 py-2">
+                  {h.notes}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

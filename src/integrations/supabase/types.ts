@@ -447,6 +447,48 @@ export type Database = {
           },
         ]
       }
+      staff_review_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          from_status: Database["public"]["Enums"]["staff_review_status"] | null
+          id: string
+          notes: string | null
+          review_id: string
+          to_status: Database["public"]["Enums"]["staff_review_status"]
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?:
+            | Database["public"]["Enums"]["staff_review_status"]
+            | null
+          id?: string
+          notes?: string | null
+          review_id: string
+          to_status: Database["public"]["Enums"]["staff_review_status"]
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?:
+            | Database["public"]["Enums"]["staff_review_status"]
+            | null
+          id?: string
+          notes?: string | null
+          review_id?: string
+          to_status?: Database["public"]["Enums"]["staff_review_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_review_history_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "staff_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staff_reviews: {
         Row: {
           category: Database["public"]["Enums"]["staff_review_category"]
