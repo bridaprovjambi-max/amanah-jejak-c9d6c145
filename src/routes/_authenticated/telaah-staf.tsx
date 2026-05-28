@@ -796,9 +796,9 @@ function ArrayField({
   );
 }
 
-function Section({ num, label, text }: { num: number; label: string; text: string }) {
+function Section({ num, label, text, id }: { num: number; label: string; text: string; id?: string }) {
   return (
-    <div>
+    <div id={id} className="scroll-mt-20">
       <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
         {num}. {label}
       </div>
@@ -809,10 +809,10 @@ function Section({ num, label, text }: { num: number; label: string; text: strin
   );
 }
 
-function ListSection({ num, label, items }: { num: number; label: string; items: string[] }) {
+function ListSection({ num, label, items, id }: { num: number; label: string; items: string[]; id?: string }) {
   const clean = items.map((s) => s.trim()).filter(Boolean);
   return (
-    <div>
+    <div id={id} className="scroll-mt-20">
       <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
         {num}. {label}
       </div>
@@ -823,6 +823,32 @@ function ListSection({ num, label, items }: { num: number; label: string; items:
       ) : (
         <p className="text-xs sm:text-sm italic text-muted-foreground">(kosong)</p>
       )}
+    </div>
+  );
+}
+
+function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }) {
+  const jump = (num: number) => {
+    const el = document.getElementById(`${prefix}-sec-${num}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  return (
+    <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 mb-1 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
+      <div className="flex items-center gap-1.5 overflow-x-auto">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1 shrink-0">Lompat ke:</span>
+        {labels.map((lbl, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => jump(i + 1)}
+            title={`${i + 1}. ${lbl}`}
+            aria-label={`Lompat ke bagian ${i + 1}: ${lbl}`}
+            className="shrink-0 inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full border border-border bg-muted/40 text-[11px] font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
