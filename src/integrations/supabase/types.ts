@@ -44,6 +44,92 @@ export type Database = {
         }
         Relationships: []
       }
+      authority_report_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string | null
+          report_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type?: string | null
+          report_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string | null
+          report_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authority_report_attachments_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "authority_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      authority_reports: {
+        Row: {
+          authority_description: string
+          created_at: string
+          execution_summary: string
+          follow_up_notes: string | null
+          id: string
+          jenjang: Database["public"]["Enums"]["jenjang"]
+          obstacles: string | null
+          period_month: number
+          period_year: number
+          reporter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          authority_description: string
+          created_at?: string
+          execution_summary: string
+          follow_up_notes?: string | null
+          id?: string
+          jenjang: Database["public"]["Enums"]["jenjang"]
+          obstacles?: string | null
+          period_month: number
+          period_year: number
+          reporter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          authority_description?: string
+          created_at?: string
+          execution_summary?: string
+          follow_up_notes?: string | null
+          id?: string
+          jenjang?: Database["public"]["Enums"]["jenjang"]
+          obstacles?: string | null
+          period_month?: number
+          period_year?: number
+          reporter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       document_folders: {
         Row: {
           created_at: string
