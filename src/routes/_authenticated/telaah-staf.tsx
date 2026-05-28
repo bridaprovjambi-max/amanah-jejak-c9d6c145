@@ -562,63 +562,15 @@ function TelaahStafPage() {
               </div>
             )}
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-border">
-              <Button variant="ghost" onClick={() => setShowPreview(false)}>Kembali ke form</Button>
-              <Button
-                onClick={async () => {
-                  setShowPreview(false);
-                  setBusy(true);
-                  const cleanSaran = cleanArr(saran);
-                  const insertPayload: Record<string, unknown> = {
-                    reporter_id: user!.id,
-                    recipient_id: recipientId,
-                    category,
-                    judul: judul.trim(),
-                    status: "submitted" as ReviewStatus,
-                    saran: cleanSaran,
-                  };
-                  for (const sec of REVIEW_SECTIONS) {
-                    const [val] = sectionStateMap[sec.key];
-                    insertPayload[sec.key] = val.trim();
-                  }
-                  const { data, error } = await supabase
-                    .from("staff_reviews")
-                    .insert(insertPayload as any)
-                    .select("id")
-                    .single();
-
-                  if (error || !data) { setBusy(false); return toast.error(error?.message ?? "Gagal menyimpan"); }
-                  if (pendingFiles.length > 0) await uploadFiles(data.id);
-
-                  await supabase.from("activity_log").insert({
-                    user_id: user!.id,
-                    action: "create_staff_review",
-                    entity_type: "staff_review",
-                    entity_id: data.id,
-                    details: { category, recipient_id: recipientId },
-                  });
-
-                  const recipient = profMap[recipientId];
-                  if (recipient?.telegram_chat_id) {
-                    const msg =
-                      `<b>📋 Telaah Staf Baru</b>\n` +
-                      `Kategori: <b>${CATEGORY_LABEL[category]}</b>\n` +
-                      `Pelapor: ${profile?.full_name ?? "—"}\n` +
-                      `Judul: <b>${judul.trim()}</b>\n\n` +
-                      `Pokok Persoalan: ${pokokPersoalan.trim().slice(0, 500)}`;
-                    notify({ data: { userIds: [recipientId], message: msg } }).catch((e) =>
-                      console.error("notify error", e),
-                    );
-                  }
-
-                  setBusy(false);
-                  toast.success("Telaah staf terkirim");
-                  resetForm();
-                  setShowForm(false);
-                  load();
-                }}
-                disabled={busy}
-              >
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                <Button variant="ghost" onClick={() => setShowPreview(false)}>Kembali ke form</Button>
+                <Button
+                  onClick={async () => {
+                    setShowPreview(false);
+                    await doSubmit();
+                  }}
+                  disabled={busy}
+                >
                 <Send className="h-4 w-4" />
                 {busy ? "Menyimpan..." : "Kirim telaah"}
               </Button>
