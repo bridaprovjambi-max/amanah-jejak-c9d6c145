@@ -133,6 +133,26 @@ function TelaahStafPage() {
   const [showForm, setShowForm] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
+  // Collapsible form sections: default only section 1 open
+  const SECTION_COUNT = REVIEW_SECTIONS.length + 1; // +1 for Saran
+  const [formSecOpen, setFormSecOpen] = useState<Record<number, boolean>>(() => {
+    const init: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) init[i] = i === 1;
+    return init;
+  });
+
+  const toggleFormSec = (n: number) => setFormSecOpen((p) => ({ ...p, [n]: !p[n] }));
+  const expandAllForm = () => {
+    const next: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) next[i] = true;
+    setFormSecOpen(next);
+  };
+  const collapseAllForm = () => {
+    const next: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) next[i] = false;
+    setFormSecOpen(next);
+  };
+
   // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
   const [judul, setJudul] = useState("");
@@ -254,6 +274,9 @@ function TelaahStafPage() {
     setSaran([""]);
     setPendingFiles([]);
     setRecipientId(suggestedRecipient);
+    const init: Record<number, boolean> = {};
+    for (let i = 1; i <= SECTION_COUNT; i++) init[i] = i === 1;
+    setFormSecOpen(init);
   };
 
   const cleanArr = (a: string[]) => a.map((s) => s.trim()).filter(Boolean);
@@ -443,11 +466,28 @@ function TelaahStafPage() {
                 <Input value={judul} onChange={(e) => setJudul(e.target.value)} maxLength={300} placeholder="Telaah Staf tentang ..." className="h-9 sm:h-10 text-sm" />
               </div>
 
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground">Konten telaah (1–6)</span>
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Buka semua</button>
+                  <span className="text-muted-foreground">·</span>
+                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Tutup semua</button>
+                </div>
+              </div>
+
               {REVIEW_SECTIONS.map((sec, i) => {
+                const num = i + 1;
                 const [val, setVal] = sectionStateMap[sec.key];
+                const isOpen = !!formSecOpen[num];
                 return (
-                  <div key={sec.key} className="space-y-2">
-                    <Label className="text-xs sm:text-sm">{i + 1}. {sec.label} *</Label>
+                  <CollapsibleFormSection
+                    key={sec.key}
+                    num={num}
+                    label={sec.label}
+                    required
+                    isOpen={isOpen}
+                    onToggle={() => toggleFormSec(num)}
+                  >
                     <Textarea
                       value={val}
                       onChange={(e) => setVal(e.target.value)}
@@ -456,11 +496,19 @@ function TelaahStafPage() {
                       placeholder={sec.placeholder}
                       className="text-base sm:text-sm min-h-[80px]"
                     />
-                  </div>
+                  </CollapsibleFormSection>
                 );
               })}
 
-              <ArrayField label={`${REVIEW_SECTIONS.length + 1}. Saran *`} items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              <CollapsibleFormSection
+                num={REVIEW_SECTIONS.length + 1}
+                label="Saran"
+                required
+                isOpen={!!formSecOpen[REVIEW_SECTIONS.length + 1]}
+                onToggle={() => toggleFormSec(REVIEW_SECTIONS.length + 1)}
+              >
+                <ArrayField label="Saran" items={saran} setItems={setSaran} placeholder="Saran ke-" />
+              </CollapsibleFormSection>
 
               <div className="space-y-2">
                 <Label className="text-xs sm:text-sm">Lampiran pendukung</Label>
@@ -857,6 +905,35 @@ function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function CollapsibleFormSection({
+  num, label, required, isOpen, onToggle, children,
+}: {
+  num: number; label: string; required?: boolean; isOpen: boolean; onToggle: () => void; children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg border border-border overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/30 hover:bg-muted/50 transition-colors"
+        aria-expanded={isOpen}
+      >
+        <span className="text-xs sm:text-sm font-medium text-foreground">
+          {num}. {label}{required && <span className="text-destructive ml-0.5">*</span>}
+        </span>
+        <span className="ml-2 shrink-0 text-muted-foreground">
+          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </span>
+      </button>
+      {isOpen && (
+        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
