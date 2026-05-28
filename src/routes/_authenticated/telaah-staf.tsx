@@ -258,30 +258,29 @@ function TelaahStafPage() {
     e.preventDefault();
     if (!recipientId) return toast.error("Pilih tujuan telaah (atasan)");
     if (judul.trim().length < 3) return toast.error("Judul minimal 3 karakter");
-    if (pokokPersoalan.trim().length < 5) return toast.error("Pokok persoalan wajib diisi");
-    if (praAnggapan.trim().length < 5) return toast.error("Pra anggapan wajib diisi");
-    if (faktaData.trim().length < 5) return toast.error("Fakta dan data wajib diisi");
-    if (pembahasan.trim().length < 5) return toast.error("Pembahasan/analisis wajib diisi");
-    if (kesimpulan.trim().length < 5) return toast.error("Kesimpulan wajib diisi");
+    for (const sec of REVIEW_SECTIONS) {
+      const [val] = sectionStateMap[sec.key];
+      if (val.trim().length < 5) return toast.error(`${sec.label} wajib diisi`);
+    }
     const cleanSaran = cleanArr(saran);
     if (cleanSaran.length === 0) return toast.error("Tambahkan minimal 1 saran");
 
     setBusy(true);
+    const insertPayload: Record<string, unknown> = {
+      reporter_id: user!.id,
+      recipient_id: recipientId,
+      category,
+      judul: judul.trim(),
+      status: "submitted" as ReviewStatus,
+      saran: cleanSaran,
+    };
+    for (const sec of REVIEW_SECTIONS) {
+      const [val] = sectionStateMap[sec.key];
+      insertPayload[sec.key] = val.trim();
+    }
     const { data, error } = await supabase
       .from("staff_reviews")
-      .insert({
-        reporter_id: user!.id,
-        recipient_id: recipientId,
-        category,
-        judul: judul.trim(),
-        pokok_persoalan: pokokPersoalan.trim(),
-        pra_anggapan: praAnggapan.trim(),
-        fakta_data: faktaData.trim(),
-        pembahasan: pembahasan.trim(),
-        kesimpulan: kesimpulan.trim(),
-        saran: cleanSaran,
-        status: "submitted" as ReviewStatus,
-      })
+      .insert(insertPayload)
       .select("id")
       .single();
 
