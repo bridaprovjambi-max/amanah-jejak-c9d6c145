@@ -1,9 +1,13 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3, Lock, Activity, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import delapanLogo from "@/assets/delapan-logo.png";
-import { PublicStatsSection } from "@/components/PublicStatsSection";
+import delapanLogo from "@/assets/delapan-logo.webp";
+
+const PublicStatsSection = lazy(() =>
+  import("@/components/PublicStatsSection").then((m) => ({ default: m.PublicStatsSection })),
+);
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -23,7 +27,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: "/" },
+      { rel: "preload", as: "image", href: delapanLogo, fetchpriority: "high" },
+    ],
   }),
 });
 
@@ -39,7 +46,7 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-lg bg-white p-1 ring-brand">
-              <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
+              <img src={delapanLogo} alt="Logo DeLapan" width={40} height={40} fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
             </div>
             <div className="leading-tight">
               <div className="font-display text-base font-bold text-primary tracking-tight">DeLapan</div>
@@ -137,7 +144,9 @@ function Landing() {
         </div>
       </div>
 
-      <PublicStatsSection />
+      <Suspense fallback={<div className="mx-auto max-w-7xl px-4 py-16 lg:px-8" style={{ minHeight: 480 }} aria-hidden="true" />}>
+        <PublicStatsSection />
+      </Suspense>
 
       {/* Features */}
       <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
@@ -183,7 +192,7 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-8 w-8 place-items-center rounded-md bg-white/10 p-1">
-              <img src={delapanLogo} alt="" className="h-full w-full object-contain" />
+            <img src={delapanLogo} alt="" width={32} height={32} loading="lazy" decoding="async" className="h-full w-full object-contain" />
             </div>
             <div className="text-xs">
               <div className="font-display font-bold text-white">DeLapan · BRIDA Provinsi Jambi</div>

@@ -25,7 +25,7 @@ import {
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import delapanLogo from "@/assets/delapan-logo.png";
+import delapanLogo from "@/assets/delapan-logo.webp";
 
 interface NavItem {
   to: string;
