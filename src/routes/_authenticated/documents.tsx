@@ -273,7 +273,8 @@ function DocumentsPage() {
 
   const load = async () => {
     const [{ data: d }, { data: p }, { data: pk }, { data: fl }] = await Promise.all([
-      supabase.from("documents").select("*").order("created_at", { ascending: false }),
+      supabase.from("documents").select("*").order("created_at", { ascending: false }).limit(500),
+
       supabase.from("profiles").select("id, full_name"),
       supabase.from("pokja").select("id, name"),
       supabase.from("document_folders").select("slug, name, hint, sort_order").order("sort_order"),
