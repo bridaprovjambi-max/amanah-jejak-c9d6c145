@@ -152,7 +152,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           size="sm"
           onClick={async () => {
             await signOut();
-            navigate({ to: "/login" });
+            navigate({ to: "/" });
           }}
           className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
         >
