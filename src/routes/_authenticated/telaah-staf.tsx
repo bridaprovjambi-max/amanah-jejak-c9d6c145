@@ -929,23 +929,26 @@ function CollapsibleFormSection({
 }: {
   num: number; label: string; required?: boolean; isOpen: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
+  const panelId = `form-sec-panel-${num}`;
   return (
     <div id={`form-sec-${num}`} className="rounded-lg border border-border overflow-hidden scroll-mt-24">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/30 hover:bg-muted/50 transition-colors"
+        className="w-full flex items-center justify-between px-3 sm:px-4 py-3 sm:py-3.5 bg-muted/30 hover:bg-muted/50 transition-colors min-h-[48px]"
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Tutup bagian ${num}: ${label}` : `Buka bagian ${num}: ${label}`}
       >
-        <span className="text-xs sm:text-sm font-medium text-foreground">
+        <span className="text-xs sm:text-sm font-medium text-foreground pr-2">
           {num}. {label}{required && <span className="text-destructive ml-0.5">*</span>}
         </span>
-        <span className="ml-2 shrink-0 text-muted-foreground">
+        <span className="ml-2 shrink-0 text-muted-foreground" aria-hidden="true">
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </span>
       </button>
       {isOpen && (
-        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
+        <div id={panelId} className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
           {children}
         </div>
       )}
