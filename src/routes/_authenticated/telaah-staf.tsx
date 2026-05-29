@@ -720,11 +720,25 @@ function TelaahStafPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 min-h-11 min-w-11 sm:min-h-8 sm:min-w-8"
+                        onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}
+                        aria-expanded={isOpen}
+                        aria-controls={`detail-panel-${r.id}`}
+                        aria-label={isOpen ? `Tutup detail telaah ${r.judul}` : `Buka detail telaah ${r.judul}`}
+                      >
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                       {canDelete && (
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => deleteReview(r)}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive min-h-11 min-w-11 sm:min-h-8 sm:min-w-8"
+                          onClick={() => deleteReview(r)}
+                          aria-label={`Hapus telaah ${r.judul}`}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
@@ -732,7 +746,7 @@ function TelaahStafPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
+                  <CardContent id={`detail-panel-${r.id}`} className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
                     <SectionJumpNav
                       prefix={r.id}
                       labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
