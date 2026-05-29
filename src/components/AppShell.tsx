@@ -62,6 +62,27 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
+  // Close drawer on ESC + lock body scroll while open
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // Auto-close drawer on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [loc.pathname]);
+
+
   const canSeeAdmin = hasRole(["admin", "kepala", "sekretaris"]);
   const initials = profile?.full_name
     ?.split(" ")
