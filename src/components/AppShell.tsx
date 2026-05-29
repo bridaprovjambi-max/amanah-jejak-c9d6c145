@@ -215,6 +215,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           className="lg:hidden fixed inset-0 z-50 flex"
           role="dialog"
           aria-modal="true"
+        <div
+          className="lg:hidden fixed inset-0 z-50 flex h-[100dvh]"
+          role="dialog"
+          aria-modal="true"
           aria-label="Menu navigasi"
         >
           <div
@@ -224,7 +228,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           />
           <aside
             id="mobile-nav-drawer"
-            className="relative flex h-full w-[min(20rem,85vw)] flex-col bg-sidebar-gradient text-sidebar-foreground shadow-2xl animate-drawer-in pt-safe pb-safe"
+            className="relative flex h-[100dvh] max-h-[100dvh] w-[min(20rem,85vw)] flex-col overflow-hidden bg-sidebar-gradient text-sidebar-foreground shadow-2xl animate-drawer-in pt-safe pb-safe"
           >
             <button
               onClick={() => setOpen(false)}
