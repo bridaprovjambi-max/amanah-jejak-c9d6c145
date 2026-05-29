@@ -103,6 +103,6 @@ function LoginPage() {
           </form>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

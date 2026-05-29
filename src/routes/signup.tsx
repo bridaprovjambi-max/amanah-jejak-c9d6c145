@@ -168,6 +168,6 @@ function SignupPage() {
           </form>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
