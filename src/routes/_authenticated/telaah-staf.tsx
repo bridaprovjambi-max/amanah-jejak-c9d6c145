@@ -483,6 +483,13 @@ function TelaahStafPage() {
                 </div>
               </div>
 
+              <FormSectionJumpNav
+                labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
+                activeOpen={formSecOpen}
+                onJump={jumpToFormSec}
+              />
+
+
               {REVIEW_SECTIONS.map((sec, i) => {
                 const num = i + 1;
                 const [val, setVal] = sectionStateMap[sec.key];
