@@ -932,7 +932,7 @@ function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }
           >
             {i + 1}
           </button>
-      </div>
+        ))}
     </div>
   );
 }
