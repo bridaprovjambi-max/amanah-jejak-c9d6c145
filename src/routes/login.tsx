@@ -40,7 +40,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <main className="min-h-dvh grid lg:grid-cols-2">
       <div className="hidden lg:flex bg-gradient-hero text-primary-foreground p-12 flex-col justify-between">
         <Link to="/" className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-lg bg-white p-1 shadow-sm">
@@ -103,6 +103,6 @@ function LoginPage() {
           </form>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

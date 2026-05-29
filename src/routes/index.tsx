@@ -15,7 +15,7 @@ function Landing() {
   if (session) return <Navigate to="/dashboard" />;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">

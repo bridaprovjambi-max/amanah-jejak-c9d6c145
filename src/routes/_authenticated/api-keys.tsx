@@ -208,8 +208,8 @@ function ApiKeysPage() {
           <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2 text-xs font-mono break-all">
             <span className="font-semibold text-primary">POST</span>
             <span>{baseUrl}</span>
-            <Button size="icon" variant="ghost" className="ml-auto h-6 w-6" onClick={() => copy(baseUrl)}>
-              {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            <Button size="icon" variant="ghost" className="ml-auto h-6 w-6" aria-label={copied ? "Tersalin" : "Salin URL"} onClick={() => copy(baseUrl)}>
+              {copied ? <Check className="h-3 w-3" aria-hidden="true" /> : <Copy className="h-3 w-3" aria-hidden="true" />}
             </Button>
           </div>
           <pre className="overflow-x-auto rounded-md border bg-muted/30 p-3 text-[11px] leading-relaxed">
@@ -277,8 +277,8 @@ function ApiKeysPage() {
                         Cabut
                       </Button>
                     )}
-                    <Button size="sm" variant="ghost" onClick={() => handleDelete(k.id)}>
-                      <Trash2 className="h-4 w-4" />
+                    <Button size="sm" variant="ghost" aria-label={`Hapus kunci ${k.name}`} onClick={() => handleDelete(k.id)}>
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -301,9 +301,10 @@ function ApiKeysPage() {
             <Button
               size="icon"
               variant="ghost"
+              aria-label={copied ? "Tersalin" : "Salin kunci API"}
               onClick={() => revealedKey && copy(revealedKey)}
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
             </Button>
           </div>
           <DialogFooter>
