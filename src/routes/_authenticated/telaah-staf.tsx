@@ -747,6 +747,7 @@ function TelaahStafPage() {
                 </CardHeader>
                 {isOpen && (
                   <CardContent id={`detail-panel-${r.id}`} className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
+                    <SectionJumpNav
                       prefix={r.id}
                       labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
                     />
