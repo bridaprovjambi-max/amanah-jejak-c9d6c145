@@ -151,7 +151,15 @@ function TelaahStafPage() {
     const next: Record<number, boolean> = {};
     for (let i = 1; i <= SECTION_COUNT; i++) next[i] = false;
     setFormSecOpen(next);
+  const jumpToFormSec = (n: number) => {
+    setFormSecOpen((p) => ({ ...p, [n]: true }));
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`form-sec-${n}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
+
+
 
   // Form state — format baku 6 bagian
   const [category, setCategory] = useState<Category>("perencanaan");
