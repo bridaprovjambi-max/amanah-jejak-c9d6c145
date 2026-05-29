@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { analyzeDocument } from "@/lib/document-analysis.functions";
+import { PageHeader } from "@/components/PageHeader";
 
 export const Route = createFileRoute("/_authenticated/documents")({
   component: DocumentsPage,
@@ -531,13 +532,13 @@ function DocumentsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl lg:text-3xl font-bold">Dokumen</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Akses dokumen disesuaikan dengan jenjang & peran Anda di BRIDA.
-        </p>
-        <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
-          <Lock className="h-3 w-3" />
+      <div className="space-y-3">
+        <PageHeader
+          title="Dokumen"
+          description="Akses dokumen disesuaikan dengan jenjang & peran Anda di BRIDA."
+        />
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
+          <Lock className="h-3 w-3" aria-hidden="true" />
           Akses folder Anda:{" "}
           {permissions.view.length === allSlugs.length && allSlugs.length > 0
             ? "Semua folder"

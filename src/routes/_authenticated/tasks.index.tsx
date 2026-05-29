@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge, type TaskStatus, PriorityBadge } from "@/components/StatusBadge";
+import { PageHeader } from "@/components/PageHeader";
 import {
   Select,
   SelectContent,
@@ -65,19 +66,17 @@ function TasksList() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl lg:text-3xl font-bold">Penugasan</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Daftar semua wewenang & tanggung jawab yang didelegasikan.
-          </p>
-        </div>
-        <Link to="/tasks/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Buat Penugasan
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Penugasan"
+        description="Daftar semua wewenang & tanggung jawab yang didelegasikan."
+        actions={
+          <Link to="/tasks/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Buat Penugasan
+            </Button>
+          </Link>
+        }
+      />
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">

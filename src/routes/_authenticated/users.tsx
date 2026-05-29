@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PageHeader } from "@/components/PageHeader";
 
 export const Route = createFileRoute("/_authenticated/users")({
   component: UsersPage,
@@ -121,12 +122,10 @@ function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-display-lg font-bold">Pengguna</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Atur jenjang, peran, dan pokja untuk seluruh pengguna sistem.
-        </p>
-      </div>
+      <PageHeader
+        title="Pengguna"
+        description="Atur jenjang, peran, dan pokja untuk seluruh pengguna sistem."
+      />
 
       {loading ? (
         <p className="text-sm text-muted-foreground py-12 text-center">Memuat…</p>
