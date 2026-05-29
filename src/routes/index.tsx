@@ -2,7 +2,7 @@ import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Network, ClipboardList, BarChart3, Lock, Activity, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import delapanLogo from "@/assets/delapan-logo.png";
+import delapanLogo from "@/assets/delapan-logo.webp";
 import { PublicStatsSection } from "@/components/PublicStatsSection";
 
 export const Route = createFileRoute("/")({
