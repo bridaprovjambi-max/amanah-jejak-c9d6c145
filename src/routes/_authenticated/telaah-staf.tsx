@@ -915,7 +915,7 @@ function CollapsibleFormSection({
   num: number; label: string; required?: boolean; isOpen: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div id={`form-sec-${num}`} className="rounded-lg border border-border overflow-hidden scroll-mt-24">
       <button
         type="button"
         onClick={onToggle}
@@ -937,6 +937,41 @@ function CollapsibleFormSection({
     </div>
   );
 }
+
+function FormSectionJumpNav({
+  labels, activeOpen, onJump,
+}: {
+  labels: string[]; activeOpen: Record<number, boolean>; onJump: (num: number) => void;
+}) {
+  return (
+    <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
+      <div className="flex items-center gap-1.5 overflow-x-auto">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1 shrink-0">Lompat ke:</span>
+        {labels.map((lbl, i) => {
+          const num = i + 1;
+          const isOpen = !!activeOpen[num];
+          return (
+            <button
+              key={num}
+              type="button"
+              onClick={() => onJump(num)}
+              title={`${num}. ${lbl}`}
+              aria-label={`Lompat ke bagian ${num}: ${lbl}`}
+              className={`shrink-0 inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full border text-[11px] font-semibold transition-colors ${
+                isOpen
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "border-border bg-muted/40 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+              }`}
+            >
+              {num}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 
 function DispositionForm({
   review, onSubmit,
