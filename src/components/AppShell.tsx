@@ -108,7 +108,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </Link>
       </div>
-      <nav className="flex-1 px-3 py-5 space-y-0.5">
+      <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-5 space-y-0.5">
         {NAV.filter((n) => !n.roles || canSeeAdmin).map((n) => {
           const active = loc.pathname.startsWith(n.to);
           const Icon = n.icon;
@@ -133,7 +133,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
-      <div className="border-t border-sidebar-border p-4">
+      <div className="shrink-0 border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-xs font-semibold font-ui">
             {initials ?? "U"}
@@ -224,7 +224,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           />
           <aside
             id="mobile-nav-drawer"
-            className="relative w-[min(20rem,85vw)] bg-sidebar-gradient text-sidebar-foreground shadow-2xl animate-drawer-in pt-safe pb-safe"
+            className="relative flex h-full w-[min(20rem,85vw)] flex-col bg-sidebar-gradient text-sidebar-foreground shadow-2xl animate-drawer-in pt-safe pb-safe"
           >
             <button
               onClick={() => setOpen(false)}
