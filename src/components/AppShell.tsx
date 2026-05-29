@@ -212,10 +212,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Mobile drawer */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 z-50 flex"
-          role="dialog"
-          aria-modal="true"
-        <div
           className="lg:hidden fixed inset-0 z-50 flex h-[100dvh]"
           role="dialog"
           aria-modal="true"
