@@ -477,9 +477,9 @@ function TelaahStafPage() {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground">Konten telaah (1–6)</span>
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Buka semua</button>
+                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline px-2 py-1.5 min-h-[44px] sm:min-h-0">Buka semua</button>
                   <span className="text-muted-foreground">·</span>
-                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Tutup semua</button>
+                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline px-2 py-1.5 min-h-[44px] sm:min-h-0">Tutup semua</button>
                 </div>
               </div>
 
