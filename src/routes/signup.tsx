@@ -8,7 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import delapanLogo from "@/assets/delapan-logo.png";
 
-export const Route = createFileRoute("/signup")({ component: SignupPage });
+export const Route = createFileRoute("/signup")({
+  component: SignupPage,
+  head: () => ({
+    meta: [
+      { title: "Daftar — DeLapan" },
+      { name: "description", content: "Buat akun DeLapan untuk bergabung dengan ekosistem pelaporan internal BRIDA Provinsi Jambi." },
+      { property: "og:title", content: "Daftar — DeLapan" },
+      { property: "og:description", content: "Bergabung dengan ekosistem pelaporan internal BRIDA Jambi." },
+      { property: "og:url", content: "/signup" },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "/signup" }],
+  }),
+});
 
 const schema = z.object({
   full_name: z.string().trim().min(2).max(120),

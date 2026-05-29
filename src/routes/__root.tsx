@@ -86,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "DeLapan — Sistem monitoring pelaksanaan wewenang & tanggung jawab berjenjang serta pelaporan di lingkungan BRIDA Provinsi Jambi.",
       },
+      { property: "og:site_name", content: "DeLapan" },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "id_ID" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

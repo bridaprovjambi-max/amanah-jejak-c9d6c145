@@ -7,6 +7,24 @@ import { PublicStatsSection } from "@/components/PublicStatsSection";
 
 export const Route = createFileRoute("/")({
   component: Landing,
+  head: () => ({
+    meta: [
+      { title: "DeLapan — Delegasi & Pelaporan Internal BRIDA Jambi" },
+      {
+        name: "description",
+        content:
+          "Platform delegasi wewenang berjenjang, pelaporan kinerja, dan telaah staf untuk BRIDA Provinsi Jambi.",
+      },
+      { property: "og:title", content: "DeLapan — Delegasi & Pelaporan Internal BRIDA Jambi" },
+      {
+        property: "og:description",
+        content:
+          "Platform delegasi wewenang berjenjang, pelaporan kinerja, dan telaah staf untuk BRIDA Provinsi Jambi.",
+      },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+  }),
 });
 
 function Landing() {
