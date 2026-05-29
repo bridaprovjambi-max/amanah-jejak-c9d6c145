@@ -196,8 +196,6 @@
 
 @layer utilities {
 
-
-@layer utilities {
   .bg-hero-navy {
     background-color: oklch(0.18 0.06 255);
     background-image:
