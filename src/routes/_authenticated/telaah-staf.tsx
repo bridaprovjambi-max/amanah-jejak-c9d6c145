@@ -868,7 +868,7 @@ function ArrayField({
             className="h-9 sm:h-10 text-sm"
           />
           {items.length > 1 && (
-            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>
+            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => setItems(items.filter((_, idx) => idx !== i))} aria-label={`Hapus item ${i + 1}`}>
               <X className="h-4 w-4" />
             </Button>
           )}
