@@ -116,14 +116,14 @@ function KalenderPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={() => setCursor((c) => subMonths(c, 1))}>
-            <ChevronLeft className="h-4 w-4" />
+          <Button variant="outline" size="icon" aria-label="Bulan sebelumnya" onClick={() => setCursor((c) => subMonths(c, 1))}>
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <div className="min-w-[160px] text-center font-medium">
+          <div className="min-w-[160px] text-center font-medium" aria-live="polite">
             {format(cursor, "MMMM yyyy", { locale: localeId })}
           </div>
-          <Button variant="outline" size="icon" onClick={() => setCursor((c) => addMonths(c, 1))}>
-            <ChevronRight className="h-4 w-4" />
+          <Button variant="outline" size="icon" aria-label="Bulan berikutnya" onClick={() => setCursor((c) => addMonths(c, 1))}>
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button variant="outline" size="sm" onClick={() => { setCursor(startOfMonth(new Date())); setSelectedDay(new Date()); }}>
             Hari Ini
