@@ -477,9 +477,9 @@ function TelaahStafPage() {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground">Konten telaah (1–6)</span>
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Buka semua</button>
+                  <button type="button" onClick={expandAllForm} className="text-[10px] sm:text-xs text-primary hover:underline px-2 py-1.5 min-h-[44px] sm:min-h-0">Buka semua</button>
                   <span className="text-muted-foreground">·</span>
-                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline">Tutup semua</button>
+                  <button type="button" onClick={collapseAllForm} className="text-[10px] sm:text-xs text-primary hover:underline px-2 py-1.5 min-h-[44px] sm:min-h-0">Tutup semua</button>
                 </div>
               </div>
 
@@ -720,11 +720,25 @@ function TelaahStafPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 min-h-11 min-w-11 sm:min-h-8 sm:min-w-8"
+                        onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}
+                        aria-expanded={isOpen}
+                        aria-controls={`detail-panel-${r.id}`}
+                        aria-label={isOpen ? `Tutup detail telaah ${r.judul}` : `Buka detail telaah ${r.judul}`}
+                      >
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                       {canDelete && (
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => deleteReview(r)}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive min-h-11 min-w-11 sm:min-h-8 sm:min-w-8"
+                          onClick={() => deleteReview(r)}
+                          aria-label={`Hapus telaah ${r.judul}`}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
@@ -732,7 +746,7 @@ function TelaahStafPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
+                  <CardContent id={`detail-panel-${r.id}`} className="space-y-4 sm:space-y-5 border-t border-border pt-3 sm:pt-4 px-4 sm:px-6">
                     <SectionJumpNav
                       prefix={r.id}
                       labels={[...REVIEW_SECTIONS.map((s) => s.label), "Saran"]}
@@ -753,7 +767,7 @@ function TelaahStafPage() {
                                 <span className="truncate">{a.file_name}</span>
                                 <span className="text-muted-foreground hidden sm:inline">({fmtBytes(a.file_size)})</span>
                               </span>
-                              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0 ml-2" onClick={() => downloadAtt(a)}>
+                              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0 ml-2 min-h-11 min-w-11 sm:min-h-7 sm:min-w-7" onClick={() => downloadAtt(a)} aria-label={`Unduh ${a.file_name}`}>
                                 <Download className="h-4 w-4" />
                               </Button>
                             </li>
@@ -854,7 +868,7 @@ function ArrayField({
             className="h-9 sm:h-10 text-sm"
           />
           {items.length > 1 && (
-            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>
+            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => setItems(items.filter((_, idx) => idx !== i))} aria-label={`Hapus item ${i + 1}`}>
               <X className="h-4 w-4" />
             </Button>
           )}
@@ -914,7 +928,7 @@ function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }
             onClick={() => jump(i + 1)}
             title={`${i + 1}. ${lbl}`}
             aria-label={`Lompat ke bagian ${i + 1}: ${lbl}`}
-            className="shrink-0 inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full border border-border bg-muted/40 text-[11px] font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+            className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 sm:min-w-7 sm:min-h-7 px-2 rounded-full border border-border bg-muted/40 text-[11px] font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
           >
             {i + 1}
           </button>
@@ -929,23 +943,26 @@ function CollapsibleFormSection({
 }: {
   num: number; label: string; required?: boolean; isOpen: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
+  const panelId = `form-sec-panel-${num}`;
   return (
     <div id={`form-sec-${num}`} className="rounded-lg border border-border overflow-hidden scroll-mt-24">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-muted/30 hover:bg-muted/50 transition-colors"
+        className="w-full flex items-center justify-between px-3 sm:px-4 py-3 sm:py-3.5 bg-muted/30 hover:bg-muted/50 transition-colors min-h-[48px]"
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Tutup bagian ${num}: ${label}` : `Buka bagian ${num}: ${label}`}
       >
-        <span className="text-xs sm:text-sm font-medium text-foreground">
+        <span className="text-xs sm:text-sm font-medium text-foreground pr-2">
           {num}. {label}{required && <span className="text-destructive ml-0.5">*</span>}
         </span>
-        <span className="ml-2 shrink-0 text-muted-foreground">
+        <span className="ml-2 shrink-0 text-muted-foreground" aria-hidden="true">
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </span>
       </button>
       {isOpen && (
-        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
+        <div id={panelId} className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 bg-background">
           {children}
         </div>
       )}
@@ -972,7 +989,7 @@ function FormSectionJumpNav({
               onClick={() => onJump(num)}
               title={`${num}. ${lbl}`}
               aria-label={`Lompat ke bagian ${num}: ${lbl}`}
-              className={`shrink-0 inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full border text-[11px] font-semibold transition-colors ${
+              className={`shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 sm:min-w-7 sm:min-h-7 px-2 rounded-full border text-[11px] font-semibold transition-colors ${
                 isOpen
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-border bg-muted/40 hover:bg-primary hover:text-primary-foreground hover:border-primary"
