@@ -767,7 +767,7 @@ function TelaahStafPage() {
                                 <span className="truncate">{a.file_name}</span>
                                 <span className="text-muted-foreground hidden sm:inline">({fmtBytes(a.file_size)})</span>
                               </span>
-                              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0 ml-2" onClick={() => downloadAtt(a)}>
+                              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 flex-shrink-0 ml-2 min-h-11 min-w-11 sm:min-h-7 sm:min-w-7" onClick={() => downloadAtt(a)} aria-label={`Unduh ${a.file_name}`}>
                                 <Download className="h-4 w-4" />
                               </Button>
                             </li>
