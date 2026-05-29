@@ -17,11 +17,29 @@ export function PWAManager() {
     typeof navigator !== "undefined" ? !navigator.onLine : false,
   );
 
-  // Register service worker
+  // Register service worker (production only — never in preview/iframe)
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
     if (window.location.hostname === "localhost") return;
+
+    // Guard against Lovable preview / iframe contexts: SW would cache the
+    // preview shell and break hot updates. Unregister any leftover SW too.
+    const inIframe = (() => {
+      try { return window.self !== window.top; } catch { return true; }
+    })();
+    const isPreviewHost =
+      window.location.hostname.includes("id-preview--") ||
+      window.location.hostname.includes("lovableproject.com") ||
+      window.location.hostname.includes("lovable.dev");
+
+    if (inIframe || isPreviewHost) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((r) => r.unregister());
+      }).catch(() => undefined);
+      return;
+    }
+
     const onLoad = () => {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
