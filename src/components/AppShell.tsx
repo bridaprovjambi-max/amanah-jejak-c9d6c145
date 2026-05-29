@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
+
   LayoutDashboard,
   ListChecks,
   Users,
@@ -60,6 +61,27 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  // Close drawer on ESC + lock body scroll while open
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // Auto-close drawer on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [loc.pathname]);
+
 
   const canSeeAdmin = hasRole(["admin", "kepala", "sekretaris"]);
   const initials = profile?.full_name
@@ -143,19 +165,40 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip-link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
+      >
+        Lompat ke konten
+      </a>
+
       {/* Mobile topbar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-4 py-3">
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-lg bg-white p-0.5 shadow-sm">
-            <img src={delapanLogo} alt="Logo DeLapan" className="h-full w-full object-contain" />
+      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/90 backdrop-blur-md px-3 h-14 pt-safe">
+        <Link to="/dashboard" className="flex items-center gap-2 min-h-11 px-1" aria-label="Beranda DeLapan">
+          <div className="grid h-9 w-9 place-items-center rounded-lg bg-white p-0.5 shadow-sm shrink-0">
+            <img src={delapanLogo} alt="" className="h-full w-full object-contain" />
           </div>
           <span className="font-display text-lg tracking-tight">DeLapan</span>
         </Link>
-        <div className="flex items-center gap-2">
-          <Button size="sm" onClick={() => navigate({ to: "/tasks/new" })}>
-            <Plus className="h-4 w-4" />
+        <div className="flex items-center gap-1">
+          <Button
+            size="icon"
+            onClick={() => navigate({ to: "/tasks/new" })}
+            aria-label="Buat penugasan baru"
+            className="h-11 w-11"
+          >
+            <Plus className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setOpen(true)}
+            aria-label="Buka menu navigasi"
+            aria-expanded={open}
+            aria-controls="mobile-nav-drawer"
+            className="h-11 w-11"
+          >
             <Menu className="h-5 w-5" />
           </Button>
         </div>
@@ -168,15 +211,25 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile drawer */}
       {open && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div
+          className="lg:hidden fixed inset-0 z-50 flex"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu navigasi"
+        >
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/55 backdrop-blur-sm animate-overlay-in"
             onClick={() => setOpen(false)}
+            aria-hidden="true"
           />
-          <aside className="relative w-72 bg-sidebar-gradient text-sidebar-foreground">
+          <aside
+            id="mobile-nav-drawer"
+            className="relative w-[min(20rem,85vw)] bg-sidebar-gradient text-sidebar-foreground shadow-2xl animate-drawer-in pt-safe pb-safe"
+          >
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-sidebar-foreground/70"
+              className="absolute top-3 right-3 grid h-11 w-11 place-items-center rounded-md text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-accent-foreground"
+              aria-label="Tutup menu"
             >
               <X className="h-5 w-5" />
             </button>
@@ -185,12 +238,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <main className="lg:pl-64">
-        <div className="mx-auto max-w-7xl px-4 py-6 lg:px-10 lg:py-10">
+      <main id="main-content" className="lg:pl-64">
+        <div className="mx-auto max-w-7xl px-4 py-5 lg:px-10 lg:py-10">
           {children}
         </div>
       </main>
     </div>
+
   );
 }
 
