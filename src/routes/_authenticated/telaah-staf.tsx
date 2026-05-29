@@ -928,11 +928,10 @@ function SectionJumpNav({ prefix, labels }: { prefix: string; labels: string[] }
             onClick={() => jump(i + 1)}
             title={`${i + 1}. ${lbl}`}
             aria-label={`Lompat ke bagian ${i + 1}: ${lbl}`}
-            className="shrink-0 inline-flex items-center justify-center min-w-7 h-7 px-2 rounded-full border border-border bg-muted/40 text-[11px] font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+            className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 px-2 rounded-full border border-border bg-muted/40 text-[11px] font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors sm:min-w-7 sm:min-h-7"
           >
             {i + 1}
           </button>
-        ))}
       </div>
     </div>
   );
