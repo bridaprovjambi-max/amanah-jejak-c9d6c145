@@ -144,7 +144,9 @@ function Landing() {
         </div>
       </div>
 
-      <PublicStatsSection />
+      <Suspense fallback={<div className="mx-auto max-w-7xl px-4 py-16 lg:px-8" style={{ minHeight: 480 }} aria-hidden="true" />}>
+        <PublicStatsSection />
+      </Suspense>
 
       {/* Features */}
       <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
@@ -190,7 +192,7 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-3">
             <div className="grid h-8 w-8 place-items-center rounded-md bg-white/10 p-1">
-              <img src={delapanLogo} alt="" className="h-full w-full object-contain" />
+            <img src={delapanLogo} alt="" width={32} height={32} loading="lazy" decoding="async" className="h-full w-full object-contain" />
             </div>
             <div className="text-xs">
               <div className="font-display font-bold text-white">DeLapan · BRIDA Provinsi Jambi</div>
