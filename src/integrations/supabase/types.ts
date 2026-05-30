@@ -750,6 +750,8 @@ export type Database = {
         | "jafung_member"
         | "ketua_pokja_riset"
         | "ketua_pokja_inovasi"
+        | "anggota_pokja_riset"
+        | "anggota_pokja_inovasi"
       jenjang:
         | "eselon_ii"
         | "eselon_iii"
@@ -902,6 +904,8 @@ export const Constants = {
         "jafung_member",
         "ketua_pokja_riset",
         "ketua_pokja_inovasi",
+        "anggota_pokja_riset",
+        "anggota_pokja_inovasi",
       ],
       jenjang: [
         "eselon_ii",
