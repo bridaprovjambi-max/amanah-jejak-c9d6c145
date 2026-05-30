@@ -163,8 +163,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 
 
+  const isDashboard = loc.pathname === "/dashboard" || loc.pathname === "/";
+  const useCosmos = !isDashboard;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn("min-h-screen relative", useCosmos ? "bg-cosmos text-white" : "bg-background")}>
+      {useCosmos && (
+        <>
+          <div className="pointer-events-none fixed inset-0 bg-grid-cosmos opacity-50" />
+          <div className="pointer-events-none fixed -top-40 -left-32 h-[28rem] w-[28rem] rounded-full bg-[oklch(0.55_0.24_290/0.25)] blur-3xl animate-float-orb" />
+          <div className="pointer-events-none fixed -bottom-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-[oklch(0.65_0.25_25/0.18)] blur-3xl animate-float-orb" style={{ animationDelay: "1.5s" }} />
+        </>
+      )}
+
       {/* Skip-link for keyboard users */}
       <a
         href="#main-content"
@@ -174,7 +185,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </a>
 
       {/* Mobile topbar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card/90 backdrop-blur-md px-3 h-14 pt-safe">
+      <header className={cn(
+        "lg:hidden sticky top-0 z-30 flex items-center justify-between border-b px-3 h-14 pt-safe backdrop-blur-md",
+        useCosmos ? "border-white/10 bg-[oklch(0.16_0.07_265/0.7)]" : "border-border bg-card/90"
+      )}>
         <Link to="/dashboard" className="flex items-center gap-2 min-h-11 px-1" aria-label="Beranda DeLapan">
           <div className="grid h-9 w-9 place-items-center rounded-lg bg-white p-0.5 shadow-sm shrink-0">
             <img src={delapanLogo} alt="" className="h-full w-full object-contain" />
@@ -186,7 +200,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             size="icon"
             onClick={() => navigate({ to: "/tasks/new" })}
             aria-label="Buat penugasan baru"
-            className="h-11 w-11"
+            className={cn("h-11 w-11", useCosmos && "bg-vivid-gradient text-white border-0 hover:opacity-95")}
           >
             <Plus className="h-5 w-5" />
           </Button>
@@ -197,7 +211,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             aria-label="Buka menu navigasi"
             aria-expanded={open}
             aria-controls="mobile-nav-drawer"
-            className="h-11 w-11"
+            className={cn("h-11 w-11", useCosmos && "text-white hover:bg-white/10 hover:text-white")}
           >
             <Menu className="h-5 w-5" />
           </Button>
@@ -238,8 +252,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <main id="main-content" className="lg:pl-64">
-        <div className="mx-auto max-w-7xl px-4 py-5 lg:px-10 lg:py-10">
+      <main id="main-content" className={cn("lg:pl-64 relative", useCosmos && "theme-cosmos")}>
+        <div className="mx-auto max-w-7xl px-4 py-5 lg:px-10 lg:py-10 animate-fade-in-up">
           {children}
         </div>
       </main>
