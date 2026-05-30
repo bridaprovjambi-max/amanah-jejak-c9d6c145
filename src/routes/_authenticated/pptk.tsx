@@ -185,14 +185,15 @@ function PptkPage() {
   };
 
   const resetForm = () => {
-    setKegiatan(""); setUraian(""); setRealFisik(""); setRealKeu("");
-    setKendala(""); setTindak(""); setPendingFiles([]);
+    setKegiatan(""); setUraian(""); setTargetFisik(""); setTargetKeu("");
+    setRealFisik(""); setRealKeu(""); setKendala(""); setFaktorPendukung("");
+    setTindak(""); setPendingFiles([]);
     setPeriodYear(now.getFullYear()); setPeriodMonth(now.getMonth() + 1);
   };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (kegiatan.trim().length < 3) return toast.error("Nama kegiatan minimal 3 karakter");
+    if (kegiatan.trim().length < 3) return toast.error("Nama Sub Kegiatan minimal 3 karakter");
     if (uraian.trim().length < 5) return toast.error("Uraian pelaksanaan minimal 5 karakter");
     setBusy(true);
     const { data, error } = await supabase
@@ -203,9 +204,12 @@ function PptkPage() {
         period_month: periodMonth,
         kegiatan: kegiatan.trim(),
         uraian_pelaksanaan: uraian.trim(),
+        target_fisik_bulan: targetFisik.trim() || null,
+        target_realisasi_keuangan: targetKeu.trim() || null,
         realisasi_fisik: realFisik.trim() || null,
         realisasi_keuangan: realKeu.trim() || null,
         kendala: kendala.trim() || null,
+        faktor_pendukung: faktorPendukung.trim() || null,
         tindak_lanjut: tindak.trim() || null,
       })
       .select("id")
