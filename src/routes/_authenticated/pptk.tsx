@@ -335,7 +335,7 @@ function PptkPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Nama Kegiatan *</Label>
+                <Label>Nama Sub Kegiatan *</Label>
                 <Input value={kegiatan} onChange={(e) => setKegiatan(e.target.value)} maxLength={300} />
               </div>
 
@@ -344,6 +344,17 @@ function PptkPage() {
                 <Textarea value={uraian} onChange={(e) => setUraian(e.target.value)}
                   placeholder="Apa yang dikerjakan, hasil/output, tahapan pelaksanaan..."
                   rows={4} maxLength={6000} />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Target Fisik Bulan</Label>
+                  <Input value={targetFisik} onChange={(e) => setTargetFisik(e.target.value)} placeholder="contoh: 100%" maxLength={100} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Target Realisasi Keuangan</Label>
+                  <Input value={targetKeu} onChange={(e) => setTargetKeu(e.target.value)} placeholder="contoh: Rp 150.000.000" maxLength={120} />
+                </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
@@ -359,13 +370,18 @@ function PptkPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Kendala</Label>
+                  <Label>Faktor Penghambat</Label>
                   <Textarea value={kendala} onChange={(e) => setKendala(e.target.value)} rows={3} maxLength={2000} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Tindak Lanjut</Label>
-                  <Textarea value={tindak} onChange={(e) => setTindak(e.target.value)} rows={3} maxLength={2000} />
+                  <Label>Faktor Pendukung</Label>
+                  <Textarea value={faktorPendukung} onChange={(e) => setFaktorPendukung(e.target.value)} rows={3} maxLength={2000} />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Tindak Lanjut</Label>
+                <Textarea value={tindak} onChange={(e) => setTindak(e.target.value)} rows={3} maxLength={2000} />
               </div>
 
               <div className="space-y-2">
