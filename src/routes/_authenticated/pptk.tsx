@@ -499,9 +499,12 @@ function PptkPage() {
                     <div className="space-y-3 pt-2 border-t border-border">
                       <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <div className="grid sm:grid-cols-2 gap-3">
+                        <Field label="Target Fisik Bulan" value={r.target_fisik_bulan} />
+                        <Field label="Target Realisasi Keuangan" value={r.target_realisasi_keuangan} />
                         <Field label="Realisasi Fisik" value={r.realisasi_fisik} />
                         <Field label="Realisasi Keuangan" value={r.realisasi_keuangan} />
-                        <Field label="Kendala" value={r.kendala} />
+                        <Field label="Faktor Penghambat" value={r.kendala} />
+                        <Field label="Faktor Pendukung" value={r.faktor_pendukung} />
                         <Field label="Tindak Lanjut" value={r.tindak_lanjut} />
                       </div>
 
