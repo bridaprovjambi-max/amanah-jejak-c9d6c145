@@ -202,9 +202,45 @@
       radial-gradient(circle at 85% 10%, oklch(0.45 0.12 250 / 0.45) 0%, transparent 55%),
       radial-gradient(circle at 10% 95%, oklch(0.72 0.12 80 / 0.28) 0%, transparent 55%);
   }
-  .bg-sidebar-gradient {
-    background-image: var(--gradient-sidebar);
+  /* Deep cosmic navy → indigo scene used by Login/Signup/Penugasan redesign */
+  .bg-cosmos {
+    background-color: oklch(0.15 0.07 265);
+    background-image:
+      radial-gradient(circle at 20% 15%, oklch(0.45 0.18 295 / 0.45) 0%, transparent 50%),
+      radial-gradient(circle at 85% 85%, oklch(0.55 0.22 25 / 0.32) 0%, transparent 55%),
+      radial-gradient(circle at 60% 40%, oklch(0.40 0.18 270 / 0.35) 0%, transparent 60%);
   }
+  .bg-grid-cosmos {
+    background-image:
+      linear-gradient(oklch(0.95 0.05 280 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.95 0.05 280 / 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .panel-glass {
+    background: linear-gradient(180deg, oklch(0.28 0.06 265 / 0.55), oklch(0.20 0.06 265 / 0.55));
+    border: 1px solid oklch(0.95 0.05 280 / 0.10);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.06) inset,
+      0 20px 50px -20px oklch(0.05 0.05 265 / 0.6);
+  }
+  .text-vivid-gradient {
+    background-image: linear-gradient(135deg, oklch(0.78 0.18 35), oklch(0.65 0.25 350), oklch(0.65 0.22 290));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-vivid-gradient {
+    background-image: linear-gradient(135deg, oklch(0.75 0.22 40), oklch(0.62 0.26 350) 55%, oklch(0.55 0.24 285));
+  }
+  .glow-vivid {
+    box-shadow:
+      0 0 0 1px oklch(0.95 0.05 280 / 0.15),
+      0 8px 28px -6px oklch(0.62 0.26 350 / 0.55),
+      0 18px 50px -12px oklch(0.55 0.24 285 / 0.45);
+  }
+  .bg-sidebar-gradient { background-image: var(--gradient-sidebar); }
   .bg-grid-soft {
     background-image:
       linear-gradient(oklch(0.85 0.05 230 / 0.06) 1px, transparent 1px),
@@ -239,5 +275,41 @@
   .border-gold { border-color: var(--brand-gold); }
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
+
+  /* Motion — fade/slide/pulse used across redesigned screens */
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slide-up-soft {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slide-in-side {
+    from { opacity: 0; transform: translateX(-18px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.62 0.26 350 / 0.45), 0 10px 30px -10px oklch(0.55 0.24 285 / 0.55); }
+    50%      { box-shadow: 0 0 0 10px oklch(0.62 0.26 350 / 0), 0 14px 40px -10px oklch(0.55 0.24 285 / 0.75); }
+  }
+  @keyframes float-orb {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-12px) scale(1.05); }
+  }
+  .animate-fade-in-up { animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-slide-up   { animation: slide-up-soft 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-slide-in-side { animation: slide-in-side 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-pulse-glow { animation: pulse-glow 2.6s ease-in-out infinite; }
+  .animate-float-orb  { animation: float-orb 7s ease-in-out infinite; }
+  .stagger > * { opacity: 0; animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.47s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.54s; }
 }
 
