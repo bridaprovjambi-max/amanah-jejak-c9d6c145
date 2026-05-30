@@ -153,13 +153,16 @@ function SettingsPage() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="pangkat">Pangkat / Golongan</Label>
-            <Input
-              id="pangkat"
-              placeholder="contoh: Penata Tk. I / III-d"
-              value={pangkat}
-              onChange={(e) => setPangkat(e.target.value)}
-              maxLength={80}
-            />
+            <Select value={pangkat} onValueChange={setPangkat}>
+              <SelectTrigger id="pangkat">
+                <SelectValue placeholder="Pilih pangkat / golongan" />
+              </SelectTrigger>
+              <SelectContent>
+                {PANGKAT_PRESETS.map((p) => (
+                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="jabatan">Jabatan</Label>
