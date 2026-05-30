@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { JABATAN_PRESETS } from "@/lib/jabatan-presets";
+import { PANGKAT_PRESETS } from "@/lib/pangkat-presets";
 import { useServerFn } from "@tanstack/react-start";
 import { sendTelegramNotification } from "@/lib/telegram.functions";
 
@@ -152,13 +153,16 @@ function SettingsPage() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="pangkat">Pangkat / Golongan</Label>
-            <Input
-              id="pangkat"
-              placeholder="contoh: Penata Tk. I / III-d"
-              value={pangkat}
-              onChange={(e) => setPangkat(e.target.value)}
-              maxLength={80}
-            />
+            <Select value={pangkat} onValueChange={setPangkat}>
+              <SelectTrigger id="pangkat">
+                <SelectValue placeholder="Pilih pangkat / golongan" />
+              </SelectTrigger>
+              <SelectContent>
+                {PANGKAT_PRESETS.map((p) => (
+                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="jabatan">Jabatan</Label>
