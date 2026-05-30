@@ -324,6 +324,7 @@ export type Database = {
       pptk_reports: {
         Row: {
           created_at: string
+          faktor_pendukung: string | null
           id: string
           kegiatan: string
           kendala: string | null
@@ -339,12 +340,15 @@ export type Database = {
           sekretaris_id: string | null
           sekretaris_notes: string | null
           status: string
+          target_fisik_bulan: string | null
+          target_realisasi_keuangan: string | null
           tindak_lanjut: string | null
           updated_at: string
           uraian_pelaksanaan: string
         }
         Insert: {
           created_at?: string
+          faktor_pendukung?: string | null
           id?: string
           kegiatan: string
           kendala?: string | null
@@ -360,12 +364,15 @@ export type Database = {
           sekretaris_id?: string | null
           sekretaris_notes?: string | null
           status?: string
+          target_fisik_bulan?: string | null
+          target_realisasi_keuangan?: string | null
           tindak_lanjut?: string | null
           updated_at?: string
           uraian_pelaksanaan: string
         }
         Update: {
           created_at?: string
+          faktor_pendukung?: string | null
           id?: string
           kegiatan?: string
           kendala?: string | null
@@ -381,6 +388,8 @@ export type Database = {
           sekretaris_id?: string | null
           sekretaris_notes?: string | null
           status?: string
+          target_fisik_bulan?: string | null
+          target_realisasi_keuangan?: string | null
           tindak_lanjut?: string | null
           updated_at?: string
           uraian_pelaksanaan?: string

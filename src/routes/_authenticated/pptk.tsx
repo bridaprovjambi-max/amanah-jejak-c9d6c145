@@ -30,9 +30,12 @@ interface PptkReport {
   period_month: number;
   kegiatan: string;
   uraian_pelaksanaan: string;
+  target_fisik_bulan: string | null;
+  target_realisasi_keuangan: string | null;
   realisasi_fisik: string | null;
   realisasi_keuangan: string | null;
   kendala: string | null;
+  faktor_pendukung: string | null;
   tindak_lanjut: string | null;
   status: PptkStatus;
   sekretaris_id: string | null;
@@ -80,7 +83,7 @@ function fmtBytes(n: number) {
 }
 
 function PptkPage() {
-  const { user, hasRole } = useAuth();
+  const { user, profile, hasRole } = useAuth();
   const now = new Date();
 
   const [reports, setReports] = useState<PptkReport[]>([]);
@@ -98,9 +101,12 @@ function PptkPage() {
   const [periodMonth, setPeriodMonth] = useState(now.getMonth() + 1);
   const [kegiatan, setKegiatan] = useState("");
   const [uraian, setUraian] = useState("");
+  const [targetFisik, setTargetFisik] = useState("");
+  const [targetKeu, setTargetKeu] = useState("");
   const [realFisik, setRealFisik] = useState("");
   const [realKeu, setRealKeu] = useState("");
   const [kendala, setKendala] = useState("");
+  const [faktorPendukung, setFaktorPendukung] = useState("");
   const [tindak, setTindak] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
@@ -179,14 +185,15 @@ function PptkPage() {
   };
 
   const resetForm = () => {
-    setKegiatan(""); setUraian(""); setRealFisik(""); setRealKeu("");
-    setKendala(""); setTindak(""); setPendingFiles([]);
+    setKegiatan(""); setUraian(""); setTargetFisik(""); setTargetKeu("");
+    setRealFisik(""); setRealKeu(""); setKendala(""); setFaktorPendukung("");
+    setTindak(""); setPendingFiles([]);
     setPeriodYear(now.getFullYear()); setPeriodMonth(now.getMonth() + 1);
   };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (kegiatan.trim().length < 3) return toast.error("Nama kegiatan minimal 3 karakter");
+    if (kegiatan.trim().length < 3) return toast.error("Nama Sub Kegiatan minimal 3 karakter");
     if (uraian.trim().length < 5) return toast.error("Uraian pelaksanaan minimal 5 karakter");
     setBusy(true);
     const { data, error } = await supabase
@@ -197,9 +204,12 @@ function PptkPage() {
         period_month: periodMonth,
         kegiatan: kegiatan.trim(),
         uraian_pelaksanaan: uraian.trim(),
+        target_fisik_bulan: targetFisik.trim() || null,
+        target_realisasi_keuangan: targetKeu.trim() || null,
         realisasi_fisik: realFisik.trim() || null,
         realisasi_keuangan: realKeu.trim() || null,
         kendala: kendala.trim() || null,
+        faktor_pendukung: faktorPendukung.trim() || null,
         tindak_lanjut: tindak.trim() || null,
       })
       .select("id")
@@ -305,6 +315,11 @@ function PptkPage() {
           <CardHeader><CardTitle>Formulir Laporan PPTK</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={submit} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Nama PPTK</Label>
+                <Input value={profile?.full_name ?? user?.email ?? ""} disabled readOnly className="bg-muted/50" />
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Bulan</Label>
@@ -325,7 +340,7 @@ function PptkPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Nama Kegiatan *</Label>
+                <Label>Nama Sub Kegiatan *</Label>
                 <Input value={kegiatan} onChange={(e) => setKegiatan(e.target.value)} maxLength={300} />
               </div>
 
@@ -334,6 +349,17 @@ function PptkPage() {
                 <Textarea value={uraian} onChange={(e) => setUraian(e.target.value)}
                   placeholder="Apa yang dikerjakan, hasil/output, tahapan pelaksanaan..."
                   rows={4} maxLength={6000} />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Target Fisik Bulan</Label>
+                  <Input value={targetFisik} onChange={(e) => setTargetFisik(e.target.value)} placeholder="contoh: 100%" maxLength={100} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Target Realisasi Keuangan</Label>
+                  <Input value={targetKeu} onChange={(e) => setTargetKeu(e.target.value)} placeholder="contoh: Rp 150.000.000" maxLength={120} />
+                </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
@@ -349,13 +375,18 @@ function PptkPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Kendala</Label>
+                  <Label>Faktor Penghambat</Label>
                   <Textarea value={kendala} onChange={(e) => setKendala(e.target.value)} rows={3} maxLength={2000} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Tindak Lanjut</Label>
-                  <Textarea value={tindak} onChange={(e) => setTindak(e.target.value)} rows={3} maxLength={2000} />
+                  <Label>Faktor Pendukung</Label>
+                  <Textarea value={faktorPendukung} onChange={(e) => setFaktorPendukung(e.target.value)} rows={3} maxLength={2000} />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Tindak Lanjut</Label>
+                <Textarea value={tindak} onChange={(e) => setTindak(e.target.value)} rows={3} maxLength={2000} />
               </div>
 
               <div className="space-y-2">
@@ -473,9 +504,12 @@ function PptkPage() {
                     <div className="space-y-3 pt-2 border-t border-border">
                       <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <div className="grid sm:grid-cols-2 gap-3">
+                        <Field label="Target Fisik Bulan" value={r.target_fisik_bulan} />
+                        <Field label="Target Realisasi Keuangan" value={r.target_realisasi_keuangan} />
                         <Field label="Realisasi Fisik" value={r.realisasi_fisik} />
                         <Field label="Realisasi Keuangan" value={r.realisasi_keuangan} />
-                        <Field label="Kendala" value={r.kendala} />
+                        <Field label="Faktor Penghambat" value={r.kendala} />
+                        <Field label="Faktor Pendukung" value={r.faktor_pendukung} />
                         <Field label="Tindak Lanjut" value={r.tindak_lanjut} />
                       </div>
 
