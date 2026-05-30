@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
     setProfile((prof as Profile) ?? null);
-    setRoles((r ?? []).map((x: { role: AppRole }) => x.role));
+    setRoles((r ?? []).map((x: { role: string }) => x.role as AppRole));
   };
 
   useEffect(() => {
