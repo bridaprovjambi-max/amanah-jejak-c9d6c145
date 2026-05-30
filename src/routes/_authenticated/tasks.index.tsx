@@ -82,28 +82,30 @@ function TasksList() {
 
   return (
     <div className="space-y-7">
-      <PageHeader
-        eyebrow="Delegasi & Pelaksanaan"
-        title="Penugasan"
-        description="Daftar wewenang & tanggung jawab yang didelegasikan secara berjenjang."
-        actions={
-          <Link to="/tasks/new">
-            <Button className="shadow-elegant font-semibold">
-              <Plus className="mr-1 h-4 w-4" /> Buat Penugasan
-            </Button>
-          </Link>
-        }
-      />
+      <div className="animate-fade-in-up">
+        <PageHeader
+          eyebrow="Delegasi & Pelaksanaan"
+          title="Penugasan"
+          description="Daftar wewenang & tanggung jawab yang didelegasikan secara berjenjang."
+          actions={
+            <Link to="/tasks/new">
+              <Button className="shadow-elegant font-semibold bg-vivid-gradient text-white border-0 hover:opacity-95 animate-pulse-glow">
+                <Plus className="mr-1 h-4 w-4" /> Buat Penugasan
+              </Button>
+            </Link>
+          }
+        />
+      </div>
 
       {/* Stat strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger">
         {[
           { icon: Inbox, label: "Total", value: stats.total, tone: "text-primary", bg: "bg-primary/5" },
           { icon: Activity, label: "Berjalan", value: stats.inprog, tone: "text-[oklch(0.55_0.08_215)]", bg: "bg-[oklch(0.55_0.08_215)]/5" },
           { icon: CheckCircle2, label: "Selesai", value: stats.done, tone: "text-success", bg: "bg-success/5" },
           { icon: AlertCircle, label: "Terlambat", value: stats.over, tone: "text-destructive", bg: "bg-destructive/5" },
         ].map((s) => (
-          <div key={s.label} className={`relative overflow-hidden rounded-xl border border-border ${s.bg} p-4`}>
+          <div key={s.label} className={`relative overflow-hidden rounded-xl border border-border ${s.bg} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-elegant`}>
             <div className="flex items-start justify-between">
               <div>
                 <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
