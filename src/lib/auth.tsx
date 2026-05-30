@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Jenjang = "eselon_ii" | "eselon_iii" | "eselon_iv" | "pokja" | "staf" | "jafung";
-export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member" | "staf_pelaksana" | "jafung_member" | "ketua_pokja_riset" | "ketua_pokja_inovasi" | "anggota_pokja_riset" | "anggota_pokja_inovasi";
+export type AppRole = "admin" | "kepala" | "sekretaris" | "kasubbag" | "pokja_member" | "staf_pelaksana" | "jafung_member" | "ketua_pokja_riset" | "ketua_pokja_inovasi";
 
 export interface Profile {
   id: string;
@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
     setProfile((prof as Profile) ?? null);
-    setRoles((r ?? []).map((x: { role: AppRole }) => x.role));
+    setRoles((r ?? []).map((x: { role: string }) => x.role as AppRole));
   };
 
   useEffect(() => {
@@ -109,8 +109,6 @@ export const ROLE_LABEL: Record<AppRole, string> = {
   jafung_member: "Anggota Jabatan Fungsional (lapor ke Sekretaris & Kepala)",
   ketua_pokja_riset: "Ketua Pokja Riset",
   ketua_pokja_inovasi: "Ketua Pokja Inovasi",
-  anggota_pokja_riset: "Anggota Pokja Riset",
-  anggota_pokja_inovasi: "Anggota Pokja Inovasi",
 };
 
 export const JAFUNG_POSITIONS = [
