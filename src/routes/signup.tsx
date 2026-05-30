@@ -147,13 +147,16 @@ function SignupPage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="pangkat_golongan">Pangkat / Golongan</Label>
-                <Input
-                  id="pangkat_golongan"
-                  placeholder="contoh: Penata Tk. I / III-d"
-                  value={form.pangkat_golongan}
-                  onChange={(e) => update("pangkat_golongan", e.target.value)}
-                  maxLength={80}
-                />
+                <Select value={form.pangkat_golongan} onValueChange={(v) => update("pangkat_golongan", v)}>
+                  <SelectTrigger id="pangkat_golongan">
+                    <SelectValue placeholder="Pilih pangkat / golongan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PANGKAT_PRESETS.map((p) => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="rounded-md border border-border bg-muted/40 p-3 text-[12px] text-muted-foreground">
