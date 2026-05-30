@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { JABATAN_PRESETS } from "@/lib/jabatan-presets";
+import { PANGKAT_PRESETS } from "@/lib/pangkat-presets";
 import delapanLogo from "@/assets/delapan-logo.webp";
 
 export const Route = createFileRoute("/signup")({
