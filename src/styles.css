@@ -141,31 +141,69 @@
    pick up the navy/violet aesthetic without per-page rewrites. */
 .theme-cosmos {
   --background: oklch(0.16 0.07 265);
-  --foreground: oklch(0.96 0.02 280);
-  --card: oklch(0.24 0.06 265 / 0.55);
-  --card-foreground: oklch(0.96 0.02 280);
+  --foreground: oklch(0.985 0.012 280);
+  --card: oklch(0.26 0.06 265 / 0.6);
+  --card-foreground: oklch(0.985 0.012 280);
   --popover: oklch(0.22 0.07 265);
-  --popover-foreground: oklch(0.96 0.02 280);
-  --primary: oklch(0.96 0.02 280);
+  --popover-foreground: oklch(0.985 0.012 280);
+  --primary: oklch(0.985 0.012 280);
   --primary-foreground: oklch(0.16 0.07 265);
-  --primary-soft: oklch(0.30 0.08 270);
-  --secondary: oklch(0.26 0.07 265);
-  --secondary-foreground: oklch(0.96 0.02 280);
-  --muted: oklch(0.24 0.06 265 / 0.5);
-  --muted-foreground: oklch(0.78 0.04 280);
-  --accent: oklch(0.30 0.10 290);
-  --accent-foreground: oklch(0.96 0.02 280);
-  --destructive: oklch(0.68 0.22 25);
+  --primary-soft: oklch(0.32 0.10 285);
+  --secondary: oklch(0.28 0.07 265);
+  --secondary-foreground: oklch(0.985 0.012 280);
+  --muted: oklch(0.26 0.06 265 / 0.55);
+  --muted-foreground: oklch(0.86 0.03 280);
+  --accent: oklch(0.78 0.18 35);
+  --accent-foreground: oklch(0.18 0.07 30);
+  --destructive: oklch(0.72 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --success: oklch(0.72 0.16 160);
+  --success: oklch(0.78 0.16 160);
   --success-foreground: oklch(0.15 0 0);
-  --warning: oklch(0.80 0.17 70);
+  --warning: oklch(0.84 0.17 70);
   --warning-foreground: oklch(0.18 0.04 75);
-  --border: oklch(1 0 0 / 0.10);
+  --border: oklch(1 0 0 / 0.12);
   --input: oklch(1 0 0 / 0.10);
   --ring: oklch(0.65 0.25 290);
   color: var(--foreground);
 }
+.theme-cosmos h1,
+.theme-cosmos h2,
+.theme-cosmos h3,
+.theme-cosmos h4,
+.theme-cosmos h5,
+.theme-cosmos h6 {
+  color: oklch(0.985 0.012 280);
+}
+/* shadcn 'text-foreground/80', '/90' etc. need solid base too */
+.theme-cosmos a { color: inherit; }
+.theme-cosmos a:hover { color: oklch(0.82 0.18 35); }
+/* Inputs/selects/textareas — readable text + soft placeholder */
+.theme-cosmos input,
+.theme-cosmos textarea,
+.theme-cosmos select,
+.theme-cosmos [data-slot="select-trigger"],
+.theme-cosmos [role="combobox"] {
+  color: oklch(0.985 0.012 280);
+  background-color: oklch(1 0 0 / 0.05);
+  border-color: oklch(1 0 0 / 0.14);
+}
+.theme-cosmos input::placeholder,
+.theme-cosmos textarea::placeholder { color: oklch(0.85 0.03 280 / 0.45); }
+/* Cards & dashed empty-states get a subtle frosted look */
+.theme-cosmos .bg-card,
+.theme-cosmos [data-slot="card"] {
+  background-color: oklch(0.26 0.06 265 / 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+/* Muted backgrounds (bg-muted, bg-muted/40) blend into dark */
+.theme-cosmos .bg-muted\/40,
+.theme-cosmos .bg-muted\/50,
+.theme-cosmos .bg-muted { background-color: oklch(1 0 0 / 0.05); }
+/* Subtle primary tints used for chips / soft surfaces */
+.theme-cosmos .bg-primary\/5  { background-color: oklch(1 0 0 / 0.04); }
+.theme-cosmos .bg-primary\/10 { background-color: oklch(1 0 0 / 0.08); }
+.theme-cosmos .bg-primary\/20 { background-color: oklch(1 0 0 / 0.12); }
 
 @layer base {
   * {
