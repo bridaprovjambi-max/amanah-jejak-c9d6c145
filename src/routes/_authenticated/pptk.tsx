@@ -101,9 +101,12 @@ function PptkPage() {
   const [periodMonth, setPeriodMonth] = useState(now.getMonth() + 1);
   const [kegiatan, setKegiatan] = useState("");
   const [uraian, setUraian] = useState("");
+  const [targetFisik, setTargetFisik] = useState("");
+  const [targetKeu, setTargetKeu] = useState("");
   const [realFisik, setRealFisik] = useState("");
   const [realKeu, setRealKeu] = useState("");
   const [kendala, setKendala] = useState("");
+  const [faktorPendukung, setFaktorPendukung] = useState("");
   const [tindak, setTindak] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
