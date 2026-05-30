@@ -42,8 +42,8 @@ function UsersPage() {
     ]);
     setRows((p as Row[]) ?? []);
     const m: Record<string, AppRole[]> = {};
-    (r ?? []).forEach((x: { user_id: string; role: AppRole }) => {
-      m[x.user_id] = [...(m[x.user_id] ?? []), x.role];
+    (r ?? []).forEach((x: { user_id: string; role: string }) => {
+      m[x.user_id] = [...(m[x.user_id] ?? []), x.role as AppRole];
     });
     setRoles(m);
     setPokja(pk ?? []);
