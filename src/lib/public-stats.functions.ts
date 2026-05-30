@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { createClient } from "@supabase/supabase-js";
 
 export interface PublicStats {
   total: number;
@@ -16,19 +16,42 @@ export interface PublicStats {
   pokjaLoad: { name: string; Aktif: number; Selesai: number }[];
 }
 
+interface RawTask {
+  status: string;
+  deadline: string | null;
+  created_at: string;
+  updated_at: string;
+  assigned_to_pokja: string | null;
+}
+interface RawPokja {
+  id: string;
+  name: string;
+}
+interface RawAggregate {
+  tasks: RawTask[];
+  pokja: RawPokja[];
+  documentsCount: number;
+  usersCount: number;
+}
+
 export const getPublicStats = createServerFn({ method: "GET" }).handler(
   async (): Promise<PublicStats> => {
-    const [tasksRes, pokjaRes, docsRes, profilesRes] = await Promise.all([
-      supabaseAdmin
-        .from("tasks")
-        .select("status, deadline, created_at, updated_at, assigned_to_pokja"),
-      supabaseAdmin.from("pokja").select("id, name"),
-      supabaseAdmin.from("documents").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }),
-    ]);
+    // Anon client (no service-role key). The underlying RPC is SECURITY DEFINER
+    // and returns ONLY aggregate-safe columns explicitly.
+    const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL!;
+    const anonKey =
+      process.env.SUPABASE_PUBLISHABLE_KEY ??
+      process.env.VITE_SUPABASE_PUBLISHABLE_KEY!;
+    const sb = createClient(url, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
 
-    const tasks = tasksRes.data ?? [];
-    const pokja = pokjaRes.data ?? [];
+    const { data, error } = await sb.rpc("get_public_stats_aggregate");
+    if (error) throw new Error(error.message);
+    const agg = data as unknown as RawAggregate;
+
+    const tasks = agg.tasks ?? [];
+    const pokja = agg.pokja ?? [];
     const now = new Date();
 
     const pending = tasks.filter((t) => t.status === "pending").length;
@@ -39,7 +62,6 @@ export const getPublicStats = createServerFn({ method: "GET" }).handler(
     ).length;
     const total = tasks.length;
 
-    // 14-day trend
     const days: Date[] = [];
     for (let i = 13; i >= 0; i--) {
       const d = new Date();
@@ -91,8 +113,8 @@ export const getPublicStats = createServerFn({ method: "GET" }).handler(
       overdue,
       completionRate: total ? Math.round((completed / total) * 100) : 0,
       pokjaCount: pokja.length,
-      documentsCount: docsRes.count ?? 0,
-      usersCount: profilesRes.count ?? 0,
+      documentsCount: agg.documentsCount ?? 0,
+      usersCount: agg.usersCount ?? 0,
       trend,
       statusBreakdown,
       pokjaLoad,
