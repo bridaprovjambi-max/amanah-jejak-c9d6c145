@@ -83,7 +83,7 @@ function fmtBytes(n: number) {
 }
 
 function PptkPage() {
-  const { user, hasRole } = useAuth();
+  const { user, profile, hasRole } = useAuth();
   const now = new Date();
 
   const [reports, setReports] = useState<PptkReport[]>([]);
