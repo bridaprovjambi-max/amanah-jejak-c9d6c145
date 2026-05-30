@@ -315,6 +315,11 @@ function PptkPage() {
           <CardHeader><CardTitle>Formulir Laporan PPTK</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={submit} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Nama PPTK</Label>
+                <Input value={profile?.full_name ?? user?.email ?? ""} disabled readOnly className="bg-muted/50" />
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Bulan</Label>
