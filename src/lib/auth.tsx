@@ -107,6 +107,8 @@ export const ROLE_LABEL: Record<AppRole, string> = {
   pokja_member: "Anggota Pokja",
   staf_pelaksana: "Staf / Pelaksana (lapor ke Kasubbag & Sekretaris)",
   jafung_member: "Anggota Jabatan Fungsional (lapor ke Sekretaris & Kepala)",
+  ketua_pokja_riset: "Ketua Pokja Riset",
+  ketua_pokja_inovasi: "Ketua Pokja Inovasi",
 };
 
 export const JAFUNG_POSITIONS = [
