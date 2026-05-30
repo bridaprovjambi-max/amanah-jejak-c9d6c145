@@ -159,7 +159,7 @@ function TasksList() {
           <p className="mt-1 text-sm text-muted-foreground">Coba ubah filter atau buat penugasan baru.</p>
         </div>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-3 stagger">
           {filtered.map((t) => {
             const overdue =
               t.status !== "completed" && t.deadline && new Date(t.deadline) < new Date();
