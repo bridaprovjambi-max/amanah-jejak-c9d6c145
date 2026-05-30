@@ -30,9 +30,12 @@ interface PptkReport {
   period_month: number;
   kegiatan: string;
   uraian_pelaksanaan: string;
+  target_fisik_bulan: string | null;
+  target_realisasi_keuangan: string | null;
   realisasi_fisik: string | null;
   realisasi_keuangan: string | null;
   kendala: string | null;
+  faktor_pendukung: string | null;
   tindak_lanjut: string | null;
   status: PptkStatus;
   sekretaris_id: string | null;
