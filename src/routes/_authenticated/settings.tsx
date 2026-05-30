@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { JABATAN_PRESETS } from "@/lib/jabatan-presets";
 import { useServerFn } from "@tanstack/react-start";
 import { sendTelegramNotification } from "@/lib/telegram.functions";
 
@@ -160,13 +162,16 @@ function SettingsPage() {
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="jabatan">Jabatan</Label>
-            <Input
-              id="jabatan"
-              placeholder="contoh: Kasubbag Umum & Kepegawaian"
-              value={jabatan}
-              onChange={(e) => setJabatan(e.target.value)}
-              maxLength={160}
-            />
+            <Select value={jabatan} onValueChange={setJabatan}>
+              <SelectTrigger id="jabatan">
+                <SelectValue placeholder="Pilih jabatan" />
+              </SelectTrigger>
+              <SelectContent>
+                {JABATAN_PRESETS.map((j) => (
+                  <SelectItem key={j} value={j}>{j}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
