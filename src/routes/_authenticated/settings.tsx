@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { JABATAN_PRESETS } from "@/lib/jabatan-presets";
 import { PANGKAT_PRESETS } from "@/lib/pangkat-presets";
@@ -22,6 +23,7 @@ type ProfileExtra = {
   nip?: string | null;
   pangkat_golongan?: string | null;
   jabatan?: string | null;
+  is_pptk?: boolean | null;
 };
 
 function SettingsPage() {
@@ -36,6 +38,7 @@ function SettingsPage() {
   const [jabatan, setJabatan] = useState("");
   const [nip, setNip] = useState("");
   const [pangkat, setPangkat] = useState("");
+  const [isPptk, setIsPptk] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ function SettingsPage() {
     setJabatan(p?.jabatan ?? "");
     setNip(p?.nip ?? "");
     setPangkat(p?.pangkat_golongan ?? "");
+    setIsPptk(!!p?.is_pptk);
   }, [profile]);
 
   const saveProfile = async () => {
@@ -62,6 +66,7 @@ function SettingsPage() {
         jabatan: jabatan.trim() || null,
         nip: nip.trim() || null,
         pangkat_golongan: pangkat.trim() || null,
+        is_pptk: isPptk,
       })
       .eq("id", user!.id);
     setSavingProfile(false);
@@ -178,6 +183,17 @@ function SettingsPage() {
             </Select>
           </div>
         </div>
+
+        <label className="flex items-start gap-2 rounded-md border border-border bg-muted/40 p-3 cursor-pointer">
+          <Checkbox
+            checked={isPptk}
+            onCheckedChange={(v) => setIsPptk(v === true)}
+            className="mt-0.5"
+          />
+          <span className="text-sm leading-snug">
+            Saya juga menjabat sebagai <b>Pejabat Pelaksana Teknis Kegiatan (PPTK)</b>.
+          </span>
+        </label>
 
         <div className="flex justify-end pt-1">
           <Button onClick={saveProfile} disabled={savingProfile}>

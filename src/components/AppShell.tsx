@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
-
   LayoutDashboard,
   ListChecks,
   Users,
@@ -20,7 +19,7 @@ import {
   CalendarDays,
   KeyRound,
   ShieldCheck,
-
+  ClipboardList,
 } from "lucide-react";
 import { useAuth, JENJANG_LABEL } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -38,6 +37,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tasks", label: "Penugasan", icon: ListChecks },
   { to: "/wewenang", label: "Laporan Wewenang", icon: ShieldCheck },
+  { to: "/pptk", label: "Laporan PPTK", icon: ClipboardList },
   { to: "/telaah-staf", label: "Telaah Staf", icon: FileText },
 
 
