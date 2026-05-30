@@ -17,6 +17,7 @@ import { Route as AuthenticatedWewenangRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedTelaahStafRouteImport } from './routes/_authenticated/telaah-staf'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedPptkRouteImport } from './routes/_authenticated/pptk'
 import { Route as AuthenticatedPokjaRouteImport } from './routes/_authenticated/pokja'
 import { Route as AuthenticatedKinerjaRouteImport } from './routes/_authenticated/kinerja'
 import { Route as AuthenticatedKalenderRouteImport } from './routes/_authenticated/kalender'
@@ -70,6 +71,11 @@ const AuthenticatedTelaahStafRoute = AuthenticatedTelaahStafRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPptkRoute = AuthenticatedPptkRouteImport.update({
+  id: '/pptk',
+  path: '/pptk',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPokjaRoute = AuthenticatedPokjaRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
+  '/pptk': typeof AuthenticatedPptkRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
+  '/pptk': typeof AuthenticatedPptkRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/_authenticated/kalender': typeof AuthenticatedKalenderRoute
   '/_authenticated/kinerja': typeof AuthenticatedKinerjaRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
+  '/_authenticated/pptk': typeof AuthenticatedPptkRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/telaah-staf': typeof AuthenticatedTelaahStafRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/kalender'
     | '/kinerja'
     | '/pokja'
+    | '/pptk'
     | '/settings'
     | '/telaah-staf'
     | '/users'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/kalender'
     | '/kinerja'
     | '/pokja'
+    | '/pptk'
     | '/settings'
     | '/telaah-staf'
     | '/users'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/_authenticated/kalender'
     | '/_authenticated/kinerja'
     | '/_authenticated/pokja'
+    | '/_authenticated/pptk'
     | '/_authenticated/settings'
     | '/_authenticated/telaah-staf'
     | '/_authenticated/users'
@@ -366,6 +378,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pptk': {
+      id: '/_authenticated/pptk'
+      path: '/pptk'
+      fullPath: '/pptk'
+      preLoaderRoute: typeof AuthenticatedPptkRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pokja': {
@@ -486,6 +505,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedKalenderRoute: typeof AuthenticatedKalenderRoute
   AuthenticatedKinerjaRoute: typeof AuthenticatedKinerjaRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
+  AuthenticatedPptkRoute: typeof AuthenticatedPptkRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTelaahStafRoute: typeof AuthenticatedTelaahStafRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -506,6 +526,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKalenderRoute: AuthenticatedKalenderRoute,
   AuthenticatedKinerjaRoute: AuthenticatedKinerjaRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
+  AuthenticatedPptkRoute: AuthenticatedPptkRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTelaahStafRoute: AuthenticatedTelaahStafRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
@@ -531,13 +552,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

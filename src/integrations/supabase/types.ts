@@ -280,11 +280,119 @@ export type Database = {
         }
         Relationships: []
       }
+      pptk_report_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string | null
+          report_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type?: string | null
+          report_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string | null
+          report_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pptk_report_attachments_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "pptk_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pptk_reports: {
+        Row: {
+          created_at: string
+          id: string
+          kegiatan: string
+          kendala: string | null
+          kepala_at: string | null
+          kepala_id: string | null
+          kepala_notes: string | null
+          period_month: number
+          period_year: number
+          realisasi_fisik: string | null
+          realisasi_keuangan: string | null
+          reporter_id: string
+          sekretaris_at: string | null
+          sekretaris_id: string | null
+          sekretaris_notes: string | null
+          status: string
+          tindak_lanjut: string | null
+          updated_at: string
+          uraian_pelaksanaan: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kegiatan: string
+          kendala?: string | null
+          kepala_at?: string | null
+          kepala_id?: string | null
+          kepala_notes?: string | null
+          period_month: number
+          period_year: number
+          realisasi_fisik?: string | null
+          realisasi_keuangan?: string | null
+          reporter_id: string
+          sekretaris_at?: string | null
+          sekretaris_id?: string | null
+          sekretaris_notes?: string | null
+          status?: string
+          tindak_lanjut?: string | null
+          updated_at?: string
+          uraian_pelaksanaan: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kegiatan?: string
+          kendala?: string | null
+          kepala_at?: string | null
+          kepala_id?: string | null
+          kepala_notes?: string | null
+          period_month?: number
+          period_year?: number
+          realisasi_fisik?: string | null
+          realisasi_keuangan?: string | null
+          reporter_id?: string
+          sekretaris_at?: string | null
+          sekretaris_id?: string | null
+          sekretaris_notes?: string | null
+          status?: string
+          tindak_lanjut?: string | null
+          updated_at?: string
+          uraian_pelaksanaan?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           full_name: string
           id: string
+          is_pptk: boolean
           jabatan: string | null
           jenjang: Database["public"]["Enums"]["jenjang"]
           nip: string | null
@@ -297,6 +405,7 @@ export type Database = {
           created_at?: string
           full_name: string
           id: string
+          is_pptk?: boolean
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
           nip?: string | null
@@ -309,6 +418,7 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          is_pptk?: boolean
           jabatan?: string | null
           jenjang?: Database["public"]["Enums"]["jenjang"]
           nip?: string | null

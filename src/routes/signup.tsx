@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { JABATAN_PRESETS } from "@/lib/jabatan-presets";
 import { PANGKAT_PRESETS } from "@/lib/pangkat-presets";
@@ -31,6 +32,7 @@ const schema = z.object({
   jabatan: z.string().trim().max(160).optional(),
   nip: z.string().trim().max(30).regex(/^[0-9]*$/, "NIP hanya boleh berisi angka").optional(),
   pangkat_golongan: z.string().trim().max(80).optional(),
+  is_pptk: z.boolean().optional(),
   email: z.string().trim().email().max(255),
   password: z.string().min(8, "Minimal 8 karakter").max(72),
 });
@@ -42,6 +44,7 @@ function SignupPage() {
     jabatan: "",
     nip: "",
     pangkat_golongan: "",
+    is_pptk: false,
     email: "",
     password: "",
   });
@@ -68,6 +71,7 @@ function SignupPage() {
           jabatan: parsed.data.jabatan ?? "",
           nip: parsed.data.nip ?? "",
           pangkat_golongan: parsed.data.pangkat_golongan ?? "",
+          is_pptk: parsed.data.is_pptk ?? false,
         },
       },
     });
@@ -159,6 +163,16 @@ function SignupPage() {
                 </Select>
               </div>
             </div>
+            <label className="flex items-start gap-2 rounded-md border border-border bg-muted/40 p-3 cursor-pointer">
+              <Checkbox
+                checked={form.is_pptk}
+                onCheckedChange={(v) => update("is_pptk", v === true)}
+                className="mt-0.5"
+              />
+              <span className="text-[12px] leading-snug">
+                Saya juga menjabat sebagai <b>Pejabat Pelaksana Teknis Kegiatan (PPTK)</b>.
+              </span>
+            </label>
             <div className="rounded-md border border-border bg-muted/40 p-3 text-[12px] text-muted-foreground">
               Jenjang & peran Anda akan ditetapkan oleh administrator setelah akun dibuat.
             </div>
