@@ -686,8 +686,8 @@ function TelaahStafPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const reporter = profMap[r.reporter_id];
             const recipient = profMap[r.recipient_id];
@@ -696,7 +696,7 @@ function TelaahStafPage() {
             const canDelete = r.reporter_id === user?.id || hasRole("admin");
             const canDisposisi = r.recipient_id === user?.id;
             return (
-              <Card key={r.id}>
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
                 <CardHeader className="pb-3 px-4 sm:px-6">
                   <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
                     <div className="min-w-0 flex-1">
