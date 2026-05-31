@@ -159,8 +159,8 @@ function TasksList() {
           <p className="mt-1 text-sm text-muted-foreground">Coba ubah filter atau buat penugasan baru.</p>
         </div>
       ) : (
-        <div className="grid gap-3 stagger">
-          {filtered.map((t) => {
+        <div className="grid gap-2 stagger">
+          {filtered.map((t, idx) => {
             const overdue =
               t.status !== "completed" && t.deadline && new Date(t.deadline) < new Date();
             const giverName = users[t.assigned_by] ?? "—";
@@ -174,7 +174,7 @@ function TasksList() {
                 key={t.id}
                 to="/tasks/$taskId"
                 params={{ taskId: t.id }}
-                className="group relative block overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-elegant hover:-translate-y-0.5"
+                className={`group relative block overflow-hidden rounded-xl border border-border ${idx % 2 === 1 ? "bg-muted/30" : "bg-card"} px-4 py-4 sm:px-5 transition-all hover:border-primary/30 hover:shadow-elegant hover:-translate-y-0.5`}
               >
                 {/* gold accent stripe on hover */}
                 <span className="absolute inset-y-0 left-0 w-0.5 bg-accent opacity-0 group-hover:opacity-100 transition-opacity" />
