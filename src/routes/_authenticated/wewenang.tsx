@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   ShieldCheck,
+  Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, JENJANG_LABEL, type Jenjang } from "@/lib/auth";
@@ -492,6 +493,11 @@ function WewenangPage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
+                      <Link to="/wewenang/$reportId" params={{ reportId: r.id }}>
+                        <Button size="sm" variant="ghost" title="Lihat detail">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button size="sm" variant="ghost" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>

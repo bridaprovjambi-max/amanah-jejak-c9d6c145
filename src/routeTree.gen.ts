@@ -28,9 +28,12 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks.index'
+import { Route as AuthenticatedWewenangReportIdRouteImport } from './routes/_authenticated/wewenang.$reportId'
+import { Route as AuthenticatedTelaahStafReviewIdRouteImport } from './routes/_authenticated/telaah-staf.$reviewId'
 import { Route as AuthenticatedTasksNewRouteImport } from './routes/_authenticated/tasks.new'
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks.$taskId'
 import { Route as AuthenticatedReportsRekapRouteImport } from './routes/_authenticated/reports.rekap'
+import { Route as AuthenticatedPptkReportIdRouteImport } from './routes/_authenticated/pptk.$reportId'
 import { Route as ApiPublicHooksTaskRemindersRouteImport } from './routes/api/public/hooks/task-reminders'
 import { Route as ApiPublicExternalTasksRouteImport } from './routes/api/public/external/tasks'
 
@@ -128,6 +131,18 @@ const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexRouteImport.update({
   path: '/tasks/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedWewenangReportIdRoute =
+  AuthenticatedWewenangReportIdRouteImport.update({
+    id: '/$reportId',
+    path: '/$reportId',
+    getParentRoute: () => AuthenticatedWewenangRoute,
+  } as any)
+const AuthenticatedTelaahStafReviewIdRoute =
+  AuthenticatedTelaahStafReviewIdRouteImport.update({
+    id: '/$reviewId',
+    path: '/$reviewId',
+    getParentRoute: () => AuthenticatedTelaahStafRoute,
+  } as any)
 const AuthenticatedTasksNewRoute = AuthenticatedTasksNewRouteImport.update({
   id: '/tasks/new',
   path: '/tasks/new',
@@ -144,6 +159,12 @@ const AuthenticatedReportsRekapRoute =
     id: '/reports/rekap',
     path: '/reports/rekap',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPptkReportIdRoute =
+  AuthenticatedPptkReportIdRouteImport.update({
+    id: '/$reportId',
+    path: '/$reportId',
+    getParentRoute: () => AuthenticatedPptkRoute,
   } as any)
 const ApiPublicHooksTaskRemindersRoute =
   ApiPublicHooksTaskRemindersRouteImport.update({
@@ -170,14 +191,17 @@ export interface FileRoutesByFullPath {
   '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
-  '/pptk': typeof AuthenticatedPptkRoute
+  '/pptk': typeof AuthenticatedPptkRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
-  '/telaah-staf': typeof AuthenticatedTelaahStafRoute
+  '/telaah-staf': typeof AuthenticatedTelaahStafRouteWithChildren
   '/users': typeof AuthenticatedUsersRoute
-  '/wewenang': typeof AuthenticatedWewenangRoute
+  '/wewenang': typeof AuthenticatedWewenangRouteWithChildren
+  '/pptk/$reportId': typeof AuthenticatedPptkReportIdRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
+  '/telaah-staf/$reviewId': typeof AuthenticatedTelaahStafReviewIdRoute
+  '/wewenang/$reportId': typeof AuthenticatedWewenangReportIdRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
@@ -195,14 +219,17 @@ export interface FileRoutesByTo {
   '/kalender': typeof AuthenticatedKalenderRoute
   '/kinerja': typeof AuthenticatedKinerjaRoute
   '/pokja': typeof AuthenticatedPokjaRoute
-  '/pptk': typeof AuthenticatedPptkRoute
+  '/pptk': typeof AuthenticatedPptkRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
-  '/telaah-staf': typeof AuthenticatedTelaahStafRoute
+  '/telaah-staf': typeof AuthenticatedTelaahStafRouteWithChildren
   '/users': typeof AuthenticatedUsersRoute
-  '/wewenang': typeof AuthenticatedWewenangRoute
+  '/wewenang': typeof AuthenticatedWewenangRouteWithChildren
+  '/pptk/$reportId': typeof AuthenticatedPptkReportIdRoute
   '/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/tasks/new': typeof AuthenticatedTasksNewRoute
+  '/telaah-staf/$reviewId': typeof AuthenticatedTelaahStafReviewIdRoute
+  '/wewenang/$reportId': typeof AuthenticatedWewenangReportIdRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
@@ -222,14 +249,17 @@ export interface FileRoutesById {
   '/_authenticated/kalender': typeof AuthenticatedKalenderRoute
   '/_authenticated/kinerja': typeof AuthenticatedKinerjaRoute
   '/_authenticated/pokja': typeof AuthenticatedPokjaRoute
-  '/_authenticated/pptk': typeof AuthenticatedPptkRoute
+  '/_authenticated/pptk': typeof AuthenticatedPptkRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/telaah-staf': typeof AuthenticatedTelaahStafRoute
+  '/_authenticated/telaah-staf': typeof AuthenticatedTelaahStafRouteWithChildren
   '/_authenticated/users': typeof AuthenticatedUsersRoute
-  '/_authenticated/wewenang': typeof AuthenticatedWewenangRoute
+  '/_authenticated/wewenang': typeof AuthenticatedWewenangRouteWithChildren
+  '/_authenticated/pptk/$reportId': typeof AuthenticatedPptkReportIdRoute
   '/_authenticated/reports/rekap': typeof AuthenticatedReportsRekapRoute
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/tasks/new': typeof AuthenticatedTasksNewRoute
+  '/_authenticated/telaah-staf/$reviewId': typeof AuthenticatedTelaahStafReviewIdRoute
+  '/_authenticated/wewenang/$reportId': typeof AuthenticatedWewenangReportIdRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/api/public/external/tasks': typeof ApiPublicExternalTasksRoute
   '/api/public/hooks/task-reminders': typeof ApiPublicHooksTaskRemindersRoute
@@ -254,9 +284,12 @@ export interface FileRouteTypes {
     | '/telaah-staf'
     | '/users'
     | '/wewenang'
+    | '/pptk/$reportId'
     | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
+    | '/telaah-staf/$reviewId'
+    | '/wewenang/$reportId'
     | '/tasks/'
     | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
@@ -279,9 +312,12 @@ export interface FileRouteTypes {
     | '/telaah-staf'
     | '/users'
     | '/wewenang'
+    | '/pptk/$reportId'
     | '/reports/rekap'
     | '/tasks/$taskId'
     | '/tasks/new'
+    | '/telaah-staf/$reviewId'
+    | '/wewenang/$reportId'
     | '/tasks'
     | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
@@ -305,9 +341,12 @@ export interface FileRouteTypes {
     | '/_authenticated/telaah-staf'
     | '/_authenticated/users'
     | '/_authenticated/wewenang'
+    | '/_authenticated/pptk/$reportId'
     | '/_authenticated/reports/rekap'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/tasks/new'
+    | '/_authenticated/telaah-staf/$reviewId'
+    | '/_authenticated/wewenang/$reportId'
     | '/_authenticated/tasks/'
     | '/api/public/external/tasks'
     | '/api/public/hooks/task-reminders'
@@ -457,6 +496,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/wewenang/$reportId': {
+      id: '/_authenticated/wewenang/$reportId'
+      path: '/$reportId'
+      fullPath: '/wewenang/$reportId'
+      preLoaderRoute: typeof AuthenticatedWewenangReportIdRouteImport
+      parentRoute: typeof AuthenticatedWewenangRoute
+    }
+    '/_authenticated/telaah-staf/$reviewId': {
+      id: '/_authenticated/telaah-staf/$reviewId'
+      path: '/$reviewId'
+      fullPath: '/telaah-staf/$reviewId'
+      preLoaderRoute: typeof AuthenticatedTelaahStafReviewIdRouteImport
+      parentRoute: typeof AuthenticatedTelaahStafRoute
+    }
     '/_authenticated/tasks/new': {
       id: '/_authenticated/tasks/new'
       path: '/tasks/new'
@@ -478,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRekapRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/pptk/$reportId': {
+      id: '/_authenticated/pptk/$reportId'
+      path: '/$reportId'
+      fullPath: '/pptk/$reportId'
+      preLoaderRoute: typeof AuthenticatedPptkReportIdRouteImport
+      parentRoute: typeof AuthenticatedPptkRoute
+    }
     '/api/public/hooks/task-reminders': {
       id: '/api/public/hooks/task-reminders'
       path: '/api/public/hooks/task-reminders'
@@ -495,6 +555,44 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedPptkRouteChildren {
+  AuthenticatedPptkReportIdRoute: typeof AuthenticatedPptkReportIdRoute
+}
+
+const AuthenticatedPptkRouteChildren: AuthenticatedPptkRouteChildren = {
+  AuthenticatedPptkReportIdRoute: AuthenticatedPptkReportIdRoute,
+}
+
+const AuthenticatedPptkRouteWithChildren =
+  AuthenticatedPptkRoute._addFileChildren(AuthenticatedPptkRouteChildren)
+
+interface AuthenticatedTelaahStafRouteChildren {
+  AuthenticatedTelaahStafReviewIdRoute: typeof AuthenticatedTelaahStafReviewIdRoute
+}
+
+const AuthenticatedTelaahStafRouteChildren: AuthenticatedTelaahStafRouteChildren =
+  {
+    AuthenticatedTelaahStafReviewIdRoute: AuthenticatedTelaahStafReviewIdRoute,
+  }
+
+const AuthenticatedTelaahStafRouteWithChildren =
+  AuthenticatedTelaahStafRoute._addFileChildren(
+    AuthenticatedTelaahStafRouteChildren,
+  )
+
+interface AuthenticatedWewenangRouteChildren {
+  AuthenticatedWewenangReportIdRoute: typeof AuthenticatedWewenangReportIdRoute
+}
+
+const AuthenticatedWewenangRouteChildren: AuthenticatedWewenangRouteChildren = {
+  AuthenticatedWewenangReportIdRoute: AuthenticatedWewenangReportIdRoute,
+}
+
+const AuthenticatedWewenangRouteWithChildren =
+  AuthenticatedWewenangRoute._addFileChildren(
+    AuthenticatedWewenangRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
@@ -505,11 +603,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedKalenderRoute: typeof AuthenticatedKalenderRoute
   AuthenticatedKinerjaRoute: typeof AuthenticatedKinerjaRoute
   AuthenticatedPokjaRoute: typeof AuthenticatedPokjaRoute
-  AuthenticatedPptkRoute: typeof AuthenticatedPptkRoute
+  AuthenticatedPptkRoute: typeof AuthenticatedPptkRouteWithChildren
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedTelaahStafRoute: typeof AuthenticatedTelaahStafRoute
+  AuthenticatedTelaahStafRoute: typeof AuthenticatedTelaahStafRouteWithChildren
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
-  AuthenticatedWewenangRoute: typeof AuthenticatedWewenangRoute
+  AuthenticatedWewenangRoute: typeof AuthenticatedWewenangRouteWithChildren
   AuthenticatedReportsRekapRoute: typeof AuthenticatedReportsRekapRoute
   AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
   AuthenticatedTasksNewRoute: typeof AuthenticatedTasksNewRoute
@@ -526,11 +624,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKalenderRoute: AuthenticatedKalenderRoute,
   AuthenticatedKinerjaRoute: AuthenticatedKinerjaRoute,
   AuthenticatedPokjaRoute: AuthenticatedPokjaRoute,
-  AuthenticatedPptkRoute: AuthenticatedPptkRoute,
+  AuthenticatedPptkRoute: AuthenticatedPptkRouteWithChildren,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedTelaahStafRoute: AuthenticatedTelaahStafRoute,
+  AuthenticatedTelaahStafRoute: AuthenticatedTelaahStafRouteWithChildren,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
-  AuthenticatedWewenangRoute: AuthenticatedWewenangRoute,
+  AuthenticatedWewenangRoute: AuthenticatedWewenangRouteWithChildren,
   AuthenticatedReportsRekapRoute: AuthenticatedReportsRekapRoute,
   AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
   AuthenticatedTasksNewRoute: AuthenticatedTasksNewRoute,

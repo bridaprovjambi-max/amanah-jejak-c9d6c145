@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   Paperclip, X, Download, Trash2, FileIcon, Plus,
-  ChevronDown, ChevronUp, ClipboardList, Check, XCircle,
+  ChevronDown, ChevronUp, ClipboardList, Check, XCircle, Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -489,6 +489,11 @@ function PptkPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
+                      <Link to="/pptk/$reportId" params={{ reportId: r.id }}>
+                        <Button variant="ghost" size="sm" title="Lihat detail">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button variant="ghost" size="sm" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
