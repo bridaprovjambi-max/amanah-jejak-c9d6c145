@@ -509,7 +509,7 @@ function WewenangPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 border-t border-border pt-4">
+                  <CardContent className="space-y-4 border-t border-border pt-4 px-4 sm:px-6">
                     <Section title="Uraian wewenang" text={r.authority_description} />
                     <Section title="Ringkasan pelaksanaan" text={r.execution_summary} />
                     {r.obstacles && <Section title="Kendala" text={r.obstacles} />}
