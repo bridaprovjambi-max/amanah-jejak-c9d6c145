@@ -210,7 +210,7 @@ function SignupPage() {
             </div>
 
             <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 cursor-pointer transition-colors hover:bg-white/10">
-              <Checkbox checked={form.is_pptk} onCheckedChange={(v) => update("is_pptk", v === true)} className="mt-0.5 border-white/30 data-[state=checked]:bg-vivid-gradient data-[state=checked]:border-transparent" />
+              <Checkbox checked={form.is_pptk} onCheckedChange={(v) => update("is_pptk", v === true)} className="mt-0.5 border-white/30 data-[state=checked]:bg-gold-gradient data-[state=checked]:border-transparent" />
               <span className="text-xs leading-snug text-white/80">
                 Saya juga menjabat sebagai{" "}
                 <b className="text-white">Pejabat Pelaksana Teknis Kegiatan (PPTK)</b>.
