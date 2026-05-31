@@ -377,11 +377,22 @@
     0%, 100% { transform: translateY(0) scale(1); }
     50%      { transform: translateY(-10px) scale(1.04); }
   }
+  /* Route transitions — directional slide+fade keyed to navigation direction */
+  @keyframes route-forward {
+    from { opacity: 0; transform: translate3d(24px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes route-back {
+    from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
   .animate-fade-in-up    { animation: fade-in-up    var(--motion-base) var(--ease-out-soft) both; }
   .animate-slide-up      { animation: slide-up-soft var(--motion-slow) var(--ease-out-soft) both; }
   .animate-slide-in-side { animation: slide-in-side var(--motion-base) var(--ease-out-soft) both; }
   .animate-pulse-glow    { animation: pulse-glow    var(--motion-pulse) ease-in-out infinite; }
   .animate-float-orb     { animation: float-orb     var(--motion-float) ease-in-out infinite; }
+  .animate-route-forward { animation: route-forward var(--motion-base) var(--ease-out-soft) both; }
+  .animate-route-back    { animation: route-back    var(--motion-base) var(--ease-out-soft) both; }
 
   /* Stagger — each child enters one step after the previous, shared base duration */
   .stagger > * { opacity: 0; animation: fade-in-up var(--motion-base) var(--ease-out-soft) both; }
