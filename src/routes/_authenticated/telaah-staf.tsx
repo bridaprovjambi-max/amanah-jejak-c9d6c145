@@ -715,7 +715,7 @@ function TelaahStafPage() {
                         {" → "}
                         Kepada <b>{recipient?.full_name ?? "—"}</b>
                         {" · "}
-                        {new Date(r.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                        {formatDateID(r.created_at)}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
