@@ -14,6 +14,7 @@ import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PWAManager } from "@/components/PWAManager";
+import { RouteTransition } from "@/components/RouteTransition";
 
 function NotFoundComponent() {
   return (
@@ -135,7 +136,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthSync />
-        <Outlet />
+        <RouteTransition />
         <PWAManager />
         <Toaster richColors position="top-right" />
       </AuthProvider>
