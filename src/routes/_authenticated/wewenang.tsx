@@ -28,6 +28,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
+import { formatDateTimeID } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/wewenang")({
   component: WewenangPage,
