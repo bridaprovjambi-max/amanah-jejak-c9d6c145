@@ -293,20 +293,20 @@ function PptkPage() {
   const years = Array.from(new Set(reports.map((r) => r.period_year))).sort((a, b) => b - a);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6 min-w-0">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl lg:text-3xl font-bold flex items-center gap-2">
-            <ClipboardList className="h-7 w-7 text-primary" />
-            Laporan Pelaksanaan Kegiatan (PPTK)
+        <div className="min-w-0 flex-1">
+          <h1 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold flex items-start gap-2 break-words">
+            <ClipboardList className="h-6 w-6 sm:h-7 sm:w-7 text-primary flex-shrink-0 mt-0.5" />
+            <span className="min-w-0">Laporan Pelaksanaan Kegiatan (PPTK)</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Alur: <b>Pelapor (PPTK)</b> → <b>Sekretaris</b> → <b>Kepala BRIDA</b>.
           </p>
         </div>
-        <Button onClick={() => setShowForm((v) => !v)}>
+        <Button onClick={() => setShowForm((v) => !v)} size="sm" className="shrink-0">
           {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-          {showForm ? "Tutup formulir" : "Laporan baru"}
+          {showForm ? "Tutup" : "Laporan baru"}
         </Button>
       </div>
 
