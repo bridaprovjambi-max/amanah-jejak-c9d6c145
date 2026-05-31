@@ -212,11 +212,7 @@ function TasksList() {
                       {t.deadline && (
                         <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 font-medium ${overdue ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
                           {overdue ? <Clock className="h-3 w-3" /> : <Calendar className="h-3 w-3" />}
-                          {new Date(t.deadline).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {formatDateID(t.deadline)}
                         </span>
                       )}
                     </div>
