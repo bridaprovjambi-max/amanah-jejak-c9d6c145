@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, FileText, Send, History, Eye,
+  ChevronDown, ChevronUp, Send, History, Eye,
 } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
