@@ -468,26 +468,32 @@ function PptkPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const rep = reporters[r.reporter_id];
             const atts = attachments[r.id] ?? [];
             return (
-              <Card key={r.id}>
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
+                <CardHeader className="pb-3 px-4 sm:px-6">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={STATUS_VARIANT[r.status]}>{STATUS_LABEL[r.status]}</Badge>
                         <Badge variant="outline">{MONTHS[r.period_month - 1]} {r.period_year}</Badge>
+                        {atts.length > 0 && (
+                          <Badge variant="outline" className="gap-1">
+                            <Paperclip className="h-3 w-3" /> {atts.length}
+                          </Badge>
+                        )}
                       </div>
-                      <div className="font-display font-semibold mt-2">{r.kegiatan}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Pelapor: {rep?.full_name ?? "—"}{rep?.jabatan ? ` · ${rep.jabatan}` : ""}
+                      <h3 className="mt-2 font-display text-base sm:text-lg font-semibold break-words">{r.kegiatan}</h3>
+                      <div className="mt-1 text-[10px] sm:text-xs text-muted-foreground">
+                        Pelapor: <b>{rep?.full_name ?? "—"}</b>{rep?.jabatan ? ` · ${rep.jabatan}` : ""}
+                        {" · "}{formatDateID(r.created_at)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                       <Link to="/pptk/$reportId" params={{ reportId: r.id }}>
                         <Button variant="ghost" size="sm" title="Lihat detail">
                           <Eye className="h-4 w-4" />
@@ -497,12 +503,13 @@ function PptkPage() {
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                       {canDelete(r) && (
-                        <Button variant="ghost" size="sm" onClick={() => deleteReport(r)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                        <Button variant="ghost" size="sm" className="text-destructive" onClick={() => deleteReport(r)}>
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
                   </div>
+                </CardHeader>
 
                   {isOpen && (
                     <div className="space-y-3 pt-2 border-t border-border">
