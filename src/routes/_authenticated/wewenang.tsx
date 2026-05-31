@@ -10,7 +10,6 @@ import {
   Plus,
   ChevronDown,
   ChevronUp,
-  ShieldCheck,
   Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
