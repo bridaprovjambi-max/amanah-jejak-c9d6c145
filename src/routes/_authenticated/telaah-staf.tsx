@@ -415,21 +415,19 @@ function TelaahStafPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 px-4 sm:px-0">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h1 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold flex items-center gap-2">
-            <FileText className="h-6 w-6 sm:h-7 sm:w-7 text-primary flex-shrink-0" />
-            <span className="truncate">Telaah Staf</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Format baku: Pokok Persoalan · Pra Anggapan · Fakta & Data · Pembahasan · Kesimpulan · Saran.
-          </p>
-        </div>
-        <Button onClick={() => setShowForm((v) => !v)} size="sm" className="shrink-0">
-          {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-          {showForm ? "Tutup" : "Telaah baru"}
-        </Button>
+    <div className="space-y-7 min-w-0">
+      <div className="animate-fade-in-up">
+        <PageHeader
+          eyebrow="Analisis & Rekomendasi"
+          title="Telaah Staf"
+          description="Format baku: Pokok Persoalan · Pra Anggapan · Fakta & Data · Pembahasan · Kesimpulan · Saran."
+          actions={
+            <Button onClick={() => setShowForm((v) => !v)} size="sm" className="shrink-0">
+              {showForm ? <X className="mr-1 h-4 w-4" /> : <Plus className="mr-1 h-4 w-4" />}
+              {showForm ? "Tutup" : "Telaah baru"}
+            </Button>
+          }
+        />
       </div>
 
       {showForm && (
