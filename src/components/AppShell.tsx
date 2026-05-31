@@ -200,7 +200,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             size="icon"
             onClick={() => navigate({ to: "/tasks/new" })}
             aria-label="Buat penugasan baru"
-            className={cn("h-11 w-11", useCosmos && "bg-vivid-gradient text-white border-0 hover:opacity-95")}
+            className={cn("h-11 w-11", useCosmos && "bg-gold-gradient text-white border-0 hover:opacity-95")}
           >
             <Plus className="h-5 w-5" />
           </Button>

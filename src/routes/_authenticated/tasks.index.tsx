@@ -89,7 +89,7 @@ function TasksList() {
           description="Daftar wewenang & tanggung jawab yang didelegasikan secara berjenjang."
           actions={
             <Link to="/tasks/new">
-              <Button className="shadow-elegant font-semibold bg-vivid-gradient text-white border-0 hover:opacity-95 animate-pulse-glow">
+              <Button className="shadow-elegant font-semibold bg-gold-gradient text-white border-0 hover:opacity-95 animate-pulse-glow">
                 <Plus className="mr-1 h-4 w-4" /> Buat Penugasan
               </Button>
             </Link>
