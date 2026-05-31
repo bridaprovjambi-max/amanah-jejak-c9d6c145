@@ -463,14 +463,14 @@ function WewenangPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const rep = reporters[r.reporter_id];
             const atts = attachments[r.id] ?? [];
             return (
-              <Card key={r.id}>
-                <CardHeader className="pb-3">
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
+                <CardHeader className="pb-3 px-4 sm:px-6">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
