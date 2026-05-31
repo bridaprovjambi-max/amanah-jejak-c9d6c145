@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   ShieldCheck,
+  Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, JENJANG_LABEL, type Jenjang } from "@/lib/auth";
