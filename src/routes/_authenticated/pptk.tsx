@@ -511,8 +511,10 @@ function PptkPage() {
                   </div>
                 </CardHeader>
 
-                  {isOpen && (
-                    <div className="space-y-3 pt-2 border-t border-border">
+                {isOpen && (
+                  <CardContent className="space-y-3 border-t border-border pt-4 px-4 sm:px-6">
+                    <div className="space-y-3">
+                      <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <div className="grid sm:grid-cols-2 gap-3">
                         <Field label="Target Fisik Bulan" value={r.target_fisik_bulan} />
