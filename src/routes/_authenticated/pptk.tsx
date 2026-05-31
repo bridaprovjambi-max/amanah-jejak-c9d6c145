@@ -551,13 +551,13 @@ function PptkPage() {
                         <div className="rounded-md border border-border bg-muted/30 p-3 text-xs space-y-2">
                           {r.sekretaris_at && (
                             <div>
-                              <b>Sekretaris</b> · {new Date(r.sekretaris_at).toLocaleString("id-ID")}
+                              <b>Sekretaris</b> · {formatDateTimeID(r.sekretaris_at)}
                               {r.sekretaris_notes && <div className="text-muted-foreground mt-0.5">{r.sekretaris_notes}</div>}
                             </div>
                           )}
                           {r.kepala_at && (
                             <div>
-                              <b>Kepala BRIDA</b> · {new Date(r.kepala_at).toLocaleString("id-ID")}
+                              <b>Kepala BRIDA</b> · {formatDateTimeID(r.kepala_at)}
                               {r.kepala_notes && <div className="text-muted-foreground mt-0.5">{r.kepala_notes}</div>}
                             </div>
                           )}
