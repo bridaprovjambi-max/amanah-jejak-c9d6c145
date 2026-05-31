@@ -541,7 +541,7 @@ function WewenangPage() {
                       </div>
                     )}
                     <div className="text-xs text-muted-foreground">
-                      Dibuat: {new Date(r.created_at).toLocaleString("id-ID")}
+                      Dibuat: {formatDateTimeID(r.created_at)}
                     </div>
                   </CardContent>
                 )}
