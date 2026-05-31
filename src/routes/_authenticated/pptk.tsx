@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   Paperclip, X, Download, Trash2, FileIcon, Plus,
-  ChevronDown, ChevronUp, ClipboardList, Check, XCircle, Eye,
+  ChevronDown, ChevronUp, Check, XCircle, Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
