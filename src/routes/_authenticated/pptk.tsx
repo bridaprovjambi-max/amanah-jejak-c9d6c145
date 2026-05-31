@@ -595,8 +595,8 @@ function PptkPage() {
                         </div>
                       )}
                     </div>
-                  )}
-                </CardContent>
+                  </CardContent>
+                )}
               </Card>
             );
           })}
