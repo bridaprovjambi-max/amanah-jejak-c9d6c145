@@ -29,7 +29,7 @@ function AuthLayout() {
   }
   return (
     <AppShell>
-      <Outlet />
+      <RouteTransition />
     </AppShell>
   );
 }
