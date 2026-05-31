@@ -136,7 +136,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthSync />
-        <Outlet />
+        <RouteTransition>
+          <Outlet />
+        </RouteTransition>
         <PWAManager />
         <Toaster richColors position="top-right" />
       </AuthProvider>
