@@ -28,6 +28,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
+import { formatDateTimeID } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/wewenang")({
   component: WewenangPage,
@@ -463,14 +464,14 @@ function WewenangPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const rep = reporters[r.reporter_id];
             const atts = attachments[r.id] ?? [];
             return (
-              <Card key={r.id}>
-                <CardHeader className="pb-3">
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
+                <CardHeader className="pb-3 px-4 sm:px-6">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -508,7 +509,7 @@ function WewenangPage() {
                   </div>
                 </CardHeader>
                 {isOpen && (
-                  <CardContent className="space-y-4 border-t border-border pt-4">
+                  <CardContent className="space-y-4 border-t border-border pt-4 px-4 sm:px-6">
                     <Section title="Uraian wewenang" text={r.authority_description} />
                     <Section title="Ringkasan pelaksanaan" text={r.execution_summary} />
                     {r.obstacles && <Section title="Kendala" text={r.obstacles} />}
@@ -541,7 +542,7 @@ function WewenangPage() {
                       </div>
                     )}
                     <div className="text-xs text-muted-foreground">
-                      Dibuat: {new Date(r.created_at).toLocaleString("id-ID")}
+                      Dibuat: {formatDateTimeID(r.created_at)}
                     </div>
                   </CardContent>
                 )}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge, type TaskStatus, PriorityBadge } from "@/components/StatusBadge";
 import { PageHeader } from "@/components/PageHeader";
+import { formatDateID } from "@/lib/format";
 import {
   Select,
   SelectContent,
@@ -159,8 +160,8 @@ function TasksList() {
           <p className="mt-1 text-sm text-muted-foreground">Coba ubah filter atau buat penugasan baru.</p>
         </div>
       ) : (
-        <div className="grid gap-3 stagger">
-          {filtered.map((t) => {
+        <div className="grid gap-2 stagger">
+          {filtered.map((t, idx) => {
             const overdue =
               t.status !== "completed" && t.deadline && new Date(t.deadline) < new Date();
             const giverName = users[t.assigned_by] ?? "—";
@@ -174,7 +175,7 @@ function TasksList() {
                 key={t.id}
                 to="/tasks/$taskId"
                 params={{ taskId: t.id }}
-                className="group relative block overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-elegant hover:-translate-y-0.5"
+                className={`group relative block overflow-hidden rounded-xl border border-border ${idx % 2 === 1 ? "bg-muted/30" : "bg-card"} px-4 py-4 sm:px-5 transition-all hover:border-primary/30 hover:shadow-elegant hover:-translate-y-0.5`}
               >
                 {/* gold accent stripe on hover */}
                 <span className="absolute inset-y-0 left-0 w-0.5 bg-accent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -212,11 +213,7 @@ function TasksList() {
                       {t.deadline && (
                         <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 font-medium ${overdue ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
                           {overdue ? <Clock className="h-3 w-3" /> : <Calendar className="h-3 w-3" />}
-                          {new Date(t.deadline).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {formatDateID(t.deadline)}
                         </span>
                       )}
                     </div>

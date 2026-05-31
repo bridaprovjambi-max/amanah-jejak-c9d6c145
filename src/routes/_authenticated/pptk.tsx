@@ -17,6 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
+import { formatDateID, formatDateTimeID } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/pptk")({
   component: PptkPage,
@@ -468,26 +469,32 @@ function PptkPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const rep = reporters[r.reporter_id];
             const atts = attachments[r.id] ?? [];
             return (
-              <Card key={r.id}>
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
+                <CardHeader className="pb-3 px-4 sm:px-6">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={STATUS_VARIANT[r.status]}>{STATUS_LABEL[r.status]}</Badge>
                         <Badge variant="outline">{MONTHS[r.period_month - 1]} {r.period_year}</Badge>
+                        {atts.length > 0 && (
+                          <Badge variant="outline" className="gap-1">
+                            <Paperclip className="h-3 w-3" /> {atts.length}
+                          </Badge>
+                        )}
                       </div>
-                      <div className="font-display font-semibold mt-2">{r.kegiatan}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Pelapor: {rep?.full_name ?? "—"}{rep?.jabatan ? ` · ${rep.jabatan}` : ""}
+                      <h3 className="mt-2 font-display text-base sm:text-lg font-semibold break-words">{r.kegiatan}</h3>
+                      <div className="mt-1 text-[10px] sm:text-xs text-muted-foreground">
+                        Pelapor: <b>{rep?.full_name ?? "—"}</b>{rep?.jabatan ? ` · ${rep.jabatan}` : ""}
+                        {" · "}{formatDateID(r.created_at)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                       <Link to="/pptk/$reportId" params={{ reportId: r.id }}>
                         <Button variant="ghost" size="sm" title="Lihat detail">
                           <Eye className="h-4 w-4" />
@@ -497,15 +504,18 @@ function PptkPage() {
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
                       {canDelete(r) && (
-                        <Button variant="ghost" size="sm" onClick={() => deleteReport(r)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                        <Button variant="ghost" size="sm" className="text-destructive" onClick={() => deleteReport(r)}>
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
                   </div>
+                </CardHeader>
 
-                  {isOpen && (
-                    <div className="space-y-3 pt-2 border-t border-border">
+                {isOpen && (
+                  <CardContent className="space-y-3 border-t border-border pt-4 px-4 sm:px-6">
+                    <div className="space-y-3">
+                      <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <Field label="Uraian Pelaksanaan" value={r.uraian_pelaksanaan} />
                       <div className="grid sm:grid-cols-2 gap-3">
                         <Field label="Target Fisik Bulan" value={r.target_fisik_bulan} />
@@ -541,13 +551,13 @@ function PptkPage() {
                         <div className="rounded-md border border-border bg-muted/30 p-3 text-xs space-y-2">
                           {r.sekretaris_at && (
                             <div>
-                              <b>Sekretaris</b> · {new Date(r.sekretaris_at).toLocaleString("id-ID")}
+                              <b>Sekretaris</b> · {formatDateTimeID(r.sekretaris_at)}
                               {r.sekretaris_notes && <div className="text-muted-foreground mt-0.5">{r.sekretaris_notes}</div>}
                             </div>
                           )}
                           {r.kepala_at && (
                             <div>
-                              <b>Kepala BRIDA</b> · {new Date(r.kepala_at).toLocaleString("id-ID")}
+                              <b>Kepala BRIDA</b> · {formatDateTimeID(r.kepala_at)}
                               {r.kepala_notes && <div className="text-muted-foreground mt-0.5">{r.kepala_notes}</div>}
                             </div>
                           )}
@@ -586,8 +596,8 @@ function PptkPage() {
                         </div>
                       )}
                     </div>
-                  )}
-                </CardContent>
+                  </CardContent>
+                )}
               </Card>
             );
           })}

@@ -22,6 +22,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
+import { formatDateID } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/telaah-staf")({
   component: TelaahStafPage,
@@ -686,8 +687,8 @@ function TelaahStafPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((r) => {
+        <div className="space-y-2">
+          {filtered.map((r, idx) => {
             const isOpen = !!expanded[r.id];
             const reporter = profMap[r.reporter_id];
             const recipient = profMap[r.recipient_id];
@@ -696,7 +697,7 @@ function TelaahStafPage() {
             const canDelete = r.reporter_id === user?.id || hasRole("admin");
             const canDisposisi = r.recipient_id === user?.id;
             return (
-              <Card key={r.id}>
+              <Card key={r.id} className={idx % 2 === 1 ? "bg-muted/30" : ""}>
                 <CardHeader className="pb-3 px-4 sm:px-6">
                   <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
                     <div className="min-w-0 flex-1">
@@ -715,7 +716,7 @@ function TelaahStafPage() {
                         {" → "}
                         Kepada <b>{recipient?.full_name ?? "—"}</b>
                         {" · "}
-                        {new Date(r.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                        {formatDateID(r.created_at)}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
