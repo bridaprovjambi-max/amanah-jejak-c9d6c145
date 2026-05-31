@@ -1,6 +1,7 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { AppShell } from "@/components/AppShell";
+import { RouteTransition } from "@/components/RouteTransition";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -28,7 +29,7 @@ function AuthLayout() {
   }
   return (
     <AppShell>
-      <Outlet />
+      <RouteTransition />
     </AppShell>
   );
 }
