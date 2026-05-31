@@ -405,20 +405,29 @@
   .stagger > *:nth-child(7) { animation-delay: calc(var(--motion-stagger-step) * 7); }
   .stagger > *:nth-child(8) { animation-delay: calc(var(--motion-stagger-step) * 8); }
 
-  /* Respect users who prefer reduced motion */
+  /* Respect users who prefer reduced motion.
+     - Ambient loops (pulse/float) are killed entirely.
+     - Route + entrance animations collapse to a short opacity-only fade
+       so back/forward navigation never slides across the screen. */
+  @keyframes reduced-motion-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
   @media (prefers-reduced-motion: reduce) {
+    .animate-pulse-glow,
+    .animate-float-orb {
+      animation: none !important;
+    }
     .animate-fade-in-up,
     .animate-slide-up,
     .animate-slide-in-side,
     .animate-route-forward,
     .animate-route-back,
-    .animate-pulse-glow,
-    .animate-float-orb,
     .animate-drawer-in,
     .animate-overlay-in,
     .stagger > * {
-      animation-duration: 1ms !important;
-      animation-iteration-count: 1 !important;
+      animation: reduced-motion-fade 120ms ease-out both !important;
+      transform: none !important;
     }
   }
 }
