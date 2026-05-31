@@ -489,6 +489,11 @@ function PptkPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
+                      <Link to="/pptk/$reportId" params={{ reportId: r.id }}>
+                        <Button variant="ghost" size="sm" title="Lihat detail">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button variant="ghost" size="sm" onClick={() => setExpanded((p) => ({ ...p, [r.id]: !isOpen }))}>
                         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
