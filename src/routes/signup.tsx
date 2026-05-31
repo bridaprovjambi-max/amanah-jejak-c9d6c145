@@ -40,7 +40,7 @@ const schema = z.object({
 function BrandMark({ size = "md" }: { size?: "md" | "lg" }) {
   const dim = size === "lg" ? "h-20 w-20 text-5xl" : "h-12 w-12 text-2xl";
   return (
-    <div className={`relative grid ${dim} place-items-center rounded-2xl bg-gold-gradient font-display font-bold text-white glow-gold animate-pulse-glow`}>
+    <div className={`relative grid ${dim} place-items-center rounded-2xl bg-vivid-gradient font-display font-bold text-white glow-vivid animate-pulse-glow`}>
       <span className="drop-shadow-[0_2px_8px_oklch(0.2_0.1_280/0.6)]">8</span>
       <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/30" />
     </div>
@@ -116,14 +116,14 @@ function SignupPage() {
 
         <div className="relative max-w-md animate-slide-up" style={{ animationDelay: "0.15s" }}>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 backdrop-blur-sm">
-            <UserPlus className="h-3.5 w-3.5 text-[oklch(0.82_0.12_80)]" />
+            <UserPlus className="h-3.5 w-3.5 text-[oklch(0.78_0.18_35)]" />
             <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/80">
               Pendaftaran Internal
             </span>
           </div>
           <h2 className="mt-6 font-display text-4xl xl:text-6xl font-bold leading-[1.02] text-balance">
             Bergabung dengan{" "}
-            <span className="text-gold-gradient">ekosistem riset</span> daerah.
+            <span className="text-vivid-gradient">ekosistem riset</span> daerah.
           </h2>
           <p className="mt-6 text-sm leading-relaxed text-white/65 max-w-sm">
             Khusus pejabat dan anggota Kelompok Kerja Riset BRIDA Provinsi Jambi.
@@ -137,7 +137,7 @@ function SignupPage() {
               { icon: ShieldCheck, label: "Akses terkendali", desc: "Peran ditetapkan administrator" },
             ].map((f) => (
               <div key={f.label} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm">
-                <div className="grid h-9 w-9 place-items-center rounded-lg bg-gold-gradient/90 text-white">
+                <div className="grid h-9 w-9 place-items-center rounded-lg bg-vivid-gradient/90 text-white">
                   <f.icon className="h-4 w-4" />
                 </div>
                 <div>
@@ -162,7 +162,7 @@ function SignupPage() {
             <span className="font-display text-lg font-bold text-white">DeLapan</span>
           </Link>
 
-          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[oklch(0.82_0.12_80)]">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[oklch(0.78_0.18_35)]">
             Pendaftaran Akun Baru
           </div>
           <h1 className="mt-2 font-display text-3xl lg:text-4xl font-bold text-white leading-tight">
@@ -210,7 +210,7 @@ function SignupPage() {
             </div>
 
             <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 cursor-pointer transition-colors hover:bg-white/10">
-              <Checkbox checked={form.is_pptk} onCheckedChange={(v) => update("is_pptk", v === true)} className="mt-0.5 border-white/30 data-[state=checked]:bg-gold-gradient data-[state=checked]:border-transparent" />
+              <Checkbox checked={form.is_pptk} onCheckedChange={(v) => update("is_pptk", v === true)} className="mt-0.5 border-white/30 data-[state=checked]:bg-vivid-gradient data-[state=checked]:border-transparent" />
               <span className="text-xs leading-snug text-white/80">
                 Saya juga menjabat sebagai{" "}
                 <b className="text-white">Pejabat Pelaksana Teknis Kegiatan (PPTK)</b>.
@@ -235,7 +235,7 @@ function SignupPage() {
             <Button
               type="submit"
               disabled={busy}
-              className="group w-full h-11 font-semibold border-0 bg-gold-gradient text-white hover:opacity-95 animate-pulse-glow disabled:animate-none"
+              className="group w-full h-11 font-semibold border-0 bg-vivid-gradient text-white hover:opacity-95 animate-pulse-glow disabled:animate-none"
             >
               {busy ? "Mendaftarkan…" : (
                 <>

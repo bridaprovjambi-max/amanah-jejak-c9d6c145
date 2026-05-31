@@ -101,17 +101,6 @@
   --shadow-gold: 0 4px 16px -4px oklch(0.72 0.12 80 / 0.35);
   --gradient-sidebar: linear-gradient(180deg, oklch(0.2 0.055 255) 0%, oklch(0.16 0.05 255) 100%);
   --gradient-gold: linear-gradient(135deg, oklch(0.78 0.13 85), oklch(0.65 0.13 70));
-
-  /* Motion tokens — single source of truth for animation timing across the app.
-     Update here to retune the entire UI in one place. */
-  --motion-fast: 220ms;
-  --motion-base: 420ms;
-  --motion-slow: 600ms;
-  --motion-pulse: 3.2s;
-  --motion-float: 8s;
-  --motion-stagger-step: 60ms;
-  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-swift: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 
@@ -270,8 +259,8 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  .animate-drawer-in  { animation: slide-in-left var(--motion-fast) var(--ease-out-swift); }
-  .animate-overlay-in { animation: fade-in-overlay var(--motion-fast) ease-out; }
+  .animate-drawer-in { animation: slide-in-left 220ms cubic-bezier(0.32, 0.72, 0, 1); }
+  .animate-overlay-in { animation: fade-in-overlay 220ms ease-out; }
 }
 
 @layer utilities {
@@ -305,20 +294,20 @@
       0 1px 0 oklch(1 0 0 / 0.06) inset,
       0 20px 50px -20px oklch(0.05 0.05 265 / 0.6);
   }
-  .text-gold-gradient {
-    background-image: linear-gradient(135deg, oklch(0.82 0.12 80), oklch(0.72 0.12 80), oklch(0.62 0.11 75));
+  .text-vivid-gradient {
+    background-image: linear-gradient(135deg, oklch(0.78 0.18 35), oklch(0.65 0.25 350), oklch(0.65 0.22 290));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .bg-gold-gradient {
-    background-image: linear-gradient(135deg, oklch(0.78 0.13 80), oklch(0.68 0.12 75) 55%, oklch(0.58 0.11 70));
+  .bg-vivid-gradient {
+    background-image: linear-gradient(135deg, oklch(0.75 0.22 40), oklch(0.62 0.26 350) 55%, oklch(0.55 0.24 285));
   }
-  .glow-gold {
+  .glow-vivid {
     box-shadow:
-      0 0 0 1px oklch(0.82 0.08 80 / 0.15),
-      0 6px 20px -8px oklch(0.72 0.12 80 / 0.22),
-      0 14px 38px -16px oklch(0.62 0.11 75 / 0.18);
+      0 0 0 1px oklch(0.95 0.05 280 / 0.15),
+      0 8px 28px -6px oklch(0.62 0.26 350 / 0.55),
+      0 18px 50px -12px oklch(0.55 0.24 285 / 0.45);
   }
   .bg-sidebar-gradient { background-image: var(--gradient-sidebar); }
   .bg-grid-soft {
@@ -370,65 +359,26 @@
     to   { opacity: 1; transform: translateX(0); }
   }
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.12 80 / 0.22), 0 8px 22px -10px oklch(0.62 0.11 75 / 0.28); }
-    50%      { box-shadow: 0 0 0 8px oklch(0.72 0.12 80 / 0), 0 10px 28px -10px oklch(0.62 0.11 75 / 0.38); }
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.62 0.26 350 / 0.45), 0 10px 30px -10px oklch(0.55 0.24 285 / 0.55); }
+    50%      { box-shadow: 0 0 0 10px oklch(0.62 0.26 350 / 0), 0 14px 40px -10px oklch(0.55 0.24 285 / 0.75); }
   }
   @keyframes float-orb {
     0%, 100% { transform: translateY(0) scale(1); }
-    50%      { transform: translateY(-10px) scale(1.04); }
+    50%      { transform: translateY(-12px) scale(1.05); }
   }
-  /* Route transitions — directional slide+fade keyed to navigation direction */
-  @keyframes route-forward {
-    from { opacity: 0; transform: translate3d(24px, 0, 0); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); }
-  }
-  @keyframes route-back {
-    from { opacity: 0; transform: translate3d(-24px, 0, 0); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); }
-  }
-  .animate-fade-in-up    { animation: fade-in-up    var(--motion-base) var(--ease-out-soft) both; }
-  .animate-slide-up      { animation: slide-up-soft var(--motion-slow) var(--ease-out-soft) both; }
-  .animate-slide-in-side { animation: slide-in-side var(--motion-base) var(--ease-out-soft) both; }
-  .animate-pulse-glow    { animation: pulse-glow    var(--motion-pulse) ease-in-out infinite; }
-  .animate-float-orb     { animation: float-orb     var(--motion-float) ease-in-out infinite; }
-  .animate-route-forward { animation: route-forward var(--motion-base) var(--ease-out-soft) both; }
-  .animate-route-back    { animation: route-back    var(--motion-base) var(--ease-out-soft) both; }
-
-  /* Stagger — each child enters one step after the previous, shared base duration */
-  .stagger > * { opacity: 0; animation: fade-in-up var(--motion-base) var(--ease-out-soft) both; }
-  .stagger > *:nth-child(1) { animation-delay: calc(var(--motion-stagger-step) * 1); }
-  .stagger > *:nth-child(2) { animation-delay: calc(var(--motion-stagger-step) * 2); }
-  .stagger > *:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 3); }
-  .stagger > *:nth-child(4) { animation-delay: calc(var(--motion-stagger-step) * 4); }
-  .stagger > *:nth-child(5) { animation-delay: calc(var(--motion-stagger-step) * 5); }
-  .stagger > *:nth-child(6) { animation-delay: calc(var(--motion-stagger-step) * 6); }
-  .stagger > *:nth-child(7) { animation-delay: calc(var(--motion-stagger-step) * 7); }
-  .stagger > *:nth-child(8) { animation-delay: calc(var(--motion-stagger-step) * 8); }
-
-  /* Respect users who prefer reduced motion.
-     - Ambient loops (pulse/float) are killed entirely.
-     - Route + entrance animations collapse to a short opacity-only fade
-       so back/forward navigation never slides across the screen. */
-  @keyframes reduced-motion-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-pulse-glow,
-    .animate-float-orb {
-      animation: none !important;
-    }
-    .animate-fade-in-up,
-    .animate-slide-up,
-    .animate-slide-in-side,
-    .animate-route-forward,
-    .animate-route-back,
-    .animate-drawer-in,
-    .animate-overlay-in,
-    .stagger > * {
-      animation: reduced-motion-fade 120ms ease-out both !important;
-      transform: none !important;
-    }
-  }
+  .animate-fade-in-up { animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-slide-up   { animation: slide-up-soft 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-slide-in-side { animation: slide-in-side 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-pulse-glow { animation: pulse-glow 2.6s ease-in-out infinite; }
+  .animate-float-orb  { animation: float-orb 7s ease-in-out infinite; }
+  .stagger > * { opacity: 0; animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.47s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.54s; }
 }
 

@@ -31,7 +31,7 @@ const schema = z.object({
 function BrandMark({ size = "md" }: { size?: "md" | "lg" }) {
   const dim = size === "lg" ? "h-20 w-20 text-5xl" : "h-12 w-12 text-2xl";
   return (
-    <div className={`relative grid ${dim} place-items-center rounded-2xl bg-gold-gradient font-display font-bold text-white glow-gold animate-pulse-glow`}>
+    <div className={`relative grid ${dim} place-items-center rounded-2xl bg-vivid-gradient font-display font-bold text-white glow-vivid animate-pulse-glow`}>
       <span className="drop-shadow-[0_2px_8px_oklch(0.2_0.1_280/0.6)]">8</span>
       <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/30" />
     </div>
@@ -82,14 +82,14 @@ function LoginPage() {
 
         <div className="relative max-w-md animate-slide-up" style={{ animationDelay: "0.15s" }}>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 backdrop-blur-sm">
-            <ShieldCheck className="h-3.5 w-3.5 text-[oklch(0.82_0.12_80)]" />
+            <ShieldCheck className="h-3.5 w-3.5 text-[oklch(0.78_0.18_35)]" />
             <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/80">
               Akses Terotentikasi
             </span>
           </div>
           <h2 className="mt-6 font-display text-4xl xl:text-6xl font-bold leading-[1.02] text-balance">
             Akuntabilitas dimulai dari{" "}
-            <span className="text-gold-gradient">pelaporan tepat waktu.</span>
+            <span className="text-vivid-gradient">pelaporan tepat waktu.</span>
           </h2>
           <p className="mt-7 text-sm leading-relaxed text-white/65 max-w-sm">
             Sistem internal Badan Riset dan Inovasi Daerah Provinsi Jambi —
@@ -110,7 +110,7 @@ function LoginPage() {
             <span className="font-display text-lg font-bold text-white">DeLapan</span>
           </Link>
 
-          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[oklch(0.82_0.12_80)]">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[oklch(0.78_0.18_35)]">
             Selamat datang kembali
           </div>
           <h1 className="mt-2 font-display text-3xl lg:text-4xl font-bold text-white leading-tight">
@@ -118,7 +118,7 @@ function LoginPage() {
           </h1>
           <p className="mt-3 text-sm text-white/60">
             Belum punya akun?{" "}
-            <Link to="/signup" className="text-white font-semibold hover:text-gold-gradient transition-colors underline-offset-4 hover:underline">
+            <Link to="/signup" className="text-white font-semibold hover:text-vivid-gradient transition-colors underline-offset-4 hover:underline">
               Daftar di sini
             </Link>
           </p>
@@ -159,7 +159,7 @@ function LoginPage() {
             <Button
               type="submit"
               disabled={busy}
-              className="group w-full h-11 font-semibold border-0 bg-gold-gradient text-white hover:opacity-95 animate-pulse-glow disabled:animate-none"
+              className="group w-full h-11 font-semibold border-0 bg-vivid-gradient text-white hover:opacity-95 animate-pulse-glow disabled:animate-none"
             >
               {busy ? "Memproses…" : (
                 <>
