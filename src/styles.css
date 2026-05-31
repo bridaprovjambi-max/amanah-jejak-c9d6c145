@@ -359,8 +359,8 @@
     to   { opacity: 1; transform: translateX(0); }
   }
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 oklch(0.62 0.26 350 / 0.45), 0 10px 30px -10px oklch(0.55 0.24 285 / 0.55); }
-    50%      { box-shadow: 0 0 0 10px oklch(0.62 0.26 350 / 0), 0 14px 40px -10px oklch(0.55 0.24 285 / 0.75); }
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.12 80 / 0.45), 0 10px 30px -10px oklch(0.62 0.11 75 / 0.55); }
+    50%      { box-shadow: 0 0 0 10px oklch(0.72 0.12 80 / 0), 0 14px 40px -10px oklch(0.62 0.11 75 / 0.75); }
   }
   @keyframes float-orb {
     0%, 100% { transform: translateY(0) scale(1); }
