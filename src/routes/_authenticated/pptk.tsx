@@ -130,9 +130,17 @@ function PptkPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterStatus, setFilterStatus] = useState<PptkStatus | "all">("all");
-  const [filterYear, setFilterYear] = useState<number | "all">(now.getFullYear());
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterStatus: PptkStatus | "all" = search.status ?? "all";
+  const filterYear: number | "all" = search.year ?? now.getFullYear();
+  const setQ = (v: string) =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterStatus = (v: PptkStatus | "all") =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, status: v === "all" ? undefined : v }), replace: true });
+  const setFilterYear = (v: number | "all") =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, year: v === "all" ? undefined : v }), replace: true });
 
   // Action dialogs (inline note)
   const [actionFor, setActionFor] = useState<{ id: string; kind: "review" | "approve" | "reject" } | null>(null);
