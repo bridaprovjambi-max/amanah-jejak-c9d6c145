@@ -134,18 +134,18 @@ function TasksList() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
+        <div className="relative flex-1 min-w-full sm:min-w-[220px] sm:basis-64">
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari judul penugasan…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-9 h-10 border-transparent bg-muted/40 focus-visible:bg-card"
+            className="pl-9 h-10 w-full border-transparent bg-muted/40 focus-visible:bg-card"
           />
         </div>
         <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-full sm:w-52 h-10">
+          <SelectTrigger className="h-10 w-full sm:w-52 min-w-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

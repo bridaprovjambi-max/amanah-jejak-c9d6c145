@@ -678,18 +678,18 @@ function TelaahStafPage() {
       </Dialog>
 
       {/* Filter */}
-      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
+        <div className="relative flex-1 min-w-full sm:min-w-[220px] sm:basis-64">
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari judul telaah…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-9 h-10 border-transparent bg-muted/40 focus-visible:bg-card"
+            className="pl-9 h-10 w-full border-transparent bg-muted/40 focus-visible:bg-card"
           />
         </div>
         <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as Category | "all")}>
-          <SelectTrigger className="w-full sm:w-44 h-10"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-10 flex-1 min-w-[10rem] sm:flex-none sm:w-44"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua kategori</SelectItem>
             {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
@@ -698,7 +698,7 @@ function TelaahStafPage() {
           </SelectContent>
         </Select>
         <Select value={filterScope} onValueChange={(v) => setFilterScope(v as typeof filterScope)}>
-          <SelectTrigger className="w-full sm:w-40 h-10"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-10 flex-1 min-w-[9rem] sm:flex-none sm:w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua</SelectItem>
             <SelectItem value="mine">Telaah saya</SelectItem>
