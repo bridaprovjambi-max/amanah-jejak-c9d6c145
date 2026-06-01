@@ -44,9 +44,9 @@ function TasksList() {
   const q = search.q ?? "";
   const filter = search.filter ?? "all";
   const setQ = (v: string) =>
-    navigate({ search: (p) => ({ ...p, q: v || undefined }), replace: true });
+    navigate({ search: (p: TasksSearch) => ({ ...p, q: v || undefined }), replace: true });
   const setFilter = (v: string) =>
-    navigate({ search: (p) => ({ ...p, filter: v === "all" ? undefined : v }), replace: true });
+    navigate({ search: (p: TasksSearch) => ({ ...p, filter: v === "all" ? undefined : v }), replace: true });
 
   const [rows, setRows] = useState<Row[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
