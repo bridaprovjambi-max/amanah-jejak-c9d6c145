@@ -724,6 +724,14 @@ function TelaahStafPage() {
             <SelectItem value="incoming">Untuk saya</SelectItem>
           </SelectContent>
         </Select>
+        <ExportMenu
+          filenameBase="telaah-staf"
+          title="Telaah Staf"
+          subtitle={filterSummary}
+          columns={exportColumns}
+          rows={filtered}
+          disabled={loading}
+        />
       </div>
 
       {loading ? (
