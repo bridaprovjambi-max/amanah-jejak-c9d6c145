@@ -190,6 +190,14 @@ function TasksList() {
             <SelectItem value="overdue">Terlambat</SelectItem>
           </SelectContent>
         </Select>
+        <ExportMenu
+          filenameBase="penugasan"
+          title="Daftar Penugasan"
+          subtitle={filterSummary}
+          columns={exportColumns}
+          rows={filtered.map((t) => ({ ...t, status: isOverdue(t) ? ("overdue" as TaskStatus) : t.status }))}
+          disabled={loading}
+        />
       </div>
 
       {loading ? (
