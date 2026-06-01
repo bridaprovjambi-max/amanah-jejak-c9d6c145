@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge, type TaskStatus, PriorityBadge } from "@/components/StatusBadge";
 import { PageHeader } from "@/components/PageHeader";
+import { ExportMenu } from "@/components/ExportMenu";
+import type { ExportColumn } from "@/lib/export-table";
 import { formatDateID } from "@/lib/format";
 import {
   Select,
@@ -14,6 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
+  pending: "Menunggu",
+  in_progress: "Berjalan",
+  completed: "Selesai",
+  overdue: "Terlambat",
+};
 
 type TasksSearch = { q?: string; filter?: string };
 
@@ -91,6 +100,31 @@ function TasksList() {
     return true;
   });
 
+  const resolveReceiver = (t: Row) =>
+    t.assigned_to
+      ? users[t.assigned_to] ?? "—"
+      : t.assigned_to_pokja
+      ? `Pokja ${pokja[t.assigned_to_pokja] ?? "—"}`
+      : "—";
+
+  const isOverdue = (t: Row) =>
+    t.status !== "completed" && t.deadline ? new Date(t.deadline) < new Date() : false;
+
+  const exportColumns: ExportColumn<Row>[] = [
+    { header: "Judul", accessor: (t) => t.title, width: 70 },
+    { header: "Status", accessor: (t) => TASK_STATUS_LABEL[isOverdue(t) ? "overdue" : t.status] ?? t.status },
+    { header: "Prioritas", accessor: (t) => t.priority },
+    { header: "Pemberi", accessor: (t) => users[t.assigned_by] ?? "—" },
+    { header: "Penerima", accessor: (t) => resolveReceiver(t) },
+    { header: "Deadline", accessor: (t) => (t.deadline ? formatDateID(t.deadline) : "") },
+    { header: "Dibuat", accessor: (t) => formatDateID(t.created_at) },
+    { header: "Deskripsi", accessor: (t) => t.description ?? "", width: 80 },
+  ];
+  const filterSummary = [
+    `Status: ${filter === "all" ? "Semua" : TASK_STATUS_LABEL[filter as TaskStatus] ?? filter}`,
+    q ? `Pencarian: "${q}"` : null,
+  ].filter(Boolean).join(" · ");
+
   const initials = (name: string) =>
     name.split(" ").slice(0, 2).map((s) => s[0]).join("").toUpperCase();
 
@@ -156,6 +190,14 @@ function TasksList() {
             <SelectItem value="overdue">Terlambat</SelectItem>
           </SelectContent>
         </Select>
+        <ExportMenu
+          filenameBase="penugasan"
+          title="Daftar Penugasan"
+          subtitle={filterSummary}
+          columns={exportColumns}
+          rows={filtered.map((t) => ({ ...t, status: isOverdue(t) ? ("overdue" as TaskStatus) : t.status }))}
+          disabled={loading}
+        />
       </div>
 
       {loading ? (
