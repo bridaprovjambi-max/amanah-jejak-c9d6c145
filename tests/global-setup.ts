@@ -1,0 +1,37 @@
+import { chromium, type FullConfig } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
+import "dotenv/config";
+
+export default async function globalSetup(config: FullConfig) {
+  const email = process.env.PLAYWRIGHT_TEST_EMAIL;
+  const password = process.env.PLAYWRIGHT_TEST_PASSWORD;
+  if (!email || !password) {
+    throw new Error(
+      "Missing PLAYWRIGHT_TEST_EMAIL / PLAYWRIGHT_TEST_PASSWORD. " +
+        "Buat file .env di root project (lihat .env.example).",
+    );
+  }
+
+  const baseURL =
+    process.env.PLAYWRIGHT_BASE_URL ??
+    `http://localhost:${process.env.PLAYWRIGHT_PORT ?? 5173}`;
+
+  const storagePath = path.resolve("tests/.auth/user.json");
+  fs.mkdirSync(path.dirname(storagePath), { recursive: true });
+
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+
+  await page.goto(`${baseURL}/login`, { waitUntil: "domcontentloaded" });
+  await page.locator('input[type="email"]').fill(email);
+  await page.locator('input[type="password"]').fill(password);
+  await Promise.all([
+    page.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 30_000 }),
+    page.locator('button[type="submit"]').click(),
+  ]);
+
+  await ctx.storageState({ path: storagePath });
+  await browser.close();
+}
