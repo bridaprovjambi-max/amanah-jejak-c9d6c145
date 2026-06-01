@@ -29,7 +29,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
-import { formatDateTimeID } from "@/lib/format";
+import { ExportMenu } from "@/components/ExportMenu";
+import type { ExportColumn } from "@/lib/export-table";
+import { formatDateID, formatDateTimeID } from "@/lib/format";
 
 type WewenangSearch = { q?: string; jenjang?: Jenjang; year?: number };
 
