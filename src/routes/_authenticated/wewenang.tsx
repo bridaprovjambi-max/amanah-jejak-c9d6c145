@@ -110,9 +110,17 @@ function WewenangPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterJenjang, setFilterJenjang] = useState<Jenjang | "all">("all");
-  const [filterYear, setFilterYear] = useState<number | "all">(now.getFullYear());
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterJenjang: Jenjang | "all" = search.jenjang ?? "all";
+  const filterYear: number | "all" = search.year ?? now.getFullYear();
+  const setQ = (v: string) =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterJenjang = (v: Jenjang | "all") =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, jenjang: v === "all" ? undefined : v }), replace: true });
+  const setFilterYear = (v: number | "all") =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, year: v === "all" ? undefined : v }), replace: true });
 
   useEffect(() => {
     if (profile) setJenjang(profile.jenjang);
