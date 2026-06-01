@@ -505,6 +505,14 @@ function PptkPage() {
             ))}
           </SelectContent>
         </Select>
+        <ExportMenu
+          filenameBase="laporan-pptk"
+          title="Laporan Pelaksanaan Kegiatan (PPTK)"
+          subtitle={filterSummary}
+          columns={exportColumns}
+          rows={filtered}
+          disabled={loading}
+        />
       </div>
 
       {/* List */}
