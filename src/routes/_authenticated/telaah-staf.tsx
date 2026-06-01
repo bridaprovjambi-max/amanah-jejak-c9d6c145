@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
@@ -24,7 +24,24 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateID } from "@/lib/format";
 
+type TelaahScope = "all" | "mine" | "incoming";
+type TelaahSearch = { q?: string; category?: Category; scope?: TelaahScope };
+
+const TELAAH_CATEGORIES: Category[] = ["perencanaan", "keuangan", "kepegawaian"];
+const TELAAH_SCOPES: TelaahScope[] = ["all", "mine", "incoming"];
+
 export const Route = createFileRoute("/_authenticated/telaah-staf")({
+  validateSearch: (s: Record<string, unknown>): TelaahSearch => ({
+    q: typeof s.q === "string" && s.q ? s.q : undefined,
+    category:
+      typeof s.category === "string" && (TELAAH_CATEGORIES as readonly string[]).includes(s.category)
+        ? (s.category as Category)
+        : undefined,
+    scope:
+      typeof s.scope === "string" && (TELAAH_SCOPES as readonly string[]).includes(s.scope)
+        ? (s.scope as TelaahScope)
+        : undefined,
+  }),
   component: TelaahStafPage,
 });
 
@@ -186,9 +203,17 @@ function TelaahStafPage() {
   };
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
-  const [filterScope, setFilterScope] = useState<"all" | "mine" | "incoming">("all");
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterCategory: Category | "all" = search.category ?? "all";
+  const filterScope: TelaahScope = search.scope ?? "all";
+  const setQ = (v: string) =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterCategory = (v: Category | "all") =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, category: v === "all" ? undefined : v }), replace: true });
+  const setFilterScope = (v: TelaahScope) =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, scope: v === "all" ? undefined : v }), replace: true });
 
   const profMap = useMemo(() => {
     const m: Record<string, ProfileLite> = {};

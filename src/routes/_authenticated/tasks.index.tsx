@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, Calendar, ArrowRight, Inbox, AlertCircle, CheckCircle2, Clock, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type TasksSearch = { q?: string; filter?: string };
+
 export const Route = createFileRoute("/_authenticated/tasks/")({
+  validateSearch: (s: Record<string, unknown>): TasksSearch => ({
+    q: typeof s.q === "string" && s.q ? s.q : undefined,
+    filter: typeof s.filter === "string" && s.filter ? s.filter : undefined,
+  }),
   component: TasksList,
 });
 
@@ -33,11 +39,18 @@ interface Row {
 }
 
 function TasksList() {
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filter = search.filter ?? "all";
+  const setQ = (v: string) =>
+    navigate({ search: (p: TasksSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilter = (v: string) =>
+    navigate({ search: (p: TasksSearch) => ({ ...p, filter: v === "all" ? undefined : v }), replace: true });
+
   const [rows, setRows] = useState<Row[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
   const [pokja, setPokja] = useState<Record<string, string>>({});
-  const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

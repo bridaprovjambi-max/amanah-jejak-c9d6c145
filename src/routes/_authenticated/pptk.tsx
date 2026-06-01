@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
@@ -19,7 +19,22 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateID, formatDateTimeID } from "@/lib/format";
 
+type PptkSearch = { q?: string; status?: PptkStatus; year?: number };
+
 export const Route = createFileRoute("/_authenticated/pptk")({
+  validateSearch: (s: Record<string, unknown>): PptkSearch => {
+    const validStatus = ["submitted", "reviewed", "approved", "rejected"] as const;
+    const status =
+      typeof s.status === "string" && (validStatus as readonly string[]).includes(s.status)
+        ? (s.status as PptkStatus)
+        : undefined;
+    const yearNum = typeof s.year === "number" ? s.year : typeof s.year === "string" ? Number(s.year) : NaN;
+    return {
+      q: typeof s.q === "string" && s.q ? s.q : undefined,
+      status,
+      year: Number.isFinite(yearNum) ? yearNum : undefined,
+    };
+  },
   component: PptkPage,
 });
 
@@ -115,9 +130,17 @@ function PptkPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterStatus, setFilterStatus] = useState<PptkStatus | "all">("all");
-  const [filterYear, setFilterYear] = useState<number | "all">(now.getFullYear());
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterStatus: PptkStatus | "all" = search.status ?? "all";
+  const filterYear: number | "all" = search.year ?? now.getFullYear();
+  const setQ = (v: string) =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterStatus = (v: PptkStatus | "all") =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, status: v === "all" ? undefined : v }), replace: true });
+  const setFilterYear = (v: number | "all") =>
+    navigate({ search: (p: PptkSearch) => ({ ...p, year: v === "all" ? undefined : v }), replace: true });
 
   // Action dialogs (inline note)
   const [actionFor, setActionFor] = useState<{ id: string; kind: "review" | "approve" | "reject" } | null>(null);

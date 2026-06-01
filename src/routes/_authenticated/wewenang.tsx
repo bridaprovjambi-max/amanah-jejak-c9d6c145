@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
@@ -31,7 +31,23 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateTimeID } from "@/lib/format";
 
+type WewenangSearch = { q?: string; jenjang?: Jenjang; year?: number };
+
+const JENJANG_KEYS: Jenjang[] = ["staf", "pokja", "jafung", "eselon_iv", "eselon_iii", "eselon_ii"];
+
 export const Route = createFileRoute("/_authenticated/wewenang")({
+  validateSearch: (s: Record<string, unknown>): WewenangSearch => {
+    const jenjang =
+      typeof s.jenjang === "string" && (JENJANG_KEYS as readonly string[]).includes(s.jenjang)
+        ? (s.jenjang as Jenjang)
+        : undefined;
+    const yearNum = typeof s.year === "number" ? s.year : typeof s.year === "string" ? Number(s.year) : NaN;
+    return {
+      q: typeof s.q === "string" && s.q ? s.q : undefined,
+      jenjang,
+      year: Number.isFinite(yearNum) ? yearNum : undefined,
+    };
+  },
   component: WewenangPage,
 });
 
@@ -94,9 +110,17 @@ function WewenangPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterJenjang, setFilterJenjang] = useState<Jenjang | "all">("all");
-  const [filterYear, setFilterYear] = useState<number | "all">(now.getFullYear());
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterJenjang: Jenjang | "all" = search.jenjang ?? "all";
+  const filterYear: number | "all" = search.year ?? now.getFullYear();
+  const setQ = (v: string) =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterJenjang = (v: Jenjang | "all") =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, jenjang: v === "all" ? undefined : v }), replace: true });
+  const setFilterYear = (v: number | "all") =>
+    navigate({ search: (p: WewenangSearch) => ({ ...p, year: v === "all" ? undefined : v }), replace: true });
 
   useEffect(() => {
     if (profile) setJenjang(profile.jenjang);
