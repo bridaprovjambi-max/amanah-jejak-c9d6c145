@@ -445,6 +445,23 @@ function TelaahStafPage() {
     return true;
   });
 
+  const exportColumns: ExportColumn<StaffReview>[] = [
+    { header: "Judul", accessor: (r) => r.judul, width: 60 },
+    { header: "Kategori", accessor: (r) => CATEGORY_LABEL[r.category] },
+    { header: "Status", accessor: (r) => STATUS_LABEL[r.status] },
+    { header: "Pelapor", accessor: (r) => profMap[r.reporter_id]?.full_name ?? "—" },
+    { header: "Tujuan", accessor: (r) => profMap[r.recipient_id]?.full_name ?? "—" },
+    { header: "Pokok Persoalan", accessor: (r) => r.pokok_persoalan, width: 60 },
+    { header: "Kesimpulan", accessor: (r) => r.kesimpulan, width: 60 },
+    { header: "Saran", accessor: (r) => (r.saran ?? []).join(" | "), width: 60 },
+    { header: "Dibuat", accessor: (r) => formatDateID(r.created_at) },
+  ];
+  const filterSummary = [
+    `Kategori: ${filterCategory === "all" ? "Semua" : CATEGORY_LABEL[filterCategory as Category]}`,
+    `Lingkup: ${filterScope === "mine" ? "Telaah saya" : filterScope === "incoming" ? "Untuk saya" : "Semua"}`,
+    q ? `Pencarian: "${q}"` : null,
+  ].filter(Boolean).join(" · ");
+
   return (
     <div className="space-y-7 min-w-0">
       <div className="animate-fade-in-up">
