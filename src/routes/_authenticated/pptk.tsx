@@ -17,6 +17,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
+import { ExportMenu } from "@/components/ExportMenu";
+import type { ExportColumn } from "@/lib/export-table";
 import { formatDateID, formatDateTimeID } from "@/lib/format";
 
 type PptkSearch = { q?: string; status?: PptkStatus; year?: number };
