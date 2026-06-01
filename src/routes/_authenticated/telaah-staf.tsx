@@ -24,7 +24,24 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateID } from "@/lib/format";
 
+type TelaahScope = "all" | "mine" | "incoming";
+type TelaahSearch = { q?: string; category?: Category; scope?: TelaahScope };
+
+const TELAAH_CATEGORIES: Category[] = ["perencanaan", "keuangan", "kepegawaian"];
+const TELAAH_SCOPES: TelaahScope[] = ["all", "mine", "incoming"];
+
 export const Route = createFileRoute("/_authenticated/telaah-staf")({
+  validateSearch: (s: Record<string, unknown>): TelaahSearch => ({
+    q: typeof s.q === "string" && s.q ? s.q : undefined,
+    category:
+      typeof s.category === "string" && (TELAAH_CATEGORIES as readonly string[]).includes(s.category)
+        ? (s.category as Category)
+        : undefined,
+    scope:
+      typeof s.scope === "string" && (TELAAH_SCOPES as readonly string[]).includes(s.scope)
+        ? (s.scope as TelaahScope)
+        : undefined,
+  }),
   component: TelaahStafPage,
 });
 
