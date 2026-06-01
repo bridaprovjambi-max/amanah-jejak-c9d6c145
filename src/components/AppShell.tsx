@@ -167,7 +167,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const useCosmos = !isDashboard;
 
   return (
-    <div className={cn("min-h-screen relative", useCosmos ? "bg-cosmos text-white" : "bg-background")}>
+    <div className={cn("min-h-dvh relative", useCosmos ? "bg-cosmos text-white" : "bg-background")}>
       {useCosmos && (
         <>
           <div className="pointer-events-none fixed inset-0 bg-grid-cosmos opacity-50" />
