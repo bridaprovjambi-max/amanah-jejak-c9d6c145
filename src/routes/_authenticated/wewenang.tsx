@@ -499,6 +499,14 @@ function WewenangPage() {
             ))}
           </SelectContent>
         </Select>
+        <ExportMenu
+          filenameBase="laporan-wewenang"
+          title="Pelaporan Pelaksanaan Wewenang"
+          subtitle={filterSummary}
+          columns={exportColumns}
+          rows={filtered}
+          disabled={loading}
+        />
       </div>
 
       {/* List */}
