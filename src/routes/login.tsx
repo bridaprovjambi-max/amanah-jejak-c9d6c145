@@ -63,10 +63,12 @@ function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-dvh grid lg:grid-cols-[1.05fr_1fr] overflow-hidden bg-cosmos text-white">
-      <div className="pointer-events-none absolute inset-0 bg-grid-cosmos opacity-70" />
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[28rem] w-[28rem] rounded-full bg-[oklch(0.55_0.24_290/0.35)] blur-3xl animate-float-orb" />
-      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-[oklch(0.65_0.25_25/0.25)] blur-3xl animate-float-orb" style={{ animationDelay: "1.5s" }} />
+    <main className="relative min-h-dvh grid lg:grid-cols-[1.05fr_1fr] bg-cosmos text-white">
+      <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-cosmos opacity-70" />
+        <div className="absolute -top-32 -left-32 h-[28rem] w-[28rem] rounded-full bg-[oklch(0.55_0.24_290/0.35)] blur-3xl animate-float-orb" />
+        <div className="absolute -bottom-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-[oklch(0.65_0.25_25/0.25)] blur-3xl animate-float-orb" style={{ animationDelay: "1.5s" }} />
+      </div>
 
       {/* Brand panel */}
       <aside className="relative hidden lg:flex flex-col justify-between p-12 xl:p-16">
