@@ -321,6 +321,25 @@ function PptkPage() {
   });
   const years = Array.from(new Set(reports.map((r) => r.period_year))).sort((a, b) => b - a);
 
+  const exportColumns: ExportColumn<PptkReport>[] = [
+    { header: "Periode", accessor: (r) => `${MONTHS[r.period_month - 1]} ${r.period_year}` },
+    { header: "Sub Kegiatan", accessor: (r) => r.kegiatan, width: 60 },
+    { header: "Pelapor", accessor: (r) => reporters[r.reporter_id]?.full_name ?? "—" },
+    { header: "Status", accessor: (r) => STATUS_LABEL[r.status] },
+    { header: "Target Fisik", accessor: (r) => r.target_fisik_bulan ?? "" },
+    { header: "Target Keuangan", accessor: (r) => r.target_realisasi_keuangan ?? "" },
+    { header: "Realisasi Fisik", accessor: (r) => r.realisasi_fisik ?? "" },
+    { header: "Realisasi Keuangan", accessor: (r) => r.realisasi_keuangan ?? "" },
+    { header: "Kendala", accessor: (r) => r.kendala ?? "", width: 50 },
+    { header: "Tindak Lanjut", accessor: (r) => r.tindak_lanjut ?? "", width: 50 },
+    { header: "Dibuat", accessor: (r) => formatDateID(r.created_at) },
+  ];
+  const filterSummary = [
+    `Status: ${filterStatus === "all" ? "Semua" : STATUS_LABEL[filterStatus as PptkStatus]}`,
+    `Tahun: ${filterYear === "all" ? "Semua" : filterYear}`,
+    q ? `Pencarian: "${q}"` : null,
+  ].filter(Boolean).join(" · ");
+
   return (
     <div className="space-y-7 min-w-0">
       <div className="animate-fade-in-up">
