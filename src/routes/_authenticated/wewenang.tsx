@@ -31,7 +31,23 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateTimeID } from "@/lib/format";
 
+type WewenangSearch = { q?: string; jenjang?: Jenjang; year?: number };
+
+const JENJANG_KEYS: Jenjang[] = ["staf", "pokja", "jafung", "eselon_iv", "eselon_iii", "eselon_ii"];
+
 export const Route = createFileRoute("/_authenticated/wewenang")({
+  validateSearch: (s: Record<string, unknown>): WewenangSearch => {
+    const jenjang =
+      typeof s.jenjang === "string" && (JENJANG_KEYS as readonly string[]).includes(s.jenjang)
+        ? (s.jenjang as Jenjang)
+        : undefined;
+    const yearNum = typeof s.year === "number" ? s.year : typeof s.year === "string" ? Number(s.year) : NaN;
+    return {
+      q: typeof s.q === "string" && s.q ? s.q : undefined,
+      jenjang,
+      year: Number.isFinite(yearNum) ? yearNum : undefined,
+    };
+  },
   component: WewenangPage,
 });
 
