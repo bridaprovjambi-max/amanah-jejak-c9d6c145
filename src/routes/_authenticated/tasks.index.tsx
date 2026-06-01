@@ -17,12 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const TASK_STATUS_LABEL: Record<TaskStatus | "overdue", string> = {
+const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
   pending: "Menunggu",
   in_progress: "Berjalan",
   completed: "Selesai",
   overdue: "Terlambat",
-  cancelled: "Dibatalkan",
 };
 
 type TasksSearch = { q?: string; filter?: string };
