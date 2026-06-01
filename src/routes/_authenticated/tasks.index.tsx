@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge, type TaskStatus, PriorityBadge } from "@/components/StatusBadge";
 import { PageHeader } from "@/components/PageHeader";
+import { ExportMenu } from "@/components/ExportMenu";
+import type { ExportColumn } from "@/lib/export-table";
 import { formatDateID } from "@/lib/format";
 import {
   Select,
@@ -14,6 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+const TASK_STATUS_LABEL: Record<TaskStatus | "overdue", string> = {
+  pending: "Menunggu",
+  in_progress: "Berjalan",
+  completed: "Selesai",
+  overdue: "Terlambat",
+  cancelled: "Dibatalkan",
+};
 
 type TasksSearch = { q?: string; filter?: string };
 
