@@ -292,6 +292,24 @@ function WewenangPage() {
 
   const years = Array.from(new Set(reports.map((r) => r.period_year))).sort((a, b) => b - a);
 
+  const exportColumns: ExportColumn<AuthorityReport>[] = [
+    { header: "Periode", accessor: (r) => `${MONTHS[r.period_month - 1]} ${r.period_year}` },
+    { header: "Jenjang", accessor: (r) => JENJANG_LABEL[r.jenjang] },
+    { header: "Pelapor", accessor: (r) => reporters[r.reporter_id]?.full_name ?? "—" },
+    { header: "Jabatan", accessor: (r) => reporters[r.reporter_id]?.jabatan ?? "" },
+    { header: "Status", accessor: (r) => r.status },
+    { header: "Uraian Wewenang", accessor: (r) => r.authority_description, width: 70 },
+    { header: "Ringkasan Pelaksanaan", accessor: (r) => r.execution_summary, width: 70 },
+    { header: "Kendala", accessor: (r) => r.obstacles ?? "", width: 50 },
+    { header: "Tindak Lanjut", accessor: (r) => r.follow_up_notes ?? "", width: 50 },
+    { header: "Dibuat", accessor: (r) => formatDateID(r.created_at) },
+  ];
+  const filterSummary = [
+    `Jenjang: ${filterJenjang === "all" ? "Semua" : JENJANG_LABEL[filterJenjang as Jenjang]}`,
+    `Tahun: ${filterYear === "all" ? "Semua" : filterYear}`,
+    q ? `Pencarian: "${q}"` : null,
+  ].filter(Boolean).join(" · ");
+
   return (
     <div className="space-y-7 min-w-0">
       <div className="animate-fade-in-up">
