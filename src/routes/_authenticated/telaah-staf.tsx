@@ -203,9 +203,17 @@ function TelaahStafPage() {
   };
 
   // Filter
-  const [q, setQ] = useState("");
-  const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
-  const [filterScope, setFilterScope] = useState<"all" | "mine" | "incoming">("all");
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const q = search.q ?? "";
+  const filterCategory: Category | "all" = search.category ?? "all";
+  const filterScope: TelaahScope = search.scope ?? "all";
+  const setQ = (v: string) =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, q: v || undefined }), replace: true });
+  const setFilterCategory = (v: Category | "all") =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, category: v === "all" ? undefined : v }), replace: true });
+  const setFilterScope = (v: TelaahScope) =>
+    navigate({ search: (p: TelaahSearch) => ({ ...p, scope: v === "all" ? undefined : v }), replace: true });
 
   const profMap = useMemo(() => {
     const m: Record<string, ProfileLite> = {};
