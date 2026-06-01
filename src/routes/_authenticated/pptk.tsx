@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
@@ -19,7 +19,22 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { formatDateID, formatDateTimeID } from "@/lib/format";
 
+type PptkSearch = { q?: string; status?: PptkStatus; year?: number };
+
 export const Route = createFileRoute("/_authenticated/pptk")({
+  validateSearch: (s: Record<string, unknown>): PptkSearch => {
+    const validStatus = ["submitted", "reviewed", "approved", "rejected"] as const;
+    const status =
+      typeof s.status === "string" && (validStatus as readonly string[]).includes(s.status)
+        ? (s.status as PptkStatus)
+        : undefined;
+    const yearNum = typeof s.year === "number" ? s.year : typeof s.year === "string" ? Number(s.year) : NaN;
+    return {
+      q: typeof s.q === "string" && s.q ? s.q : undefined,
+      status,
+      year: Number.isFinite(yearNum) ? yearNum : undefined,
+    };
+  },
   component: PptkPage,
 });
 
