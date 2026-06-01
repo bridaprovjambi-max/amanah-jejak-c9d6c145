@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   Paperclip, X, Download, Trash2, FileIcon, Plus,
-  ChevronDown, ChevronUp, Check, XCircle, Eye,
+  ChevronDown, ChevronUp, Check, XCircle, Eye, Search,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -115,6 +115,7 @@ function PptkPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter
+  const [q, setQ] = useState("");
   const [filterStatus, setFilterStatus] = useState<PptkStatus | "all">("all");
   const [filterYear, setFilterYear] = useState<number | "all">(now.getFullYear());
 
@@ -290,6 +291,7 @@ function PptkPage() {
   const filtered = reports.filter((r) => {
     if (filterStatus !== "all" && r.status !== filterStatus) return false;
     if (filterYear !== "all" && r.period_year !== filterYear) return false;
+    if (q && !r.kegiatan.toLowerCase().includes(q.toLowerCase())) return false;
     return true;
   });
   const years = Array.from(new Set(reports.map((r) => r.period_year))).sort((a, b) => b - a);
@@ -431,32 +433,34 @@ function PptkPage() {
       )}
 
       {/* Filter */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <Label className="text-xs">Status</Label>
-          <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as PptkStatus | "all")}>
-            <SelectTrigger className="h-8 w-[220px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua status</SelectItem>
-              {(Object.keys(STATUS_LABEL) as PptkStatus[]).map((s) => (
-                <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari sub kegiatan…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className="pl-9 h-10 border-transparent bg-muted/40 focus-visible:bg-card"
+          />
         </div>
-        <div className="flex items-center gap-2">
-          <Label className="text-xs">Tahun</Label>
-          <Select value={String(filterYear)} onValueChange={(v) => setFilterYear(v === "all" ? "all" : Number(v))}>
-            <SelectTrigger className="h-8 w-[140px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua tahun</SelectItem>
-              {years.map((y) => (
-                <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="text-xs text-muted-foreground ml-auto">{filtered.length} laporan</div>
+        <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as PptkStatus | "all")}>
+          <SelectTrigger className="w-full sm:w-52 h-10"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua status</SelectItem>
+            {(Object.keys(STATUS_LABEL) as PptkStatus[]).map((s) => (
+              <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={String(filterYear)} onValueChange={(v) => setFilterYear(v === "all" ? "all" : Number(v))}>
+          <SelectTrigger className="w-full sm:w-36 h-10"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua tahun</SelectItem>
+            {years.map((y) => (
+              <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* List */}
