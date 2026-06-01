@@ -451,18 +451,18 @@ function WewenangPage() {
       )}
 
       {/* Filter */}
-      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
+        <div className="relative flex-1 min-w-full sm:min-w-[220px] sm:basis-64">
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari uraian wewenang…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-9 h-10 border-transparent bg-muted/40 focus-visible:bg-card"
+            className="pl-9 h-10 w-full border-transparent bg-muted/40 focus-visible:bg-card"
           />
         </div>
         <Select value={filterJenjang} onValueChange={(v) => setFilterJenjang(v as Jenjang | "all")}>
-          <SelectTrigger className="w-full sm:w-52 h-10"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-10 flex-1 min-w-[10rem] sm:flex-none sm:w-52"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua jenjang</SelectItem>
             {(Object.keys(JENJANG_LABEL) as Jenjang[]).map((j) => (
@@ -471,7 +471,7 @@ function WewenangPage() {
           </SelectContent>
         </Select>
         <Select value={String(filterYear)} onValueChange={(v) => setFilterYear(v === "all" ? "all" : Number(v))}>
-          <SelectTrigger className="w-full sm:w-36 h-10"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-10 flex-1 min-w-[8rem] sm:flex-none sm:w-36"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua tahun</SelectItem>
             {years.map((y) => (
