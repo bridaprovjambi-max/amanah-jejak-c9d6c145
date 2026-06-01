@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, X, Paperclip, Download, Trash2, FileIcon,
-  ChevronDown, ChevronUp, Send, History, Eye,
+  ChevronDown, ChevronUp, Send, History, Eye, Search,
 } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
@@ -186,6 +186,7 @@ function TelaahStafPage() {
   };
 
   // Filter
+  const [q, setQ] = useState("");
   const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
   const [filterScope, setFilterScope] = useState<"all" | "mine" | "incoming">("all");
 
@@ -413,6 +414,7 @@ function TelaahStafPage() {
     if (filterCategory !== "all" && r.category !== filterCategory) return false;
     if (filterScope === "mine" && r.reporter_id !== user?.id) return false;
     if (filterScope === "incoming" && r.recipient_id !== user?.id) return false;
+    if (q && !r.judul.toLowerCase().includes(q.toLowerCase())) return false;
     return true;
   });
 
@@ -651,31 +653,33 @@ function TelaahStafPage() {
       </Dialog>
 
       {/* Filter */}
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Label className="text-[10px] sm:text-xs">Kategori</Label>
-          <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as Category | "all")}>
-            <SelectTrigger className="h-8 w-[150px] sm:w-[180px] text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua kategori</SelectItem>
-              {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
-                <SelectItem key={c} value={c}>{CATEGORY_LABEL[c]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-3 shadow-card-elegant">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Cari judul telaah…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className="pl-9 h-10 border-transparent bg-muted/40 focus-visible:bg-card"
+          />
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Label className="text-[10px] sm:text-xs">Lingkup</Label>
-          <Select value={filterScope} onValueChange={(v) => setFilterScope(v as typeof filterScope)}>
-            <SelectTrigger className="h-8 w-[140px] sm:w-[180px] text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua</SelectItem>
-              <SelectItem value="mine">Telaah saya</SelectItem>
-              <SelectItem value="incoming">Untuk saya</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="text-[10px] sm:text-xs text-muted-foreground ml-auto">{filtered.length} telaah</div>
+        <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as Category | "all")}>
+          <SelectTrigger className="w-full sm:w-44 h-10"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua kategori</SelectItem>
+            {(Object.keys(CATEGORY_LABEL) as Category[]).map((c) => (
+              <SelectItem key={c} value={c}>{CATEGORY_LABEL[c]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={filterScope} onValueChange={(v) => setFilterScope(v as typeof filterScope)}>
+          <SelectTrigger className="w-full sm:w-40 h-10"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua</SelectItem>
+            <SelectItem value="mine">Telaah saya</SelectItem>
+            <SelectItem value="incoming">Untuk saya</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {loading ? (
