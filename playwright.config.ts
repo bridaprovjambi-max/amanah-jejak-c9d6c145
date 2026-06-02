@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import "dotenv/config";
 
+const CHROMIUM_EXEC = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
+const launchOptions = CHROMIUM_EXEC ? { executablePath: CHROMIUM_EXEC } : {};
+
 const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 5173);
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
 
@@ -23,15 +26,15 @@ export default defineConfig({
   projects: [
     {
       name: "mobile-360",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 360, height: 740 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 360, height: 740 }, launchOptions },
     },
     {
       name: "tablet-768",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 }, launchOptions },
     },
     {
       name: "desktop-1280",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 }, launchOptions },
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL
