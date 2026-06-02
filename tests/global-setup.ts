@@ -20,7 +20,11 @@ export default async function globalSetup(config: FullConfig) {
   const storagePath = path.resolve("tests/.auth/user.json");
   fs.mkdirSync(path.dirname(storagePath), { recursive: true });
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(
+    process.env.PLAYWRIGHT_CHROMIUM_PATH
+      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+      : {},
+  );
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
 
