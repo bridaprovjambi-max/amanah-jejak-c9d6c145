@@ -28,13 +28,20 @@ export default async function globalSetup(config: FullConfig) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
 
+  page.on("console", (m) => console.log(`[browser:${m.type()}]`, m.text()));
+  page.on("pageerror", (e) => console.log("[pageerror]", e.message));
+
   await page.goto(`${baseURL}/login`, { waitUntil: "domcontentloaded" });
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
-  await Promise.all([
-    page.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 30_000 }),
-    page.locator('button[type="submit"]').click(),
-  ]);
+  await page.locator('button[type="submit"]').click();
+  try {
+    await page.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 30_000 });
+  } catch (err) {
+    await page.screenshot({ path: "tests/.auth/login-fail.png", fullPage: true });
+    console.log("Login current URL:", page.url());
+    throw err;
+  }
 
   await ctx.storageState({ path: storagePath });
   await browser.close();
