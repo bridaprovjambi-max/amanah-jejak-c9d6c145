@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import "dotenv/config";
 
+const CHROMIUM_EXEC = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
+const launchOptions = CHROMIUM_EXEC ? { executablePath: CHROMIUM_EXEC } : {};
+
 const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 5173);
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
 
