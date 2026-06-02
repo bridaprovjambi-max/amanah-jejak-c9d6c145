@@ -31,9 +31,14 @@ export default async function globalSetup(config: FullConfig) {
   page.on("console", (m) => console.log(`[browser:${m.type()}]`, m.text()));
   page.on("pageerror", (e) => console.log("[pageerror]", e.message));
 
-  await page.goto(`${baseURL}/login`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseURL}/login`, { waitUntil: "networkidle" });
+  // Wait until React handlers are attached.
+  await page.waitForFunction(
+    () => !!document.querySelector('form button[type="submit"]'),
+  );
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
+  await page.waitForTimeout(300);
   await page.locator('button[type="submit"]').click();
   try {
     await page.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 30_000 });
